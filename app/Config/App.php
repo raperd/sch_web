@@ -17,11 +17,11 @@ class App extends BaseConfig
      * E.g., http://example.com/
      */
     /**
-     * baseURL dikosongkan agar CI4 auto-detect dari HTTP_HOST.
-     * Mendukung localhost (dev) dan Cloudflare Tunnel (publik) secara otomatis.
-     * Jangan isi hardcode di sini maupun di .env.
+     * Fallback baseURL untuk CLI (php spark).
+     * Saat HTTP request masuk, Events.php akan override ini secara otomatis
+     * berdasarkan HTTP_HOST — mendukung localhost DAN Cloudflare Tunnel.
      */
-    public string $baseURL = '';
+    public string $baseURL = 'http://localhost:8080/';
 
     /**
      * Allowed Hostnames in the Site URL other than the hostname in the baseURL.
