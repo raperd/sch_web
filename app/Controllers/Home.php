@@ -6,6 +6,14 @@ class Home extends BaseController
 {
     public function index(): string
     {
-        return view('welcome_message');
+        $artikelModel  = new \App\Models\ArtikelModel();
+        $quickLinkModel = new \App\Models\QuickLinkModel();
+
+        return view('home/index', [
+            'title'        => 'Beranda',
+            'berita_terbaru' => $artikelModel->getTerbaru(6),
+            'berita_utama'   => $artikelModel->getFeatured(1),
+            'quick_links'    => $quickLinkModel->getAktif(),
+        ]);
     }
 }
