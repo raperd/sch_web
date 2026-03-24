@@ -70,13 +70,13 @@
                             <?php else: ?>
                                 <?php
                                 $tipeIcons = [
-                                    'event'  => ['bi-calendar-check', 'primary'],
-                                    'lomba'  => ['bi-trophy', 'warning'],
-                                    'sosial' => ['bi-heart', 'danger'],
-                                    'osis'   => ['bi-people', 'success'],
-                                    default  => ['bi-star', 'secondary'],
+                                    'event'   => ['bi-calendar-check', 'primary'],
+                                    'lomba'   => ['bi-trophy', 'warning'],
+                                    'sosial'  => ['bi-heart', 'danger'],
+                                    'osis'    => ['bi-people', 'success'],
+                                    'lainnya' => ['bi-star', 'secondary'],
                                 ];
-                                $ti = $tipeIcons[$k['tipe'] ?? 'lainnya'] ?? $tipeIcons['default'];
+                                $ti = $tipeIcons[$k['tipe'] ?? 'lainnya'] ?? ['bi-star', 'secondary'];
                                 ?>
                                 <div class="d-flex align-items-center justify-content-center bg-<?= $ti[1] ?> bg-opacity-10" style="height:200px;">
                                     <i class="bi <?= $ti[0] ?> text-<?= $ti[1] ?>" style="font-size:3rem;"></i>
