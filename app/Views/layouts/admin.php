@@ -38,6 +38,7 @@
             display: flex;
             flex-direction: column;
             transition: transform .25s ease;
+            overflow-x: hidden; /* cegah scrollbar horizontal */
         }
         #sidebar .sidebar-brand {
             height: var(--topbar-height);
@@ -75,6 +76,7 @@
         #sidebar .sidebar-collapse-btn {
             color: rgba(255,255,255,.72);
             display: flex; align-items: center; gap: .55rem;
+            width: 100%; max-width: 100%; overflow: hidden;
         }
         #sidebar .sidebar-collapse-btn:not(.collapsed) { color: #fff; }
         #sidebar .sidebar-chevron {

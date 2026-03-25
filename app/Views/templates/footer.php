@@ -77,7 +77,7 @@ $wa          = setting('whatsapp_url');
             <!-- SPMB Info -->
             <div class="col-12 col-md-3 col-lg-3">
                 <h6 class="footer-heading">SPMB <?= esc(setting('ppdb_tahun') ?? '') ?></h6>
-                <p class="small mb-3">Informasi Penerimaan Peserta Didik Baru. Daftar melalui portal resmi Dinas Pendidikan.</p>
+                <p class="small mb-3"><?= esc(setting('ppdb_deskripsi_footer') ?: 'Informasi Penerimaan Peserta Didik Baru. Daftar melalui portal resmi Dinas Pendidikan.') ?></p>
                 <a href="<?= site_url('ppdb') ?>" class="btn btn-sm btn-outline-light mb-2 w-100">
                     <i class="bi bi-info-circle me-1"></i>Panduan SPMB
                 </a>
