@@ -37,7 +37,7 @@ class PengaturanController extends BaseController
                 && $file->isValid()
                 && ! $file->hasMoved()
             ) {
-                $dest = WRITEPATH . 'uploads/pengaturan/';
+                $dest = FCPATH . 'uploads/pengaturan/';
                 if (! is_dir($dest)) {
                     mkdir($dest, 0755, true);
                 }

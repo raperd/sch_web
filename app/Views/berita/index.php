@@ -3,7 +3,7 @@
 <?= $this->section('content') ?>
 
 <!-- Page Header -->
-<section class="page-header py-5" style="background: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-secondary) 100%); margin-top: var(--nav-height);">
+<section class="page-header py-5" style="background: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-secondary) 100%);">
     <div class="container text-center text-white">
         <h1 class="fw-bold mb-2">Berita &amp; Artikel</h1>
         <nav aria-label="breadcrumb">

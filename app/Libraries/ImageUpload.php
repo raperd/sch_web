@@ -4,7 +4,7 @@ namespace App\Libraries;
 
 class ImageUpload
 {
-    protected string $uploadPath = WRITEPATH . 'uploads/';
+    protected string $uploadPath = FCPATH . 'uploads/';
     protected array  $allowedTypes = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
     protected int    $maxSize = 2048; // KB
 

@@ -13,7 +13,7 @@
 
 <?= $this->section('content') ?>
 
-<div style="margin-top: var(--nav-height);"></div>
+</div>
 
 <section class="py-5">
     <div class="container">
