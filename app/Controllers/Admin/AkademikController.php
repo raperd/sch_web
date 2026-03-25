@@ -5,6 +5,7 @@ namespace App\Controllers\Admin;
 use App\Controllers\BaseController;
 use App\Models\ProgramUnggulanModel;
 use App\Models\KurikulumBlokModel;
+use CodeIgniter\Exceptions\PageNotFoundException;
 
 class AkademikController extends BaseController
 {
@@ -66,7 +67,7 @@ class AkademikController extends BaseController
 
     public function programEdit(int $id): string
     {
-        $program = $this->programModel->findOrFail($id);
+        $program = $this->programModel->find($id) ?? throw new PageNotFoundException('Program tidak ditemukan');
         return view('admin/akademik/program_form', [
             'title'   => 'Edit Program Unggulan',
             'program' => $program,
@@ -75,7 +76,7 @@ class AkademikController extends BaseController
 
     public function programUpdate(int $id): \CodeIgniter\HTTP\RedirectResponse
     {
-        $this->programModel->findOrFail($id);
+        $this->programModel->find($id) ?? throw new PageNotFoundException('Program tidak ditemukan');
 
         $rules = [
             'judul'  => 'required|max_length[150]',
@@ -103,7 +104,7 @@ class AkademikController extends BaseController
 
     public function programDelete(int $id): \CodeIgniter\HTTP\RedirectResponse
     {
-        $this->programModel->findOrFail($id);
+        $this->programModel->find($id) ?? throw new PageNotFoundException('Program tidak ditemukan');
         $this->programModel->delete($id);
         session()->setFlashdata('success', 'Program unggulan dihapus.');
         return redirect()->to('/admin/akademik/program');
@@ -154,7 +155,7 @@ class AkademikController extends BaseController
 
     public function kurikulumEdit(int $id): string
     {
-        $blok = $this->kurikulumModel->findOrFail($id);
+        $blok = $this->kurikulumModel->find($id) ?? throw new PageNotFoundException('Blok tidak ditemukan');
         return view('admin/akademik/kurikulum_form', [
             'title' => 'Edit Blok Kurikulum',
             'blok'  => $blok,
@@ -163,7 +164,7 @@ class AkademikController extends BaseController
 
     public function kurikulumUpdate(int $id): \CodeIgniter\HTTP\RedirectResponse
     {
-        $this->kurikulumModel->findOrFail($id);
+        $this->kurikulumModel->find($id) ?? throw new PageNotFoundException('Blok tidak ditemukan');
 
         $rules = [
             'judul'  => 'required|max_length[150]',
@@ -187,7 +188,7 @@ class AkademikController extends BaseController
 
     public function kurikulumDelete(int $id): \CodeIgniter\HTTP\RedirectResponse
     {
-        $this->kurikulumModel->findOrFail($id);
+        $this->kurikulumModel->find($id) ?? throw new PageNotFoundException('Blok tidak ditemukan');
         $this->kurikulumModel->delete($id);
         session()->setFlashdata('success', 'Blok kurikulum dihapus.');
         return redirect()->to('/admin/akademik/kurikulum');
