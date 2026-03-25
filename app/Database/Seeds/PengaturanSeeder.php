@@ -45,6 +45,11 @@ class PengaturanSeeder extends Seeder
             ['setting_key' => 'ppdb_link_external','setting_value' => '#',                                  'label' => 'Link Portal PPDB (Pemda)',  'tipe' => 'text',     'grup' => 'ppdb',   'urutan' => 1],
             ['setting_key' => 'ppdb_tahun',        'setting_value' => '2026/2027',                          'label' => 'Tahun PPDB',               'tipe' => 'text',     'grup' => 'ppdb',   'urutan' => 2],
             ['setting_key' => 'ppdb_status',       'setting_value' => '0',                                  'label' => 'PPDB Sedang Buka',         'tipe' => 'boolean',  'grup' => 'ppdb',   'urutan' => 3],
+
+            // Grup: tema
+            ['setting_key' => 'tema_primary',      'setting_value' => '#1a5276',                            'label' => 'Warna Primer (Biru Utama)', 'tipe' => 'color',    'grup' => 'tema',   'urutan' => 1],
+            ['setting_key' => 'tema_secondary',    'setting_value' => '#2e86c1',                            'label' => 'Warna Sekunder (Biru Sedang)','tipe' => 'color',   'grup' => 'tema',   'urutan' => 2],
+            ['setting_key' => 'tema_accent',       'setting_value' => '#d4ac0d',                            'label' => 'Warna Aksen (Gold)',        'tipe' => 'color',    'grup' => 'tema',   'urutan' => 3],
         ];
 
         $this->db->table('pengaturan')->insertBatch($data);

@@ -163,6 +163,14 @@
             <i class="bi bi-images"></i> Galeri
         </a>
 
+        <div class="nav-label">Akademik</div>
+        <a href="<?= site_url('admin/akademik/program') ?>" class="nav-link <?= str_contains(current_url(), '/admin/akademik/program') ? 'active' : '' ?>">
+            <i class="bi bi-star"></i> Program Unggulan
+        </a>
+        <a href="<?= site_url('admin/akademik/kurikulum') ?>" class="nav-link <?= str_contains(current_url(), '/admin/akademik/kurikulum') ? 'active' : '' ?>">
+            <i class="bi bi-journal-text"></i> Kurikulum
+        </a>
+
         <div class="nav-label">Kesiswaan</div>
         <a href="<?= site_url('admin/kegiatan') ?>" class="nav-link <?= str_contains(current_url(), '/admin/kegiatan') ? 'active' : '' ?>">
             <i class="bi bi-calendar-event"></i> Kegiatan & Acara

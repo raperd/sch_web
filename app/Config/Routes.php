@@ -81,6 +81,23 @@ $routes->group('admin', ['filter' => 'admin_auth'], static function (RouteCollec
     $routes->post('kegiatan/delete/(:num)', 'Admin\KegiatanController::delete/$1');
 
     // -----------------------------------------------------------------
+    // Akademik (Program Unggulan & Kurikulum)
+    // -----------------------------------------------------------------
+    $routes->get('akademik/program',              'Admin\AkademikController::program');
+    $routes->get('akademik/program/create',       'Admin\AkademikController::programCreate');
+    $routes->post('akademik/program/store',       'Admin\AkademikController::programStore');
+    $routes->get('akademik/program/(:num)/edit',  'Admin\AkademikController::programEdit/$1');
+    $routes->post('akademik/program/(:num)/update','Admin\AkademikController::programUpdate/$1');
+    $routes->post('akademik/program/(:num)/delete','Admin\AkademikController::programDelete/$1');
+
+    $routes->get('akademik/kurikulum',              'Admin\AkademikController::kurikulum');
+    $routes->get('akademik/kurikulum/create',       'Admin\AkademikController::kurikulumCreate');
+    $routes->post('akademik/kurikulum/store',       'Admin\AkademikController::kurikulumStore');
+    $routes->get('akademik/kurikulum/(:num)/edit',  'Admin\AkademikController::kurikulumEdit/$1');
+    $routes->post('akademik/kurikulum/(:num)/update','Admin\AkademikController::kurikulumUpdate/$1');
+    $routes->post('akademik/kurikulum/(:num)/delete','Admin\AkademikController::kurikulumDelete/$1');
+
+    // -----------------------------------------------------------------
     // SPMB
     // -----------------------------------------------------------------
     $routes->get('ppdb', 'Admin\PpdbController::index');
