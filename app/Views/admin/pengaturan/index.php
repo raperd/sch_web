@@ -16,7 +16,7 @@
         'hero'   => ['Hero / Beranda', 'bi-image'],
         'profil' => ['Profil Sekolah', 'bi-building'],
         'sosial' => ['Media Sosial', 'bi-share'],
-        'ppdb'   => ['PPDB', 'bi-clipboard2-check'],
+        'ppdb'   => ['SPMB', 'bi-clipboard2-check'],
     ];
     $firstTab = true;
     ?>

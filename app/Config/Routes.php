@@ -17,6 +17,7 @@ $routes->get('direktori', 'Direktori::index');
 $routes->get('berita', 'BeritaArtikel::index');
 $routes->get('berita/(:segment)', 'BeritaArtikel::detail/$1');
 $routes->get('ppdb', 'Ppdb::index');
+$routes->get('prestasi', 'Prestasi::index');
 
 // =====================================================================
 // ADMIN AUTH (tidak perlu filter)
@@ -113,6 +114,16 @@ $routes->group('admin', ['filter' => 'admin_auth'], static function (RouteCollec
     $routes->get('ekskul/edit/(:num)', 'Admin\EkstrakurikulerController::edit/$1');
     $routes->post('ekskul/update/(:num)', 'Admin\EkstrakurikulerController::update/$1');
     $routes->post('ekskul/delete/(:num)', 'Admin\EkstrakurikulerController::delete/$1');
+
+    // -----------------------------------------------------------------
+    // Prestasi
+    // -----------------------------------------------------------------
+    $routes->get('prestasi', 'Admin\PrestasiController::index');
+    $routes->get('prestasi/create', 'Admin\PrestasiController::create');
+    $routes->post('prestasi/store', 'Admin\PrestasiController::store');
+    $routes->get('prestasi/edit/(:num)', 'Admin\PrestasiController::edit/$1');
+    $routes->post('prestasi/update/(:num)', 'Admin\PrestasiController::update/$1');
+    $routes->post('prestasi/delete/(:num)', 'Admin\PrestasiController::delete/$1');
 
     // -----------------------------------------------------------------
     // Fasilitas

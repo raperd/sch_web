@@ -213,7 +213,7 @@
         <h3 class="fw-bold mb-2">Tahun Ajaran <?= esc(setting('tahun_ajaran_aktif') ?? '2024/2025') ?></h3>
         <p class="mb-4 opacity-75">Informasi akademik lengkap tersedia di portal siswa dan orang tua</p>
         <a href="<?= base_url('ppdb') ?>" class="btn btn-light btn-lg fw-semibold px-4 me-2">
-            <i class="bi bi-info-circle me-2"></i>Info PPDB
+            <i class="bi bi-info-circle me-2"></i>Info SPMB
         </a>
         <a href="mailto:<?= esc(setting('email') ?? '') ?>" class="btn btn-outline-light btn-lg fw-semibold px-4">
             <i class="bi bi-envelope me-2"></i>Hubungi Kami

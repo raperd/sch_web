@@ -103,7 +103,7 @@
                     <div class="col-6 col-md-4 col-lg-2">
                         <a href="<?= site_url('admin/ppdb') ?>" class="btn btn-outline-danger w-100 btn-action d-flex flex-column align-items-center py-3">
                             <i class="bi bi-clipboard-check fs-4 mb-1"></i>
-                            <small>Kelola PPDB</small>
+                            <small>Kelola SPMB</small>
                         </a>
                     </div>
                     <div class="col-6 col-md-4 col-lg-2">

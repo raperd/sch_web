@@ -26,7 +26,7 @@
                 </p>
                 <div class="d-flex flex-wrap gap-3">
                     <a href="<?= site_url('ppdb') ?>" class="btn btn-warning btn-lg px-4 fw-semibold">
-                        <i class="bi bi-clipboard-check me-2"></i>Info PPDB
+                        <i class="bi bi-clipboard-check me-2"></i>Info SPMB
                     </a>
                     <a href="<?= site_url('profil') ?>" class="btn btn-outline-light btn-lg px-4">
                         <i class="bi bi-building me-2"></i>Profil Sekolah
@@ -190,7 +190,7 @@
 </section>
 
 <!-- ============================================================
-     PPDB BANNER
+     SPMB BANNER
      ============================================================ -->
 <?php if (setting('ppdb_status') == '1' || setting('ppdb_link_external')): ?>
 <section class="ppdb-banner py-5">
@@ -199,9 +199,9 @@
             <div class="col-12 col-md-8 text-white">
                 <div class="d-flex align-items-center gap-3 mb-2">
                     <i class="bi bi-clipboard-check-fill fs-2 text-warning"></i>
-                    <h3 class="mb-0 fw-bold">PPDB <?= esc(setting('ppdb_tahun') ?? date('Y') . '/' . (date('Y') + 1)) ?></h3>
+                    <h3 class="mb-0 fw-bold">SPMB <?= esc(setting('ppdb_tahun') ?? date('Y') . '/' . (date('Y') + 1)) ?></h3>
                 </div>
-                <p class="mb-0 opacity-75">Penerimaan Peserta Didik Baru sedang dibuka. Daftarkan putra-putri Anda sekarang melalui portal resmi.</p>
+                <p class="mb-0 opacity-75">Sistem Penerimaan Murid Baru sedang dibuka. Daftarkan putra-putri Anda sekarang melalui portal resmi.</p>
             </div>
             <div class="col-12 col-md-4 d-flex gap-2 justify-content-md-end flex-wrap">
                 <a href="<?= site_url('ppdb') ?>" class="btn btn-light btn-lg px-4">
@@ -213,6 +213,59 @@
                 </a>
                 <?php endif; ?>
             </div>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
+
+<!-- ============================================================
+     PRESTASI UNGGULAN
+     ============================================================ -->
+<?php if (!empty($prestasi_unggulan)): ?>
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-4">
+            <span class="badge text-bg-warning text-dark fs-6 px-3 py-2 mb-2">
+                <i class="bi bi-star-fill me-1"></i>Kebanggaan Kami
+            </span>
+            <h2 class="section-title mx-auto">Prestasi Terkini</h2>
+        </div>
+        <div class="row g-3 mt-2">
+            <?php
+            $tingkatColor = ['sekolah'=>'secondary','kecamatan'=>'info','kota_kabupaten'=>'primary','provinsi'=>'warning','nasional'=>'danger','internasional'=>'dark'];
+            foreach ($prestasi_unggulan as $p):
+                $color = $tingkatColor[$p['tingkat']] ?? 'secondary';
+                $tingkatLabel = ucwords(str_replace('_', ' ', $p['tingkat']));
+            ?>
+                <div class="col-sm-6 col-lg-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body p-4 d-flex gap-3 align-items-start">
+                            <div class="rounded-circle bg-warning bg-opacity-15 d-flex align-items-center justify-content-center flex-shrink-0"
+                                style="width:52px;height:52px;">
+                                <i class="bi bi-trophy-fill text-warning fs-5"></i>
+                            </div>
+                            <div>
+                                <div class="d-flex gap-1 mb-1 flex-wrap">
+                                    <span class="badge text-bg-<?= $color ?> small"><?= $tingkatLabel ?></span>
+                                    <span class="badge text-bg-<?= $p['kategori']==='akademik'?'success':'warning text-dark' ?> small">
+                                        <?= $p['kategori']==='akademik'?'Akademik':'Non-Akademik' ?>
+                                    </span>
+                                </div>
+                                <h6 class="fw-bold mb-1 small"><?= esc($p['judul']) ?></h6>
+                                <?php if (!empty($p['nama_siswa'])): ?>
+                                    <div class="text-muted" style="font-size:.75rem"><i class="bi bi-person me-1"></i><?= esc($p['nama_siswa']) ?></div>
+                                <?php endif; ?>
+                                <div class="text-muted" style="font-size:.75rem"><i class="bi bi-calendar me-1"></i><?= esc($p['tahun']) ?></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+        <div class="text-center mt-4">
+            <a href="<?= site_url('prestasi') ?>" class="btn btn-outline-primary px-4">
+                <i class="bi bi-trophy me-2"></i>Lihat Semua Prestasi
+            </a>
         </div>
     </div>
 </section>

@@ -70,10 +70,10 @@ $tt          = setting('tiktok_url');
 
             <!-- PPDB Info -->
             <div class="col-12 col-md-3 col-lg-3">
-                <h6 class="footer-heading">PPDB <?= esc(setting('ppdb_tahun') ?? '') ?></h6>
+                <h6 class="footer-heading">SPMB <?= esc(setting('ppdb_tahun') ?? '') ?></h6>
                 <p class="small mb-3">Informasi Penerimaan Peserta Didik Baru. Daftar melalui portal resmi Dinas Pendidikan.</p>
                 <a href="<?= site_url('ppdb') ?>" class="btn btn-sm btn-outline-light mb-2 w-100">
-                    <i class="bi bi-info-circle me-1"></i>Panduan PPDB
+                    <i class="bi bi-info-circle me-1"></i>Panduan SPMB
                 </a>
                 <?php if (setting('ppdb_link_external') && setting('ppdb_link_external') !== '#'): ?>
                 <a href="<?= esc(setting('ppdb_link_external')) ?>" target="_blank" rel="noopener" class="btn btn-sm btn-warning w-100">

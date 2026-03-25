@@ -141,3 +141,5 @@ _modules/*
 !/public/uploads/ppdb/index.html
 /public/uploads/pengaturan/*
 !/public/uploads/pengaturan/index.html
+/public/uploads/prestasi/*
+!/public/uploads/prestasi/index.html

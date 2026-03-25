@@ -170,8 +170,11 @@
         <a href="<?= site_url('admin/ekskul') ?>" class="nav-link <?= str_contains(current_url(), '/admin/ekskul') ? 'active' : '' ?>">
             <i class="bi bi-trophy"></i> Ekstrakurikuler
         </a>
+        <a href="<?= site_url('admin/prestasi') ?>" class="nav-link <?= str_contains(current_url(), '/admin/prestasi') ? 'active' : '' ?>">
+            <i class="bi bi-award"></i> Prestasi
+        </a>
         <a href="<?= site_url('admin/ppdb') ?>" class="nav-link <?= str_contains(current_url(), '/admin/ppdb') ? 'active' : '' ?>">
-            <i class="bi bi-clipboard-check"></i> PPDB
+            <i class="bi bi-clipboard-check"></i> SPMB
         </a>
 
         <div class="nav-label">SDM</div>
