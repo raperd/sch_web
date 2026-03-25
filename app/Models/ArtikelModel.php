@@ -45,7 +45,7 @@ class ArtikelModel extends Model
      */
     public function incrementView(int $id): void
     {
-        $this->db->query('UPDATE artikel SET view_count = view_count + 1 WHERE id = ?', [$id]);
+        $this->db->table('artikel')->where('id', $id)->set('view_count', 'view_count + 1', false)->update();
     }
 
     /**

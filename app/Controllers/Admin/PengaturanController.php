@@ -24,9 +24,7 @@ class PengaturanController extends BaseController
 
     public function update()
     {
-        $data    = $this->request->getPost('pengaturan') ?? [];
-        $files   = $this->request->getFiles();
-        $uploader = new \App\Libraries\ImageUpload();
+        $data = $this->request->getPost('pengaturan') ?? [];
 
         foreach ($data as $key => $value) {
             $this->model->setByKey($key, $value);
@@ -39,14 +37,11 @@ class PengaturanController extends BaseController
                 && $file->isValid()
                 && ! $file->hasMoved()
             ) {
-                $filename = $uploader->upload('pengaturan_file[' . $key . ']', 'pengaturan');
-
-                // Re-upload using raw file move since ImageUpload uses field name
-                $newName = $file->getRandomName();
-                $dest    = WRITEPATH . 'uploads/pengaturan/';
+                $dest = WRITEPATH . 'uploads/pengaturan/';
                 if (! is_dir($dest)) {
                     mkdir($dest, 0755, true);
                 }
+                $newName = $file->getRandomName();
                 $file->move($dest, $newName);
                 $this->model->setByKey($key, $newName);
             }
