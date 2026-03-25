@@ -1,4 +1,7 @@
 <?= $this->extend('layouts/admin') ?>
+<?= $this->section('styles') ?>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
+<?= $this->endSection() ?>
 <?= $this->section('content') ?>
 
 <div class="mb-4">
@@ -19,12 +22,13 @@
     <!-- Tabs -->
     <?php
     $tabLabels = [
-        'umum'   => ['Umum', 'bi-gear'],
-        'hero'   => ['Hero / Beranda', 'bi-image'],
-        'profil' => ['Profil Sekolah', 'bi-building'],
-        'sosial' => ['Media Sosial', 'bi-share'],
-        'ppdb'   => ['SPMB', 'bi-clipboard2-check'],
-        'tema'   => ['Tema Warna', 'bi-palette'],
+        'umum'       => ['Umum', 'bi-gear'],
+        'hero'       => ['Hero / Beranda', 'bi-image'],
+        'profil'     => ['Profil Sekolah', 'bi-building'],
+        'statistik'  => ['Statistik', 'bi-bar-chart'],
+        'sosial'     => ['Media Sosial', 'bi-share'],
+        'ppdb'       => ['SPMB', 'bi-clipboard2-check'],
+        'tema'       => ['Tema Warna', 'bi-palette'],
     ];
     $firstTab = true;
     ?>
@@ -181,14 +185,15 @@
                                             </div>
                                         <?php endif; ?>
                                         <input type="file"
-                                            class="form-control img-compress-input"
+                                            class="form-control <?= in_array($key, ['foto_kepsek']) ? 'crop-input' : 'img-compress-input' ?>"
                                             name="pengaturan_file[<?= esc($key) ?>]"
                                             accept="<?= $key === 'favicon_path' ? '.ico,.png,.svg,image/x-icon,image/png,image/svg+xml' : 'image/jpeg,image/png,image/webp' ?>"
-                                            data-max-width="1920"
-                                            data-max-height="1080"
-                                            data-quality="0.82"
-                                            <?= in_array($key, ['logo_path', 'foto_kepsek', 'favicon_path']) ? 'data-no-compress="true"' : '' ?>
-                                            <?= in_array($key, ['logo_path', 'foto_kepsek']) ? 'data-preserve-alpha="true"' : '' ?>>
+                                            data-max-width="<?= $key === 'hero_image_path' ? '1920' : '800' ?>"
+                                            data-max-height="<?= $key === 'hero_image_path' ? '1080' : '800' ?>"
+                                            data-quality="0.85"
+                                            data-aspect-ratio="<?= $key === 'foto_kepsek' ? '1' : '' ?>"
+                                            <?= in_array($key, ['logo_path', 'favicon_path']) ? 'data-no-compress="true"' : '' ?>
+                                            <?= $key === 'logo_path' ? 'data-preserve-alpha="true"' : '' ?>>
                                         <div class="form-text d-flex justify-content-between">
                                             <span>Upload baru untuk mengganti.<?= $key === 'favicon_path' ? ' ICO/PNG/SVG.' : ' JPG/PNG/WebP.' ?></span>
                                             <span class="img-size-info text-muted"></span>
@@ -222,6 +227,69 @@
 </form>
 
 <?= $this->section('scripts') ?>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
+
+<!-- Crop Modal (untuk foto_kepsek) -->
+<div class="modal fade" id="cropModalPengaturan" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-crop me-2"></i>Crop Foto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center bg-dark p-3" style="min-height:300px">
+                <img id="cropImgPengaturan" src="" style="max-width:100%;max-height:450px;">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary" id="cropConfirmPengaturan">
+                    <i class="bi bi-check-lg me-1"></i>Crop & Gunakan
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let cropperPengaturan = null;
+let activeCropInputPengaturan = null;
+
+document.querySelectorAll('.crop-input').forEach(input => {
+    input.addEventListener('change', function () {
+        if (!this.files[0]) return;
+        activeCropInputPengaturan = this;
+        const reader = new FileReader();
+        reader.onload = e => {
+            document.getElementById('cropImgPengaturan').src = e.target.result;
+            const modal = new bootstrap.Modal(document.getElementById('cropModalPengaturan'));
+            modal.show();
+            document.getElementById('cropModalPengaturan').addEventListener('shown.bs.modal', () => {
+                if (cropperPengaturan) cropperPengaturan.destroy();
+                cropperPengaturan = new Cropper(document.getElementById('cropImgPengaturan'), {
+                    aspectRatio: parseFloat(activeCropInputPengaturan.dataset.aspectRatio || 1),
+                    viewMode: 1, autoCropArea: 0.85,
+                });
+            }, { once: true });
+        };
+        reader.readAsDataURL(this.files[0]);
+    });
+});
+
+document.getElementById('cropConfirmPengaturan')?.addEventListener('click', function () {
+    if (!cropperPengaturan || !activeCropInputPengaturan) return;
+    cropperPengaturan.getCroppedCanvas({ width: 600, height: 600 }).toBlob(blob => {
+        const file = new File([blob], 'foto-crop.jpg', { type: 'image/jpeg' });
+        const dt = new DataTransfer(); dt.items.add(file);
+        activeCropInputPengaturan.files = dt.files;
+        // Update preview
+        const wrap = activeCropInputPengaturan.closest('.col-md-6');
+        const prev = wrap?.querySelector('.img-preview-current');
+        if (prev) prev.src = URL.createObjectURL(blob);
+        bootstrap.Modal.getInstance(document.getElementById('cropModalPengaturan'))?.hide();
+    }, 'image/jpeg', 0.88);
+});
+</script>
+
 <script>
 /* Client-side image compress & resize */
 document.querySelectorAll('.img-compress-input').forEach(input => {

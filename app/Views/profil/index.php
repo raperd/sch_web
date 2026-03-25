@@ -68,7 +68,7 @@
 
                         <?php $sejarah = setting('sejarah'); ?>
                         <?php if ($sejarah): ?>
-                            <div class="lh-lg text-secondary fs-5"><?= $sejarah ?></div>
+                            <div class="lh-lg text-secondary" style="font-size:1.08rem;white-space:pre-line"><?= esc($sejarah) ?></div>
                         <?php else: ?>
                             <div class="text-center py-5 text-muted">
                                 <i class="bi bi-clock-history display-3 mb-3 d-block"></i>
@@ -76,32 +76,25 @@
                             </div>
                         <?php endif; ?>
 
-                        <!-- Statistik Singkat -->
+                        <!-- Statistik dari pengaturan -->
+                        <?php
+                        $stats = [
+                            [setting('stat_tahun_berdiri') ?: '25+',  'Tahun Berdiri',  'bi-calendar2-check', 'primary'],
+                            [setting('stat_siswa')         ?: '1.000+','Siswa Aktif',   'bi-people-fill',     'success'],
+                            [setting('stat_guru')          ?: '60+',  'Tenaga Pendidik','bi-person-badge',    'info'],
+                            [setting('stat_prestasi')      ?: '50+',  'Prestasi Diraih','bi-trophy-fill',     'warning'],
+                        ];
+                        ?>
                         <div class="row g-3 mt-5">
+                            <?php foreach ($stats as [$val, $label, $icon, $color]): ?>
                             <div class="col-6 col-md-3">
                                 <div class="card border-0 shadow-sm text-center p-3 h-100">
-                                    <div class="text-primary fs-1 fw-bold">25+</div>
-                                    <div class="text-muted small">Tahun Berdiri</div>
+                                    <i class="bi <?= $icon ?> text-<?= $color ?> fs-2 mb-2"></i>
+                                    <div class="text-<?= $color ?> fs-2 fw-bold lh-1"><?= esc($val) ?></div>
+                                    <div class="text-muted small mt-1"><?= $label ?></div>
                                 </div>
                             </div>
-                            <div class="col-6 col-md-3">
-                                <div class="card border-0 shadow-sm text-center p-3 h-100">
-                                    <div class="text-primary fs-1 fw-bold">1.200+</div>
-                                    <div class="text-muted small">Siswa Aktif</div>
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-3">
-                                <div class="card border-0 shadow-sm text-center p-3 h-100">
-                                    <div class="text-primary fs-1 fw-bold">80+</div>
-                                    <div class="text-muted small">Tenaga Pendidik</div>
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-3">
-                                <div class="card border-0 shadow-sm text-center p-3 h-100">
-                                    <div class="text-primary fs-1 fw-bold"><?= esc(setting('akreditasi') ?? 'A') ?></div>
-                                    <div class="text-muted small">Akreditasi</div>
-                                </div>
-                            </div>
+                            <?php endforeach; ?>
                         </div>
                     </div>
                 </div>

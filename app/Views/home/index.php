@@ -33,18 +33,18 @@
                     </a>
                 </div>
 
-                <!-- Stats -->
-                <div class="hero-stats d-flex gap-4 mt-5">
+                <!-- Stats dari pengaturan -->
+                <div class="hero-stats d-flex flex-wrap gap-4 mt-5">
                     <div class="stat-item">
-                        <div class="stat-number">1000+</div>
+                        <div class="stat-number"><?= esc(setting('stat_siswa') ?: '1.000+') ?></div>
                         <div class="stat-label">Siswa Aktif</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-number">60+</div>
+                        <div class="stat-number"><?= esc(setting('stat_guru') ?: '60+') ?></div>
                         <div class="stat-label">Tenaga Pendidik</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-number">20+</div>
+                        <div class="stat-number"><?= esc(setting('stat_ekskul') ?: '20+') ?></div>
                         <div class="stat-label">Ekstrakurikuler</div>
                     </div>
                     <div class="stat-item">

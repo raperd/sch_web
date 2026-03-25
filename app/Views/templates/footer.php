@@ -9,6 +9,8 @@ $fb          = setting('facebook_url');
 $ig          = setting('instagram_url');
 $yt          = setting('youtube_url');
 $tt          = setting('tiktok_url');
+$tw          = setting('twitter_url');
+$wa          = setting('whatsapp_url');
 ?>
 <footer class="footer-main pt-5 pb-3 mt-5">
     <div class="container">
@@ -36,12 +38,16 @@ $tt          = setting('tiktok_url');
                 <?php endif; ?>
 
                 <!-- Sosial Media -->
-                <?php if ($fb || $ig || $yt || $tt): ?>
-                <div class="footer-social d-flex gap-2 mt-3">
+                <?php if ($fb || $ig || $yt || $tt || $tw || $wa): ?>
+                <div class="footer-social d-flex flex-wrap gap-2 mt-3">
                     <?php if ($fb): ?><a href="<?= esc($fb) ?>" target="_blank" rel="noopener" aria-label="Facebook"><i class="bi bi-facebook"></i></a><?php endif; ?>
                     <?php if ($ig): ?><a href="<?= esc($ig) ?>" target="_blank" rel="noopener" aria-label="Instagram"><i class="bi bi-instagram"></i></a><?php endif; ?>
                     <?php if ($yt): ?><a href="<?= esc($yt) ?>" target="_blank" rel="noopener" aria-label="YouTube"><i class="bi bi-youtube"></i></a><?php endif; ?>
                     <?php if ($tt): ?><a href="<?= esc($tt) ?>" target="_blank" rel="noopener" aria-label="TikTok"><i class="bi bi-tiktok"></i></a><?php endif; ?>
+                    <?php if ($tw): ?><a href="<?= esc($tw) ?>" target="_blank" rel="noopener" aria-label="Twitter/X"><i class="bi bi-twitter-x"></i></a><?php endif; ?>
+                    <?php if ($wa): ?>
+                        <a href="https://wa.me/<?= esc(preg_replace('/[^0-9]/', '', $wa)) ?>" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+                    <?php endif; ?>
                 </div>
                 <?php endif; ?>
             </div>

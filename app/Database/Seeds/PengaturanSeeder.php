@@ -41,6 +41,15 @@ class PengaturanSeeder extends Seeder
             ['setting_key' => 'youtube_url',       'setting_value' => null,                                 'label' => 'URL YouTube',              'tipe' => 'text',     'grup' => 'sosial', 'urutan' => 3],
             ['setting_key' => 'tiktok_url',        'setting_value' => null,                                 'label' => 'URL TikTok',               'tipe' => 'text',     'grup' => 'sosial', 'urutan' => 4],
             ['setting_key' => 'osis_instagram_embed', 'setting_value' => null,                              'label' => 'Embed Instagram OSIS (URL)','tipe' => 'text',    'grup' => 'sosial', 'urutan' => 5],
+            ['setting_key' => 'twitter_url',       'setting_value' => null,                                 'label' => 'URL Twitter / X',          'tipe' => 'text',     'grup' => 'sosial', 'urutan' => 6],
+            ['setting_key' => 'whatsapp_url',       'setting_value' => null,                                 'label' => 'Nomor WhatsApp',           'tipe' => 'text',     'grup' => 'sosial', 'urutan' => 7],
+
+            // Grup: statistik
+            ['setting_key' => 'stat_tahun_berdiri','setting_value' => '25+',                                'label' => 'Tahun Berdiri',            'tipe' => 'text',     'grup' => 'statistik', 'urutan' => 1],
+            ['setting_key' => 'stat_siswa',        'setting_value' => '1.000+',                             'label' => 'Jumlah Siswa',             'tipe' => 'text',     'grup' => 'statistik', 'urutan' => 2],
+            ['setting_key' => 'stat_guru',         'setting_value' => '60+',                                'label' => 'Tenaga Pendidik',          'tipe' => 'text',     'grup' => 'statistik', 'urutan' => 3],
+            ['setting_key' => 'stat_ekskul',       'setting_value' => '20+',                                'label' => 'Ekstrakurikuler',          'tipe' => 'text',     'grup' => 'statistik', 'urutan' => 4],
+            ['setting_key' => 'stat_prestasi',     'setting_value' => '50+',                                'label' => 'Prestasi Diraih',          'tipe' => 'text',     'grup' => 'statistik', 'urutan' => 5],
 
             // Grup: ppdb
             ['setting_key' => 'ppdb_link_external','setting_value' => '#',                                  'label' => 'Link Portal PPDB (Pemda)',  'tipe' => 'text',     'grup' => 'ppdb',   'urutan' => 1],
