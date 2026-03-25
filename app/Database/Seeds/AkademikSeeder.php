@@ -44,12 +44,12 @@ class AkademikSeeder extends Seeder
             ],
             [
                 'judul'  => 'Jadwal & Beban Belajar',
-                'konten' => '<table class="table table-bordered table-sm"><thead class="table-primary"><tr><th>Hari</th><th>Jam Masuk</th><th>Jam Keluar</th><th>Keterangan</th></tr></thead><tbody><tr><td>Senin</td><td>07.00</td><td>14.30</td><td>Upacara Bendera</td></tr><tr><td>Selasa–Kamis</td><td>07.00</td><td>14.30</td><td>KBM Reguler</td></tr><tr><td>Jumat</td><td>07.00</td><td>11.30</td><td>Jumat Bersih</td></tr><tr><td>Sabtu</td><td>07.00</td><td>12.30</td><td>Ekstrakurikuler</td></tr></tbody></table>',
+                'konten' => '<div class="table-responsive"><table class="table table-bordered table-sm mb-0"><thead class="table-primary"><tr><th>Hari</th><th>Jam Masuk</th><th>Jam Keluar</th><th>Keterangan</th></tr></thead><tbody><tr><td>Senin</td><td>07.00</td><td>14.30</td><td>Upacara Bendera</td></tr><tr><td>Selasa &ndash; Kamis</td><td>07.00</td><td>14.30</td><td>KBM Reguler</td></tr><tr><td>Jumat</td><td>07.00</td><td>11.30</td><td>Jumat Bersih</td></tr><tr><td>Sabtu</td><td>07.00</td><td>12.30</td><td>Ekstrakurikuler</td></tr></tbody></table></div>',
                 'urutan' => 3,
             ],
             [
                 'judul'  => 'Penilaian & Evaluasi',
-                'konten' => '<p>Sistem penilaian Kurikulum Merdeka bersifat holistik:</p><ul><li><strong>Formatif</strong> — Tugas harian, presentasi, portofolio.</li><li><strong>Sumatif</strong> — Tes akhir semester dan akhir tahun.</li><li><strong>P5</strong> — Laporan profil perkembangan Profil Pelajar Pancasila.</li><li><strong>Rapor Naratif</strong> — Gambaran menyeluruh perkembangan belajar siswa.</li></ul>',
+                'konten' => '<p>Sistem penilaian Kurikulum Merdeka bersifat holistik:</p><ul><li><strong>Formatif</strong> &mdash; Tugas harian, presentasi, portofolio.</li><li><strong>Sumatif</strong> &mdash; Tes akhir semester dan akhir tahun.</li><li><strong>P5</strong> &mdash; Laporan profil perkembangan Profil Pelajar Pancasila.</li><li><strong>Rapor Naratif</strong> &mdash; Gambaran menyeluruh perkembangan belajar siswa.</li></ul>',
                 'urutan' => 4,
             ],
         ];
