@@ -100,12 +100,14 @@ class CreateGuruStafTable extends Migration
 
         $this->forge->createTable('guru_staf');
 
-        $this->db->query('ALTER TABLE guru_staf ADD CONSTRAINT fk_guru_bidang FOREIGN KEY (bidang_id) REFERENCES bidang_guru(id) ON DELETE SET NULL');
+        $p = $this->db->DBPrefix;
+        $this->db->query("ALTER TABLE {$p}guru_staf ADD CONSTRAINT {$p}fk_guru_bidang FOREIGN KEY (bidang_id) REFERENCES {$p}bidang_guru(id) ON DELETE SET NULL");
     }
 
     public function down(): void
     {
-        $this->db->query('ALTER TABLE guru_staf DROP FOREIGN KEY fk_guru_bidang');
+        $this->db->query('SET FOREIGN_KEY_CHECKS=0');
         $this->forge->dropTable('guru_staf', true);
+        $this->db->query('SET FOREIGN_KEY_CHECKS=1');
     }
 }
