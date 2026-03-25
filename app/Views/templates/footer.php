@@ -68,7 +68,7 @@ $tt          = setting('tiktok_url');
                 </ul>
             </div>
 
-            <!-- PPDB Info -->
+            <!-- SPMB Info -->
             <div class="col-12 col-md-3 col-lg-3">
                 <h6 class="footer-heading">SPMB <?= esc(setting('ppdb_tahun') ?? '') ?></h6>
                 <p class="small mb-3">Informasi Penerimaan Peserta Didik Baru. Daftar melalui portal resmi Dinas Pendidikan.</p>

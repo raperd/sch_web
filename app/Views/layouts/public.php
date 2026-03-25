@@ -13,6 +13,24 @@
     <!-- App CSS -->
     <link rel="stylesheet" href="<?= base_url('assets/css/app.css') ?>">
 
+    <?php
+    $tp  = setting('tema_primary')   ?: '#1a5276';
+    $ts  = setting('tema_secondary') ?: '#2e86c1';
+    $ta  = setting('tema_accent')    ?: '#d4ac0d';
+    // Convert hex to rgb for Bootstrap rgb variables
+    $hexToRgb = fn($h) => implode(', ', array_map('hexdec', str_split(ltrim($h,'#'),2)));
+    ?>
+    <style>
+        :root {
+            --bs-primary: <?= esc($tp) ?>;
+            --bs-primary-rgb: <?= $hexToRgb($tp) ?>;
+            --bs-secondary: <?= esc($ts) ?>;
+            --bs-secondary-rgb: <?= $hexToRgb($ts) ?>;
+            --accent-gold: <?= esc($ta) ?>;
+            --accent-gold-rgb: <?= $hexToRgb($ta) ?>;
+        }
+    </style>
+
     <?= $this->renderSection('styles') ?>
 </head>
 <body>

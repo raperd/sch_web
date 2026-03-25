@@ -31,7 +31,8 @@ class PengaturanController extends BaseController
         }
 
         // Handle image uploads (field name: pengaturan_file[setting_key])
-        $fileFields = $this->request->getFiles('pengaturan_file') ?? [];
+        $allFiles   = $this->request->getFiles();
+        $fileFields = $allFiles['pengaturan_file'] ?? [];
         foreach ($fileFields as $key => $file) {
             if ($file instanceof \CodeIgniter\HTTP\Files\UploadedFile
                 && $file->isValid()

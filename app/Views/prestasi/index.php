@@ -135,7 +135,7 @@
 
             <?php if ($pager): ?>
                 <div class="mt-5 d-flex justify-content-center">
-                    <?= $pager->links('prestasi', 'bootstrap_pagination') ?>
+                    <?= $pager->links('prestasi', 'default_full') ?>
                 </div>
             <?php endif; ?>
         <?php endif; ?>

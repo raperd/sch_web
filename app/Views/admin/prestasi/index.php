@@ -193,7 +193,7 @@
     </div>
     <?php if ($pager): ?>
         <div class="card-footer border-0 bg-transparent">
-            <?= $pager->links('prestasi', 'bootstrap_pagination') ?>
+            <?= $pager->links('prestasi', 'default_full') ?>
         </div>
     <?php endif; ?>
 </div>

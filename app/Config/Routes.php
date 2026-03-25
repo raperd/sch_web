@@ -81,7 +81,7 @@ $routes->group('admin', ['filter' => 'admin_auth'], static function (RouteCollec
     $routes->post('kegiatan/delete/(:num)', 'Admin\KegiatanController::delete/$1');
 
     // -----------------------------------------------------------------
-    // PPDB
+    // SPMB
     // -----------------------------------------------------------------
     $routes->get('ppdb', 'Admin\PpdbController::index');
     $routes->get('ppdb/create', 'Admin\PpdbController::create');
