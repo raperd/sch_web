@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="<?= esc($meta_desc ?? setting('site_tagline') ?? '') ?>">
     <title><?= esc(isset($title) ? $title . ' — ' : '') ?><?= esc(setting('site_name') ?? 'Website Sekolah') ?></title>
+    <?php $faviconPath = setting('favicon_path'); ?>
+    <link rel="icon" type="image/x-icon" href="<?= $faviconPath ? base_url('uploads/pengaturan/' . esc($faviconPath)) : base_url('assets/images/logo-sekolah.png') ?>">
 
     <!-- Bootstrap 5 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">

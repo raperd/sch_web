@@ -18,6 +18,7 @@ class PengaturanSeeder extends Seeder
             ['setting_key' => 'telepon',           'setting_value' => '(021) 1234-5678',                    'label' => 'Nomor Telepon',            'tipe' => 'text',     'grup' => 'umum',   'urutan' => 6],
             ['setting_key' => 'email',             'setting_value' => 'info@sman1contoh.sch.id',            'label' => 'Email Sekolah',            'tipe' => 'text',     'grup' => 'umum',   'urutan' => 7],
             ['setting_key' => 'logo_path',         'setting_value' => null,                                 'label' => 'Logo Sekolah',             'tipe' => 'image',    'grup' => 'umum',   'urutan' => 8],
+            ['setting_key' => 'favicon_path',      'setting_value' => null,                                 'label' => 'Favicon Website',          'tipe' => 'image',    'grup' => 'umum',   'urutan' => 9],
 
             // Grup: hero
             ['setting_key' => 'hero_image_path',   'setting_value' => null,                                 'label' => 'Foto Hero Beranda',        'tipe' => 'image',    'grup' => 'hero',   'urutan' => 1],

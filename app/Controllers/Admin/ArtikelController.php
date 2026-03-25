@@ -27,6 +27,11 @@ class ArtikelController extends BaseController
             ->join('kategori_artikel', 'kategori_artikel.id = artikel.kategori_id', 'left')
             ->orderBy('artikel.created_at', 'DESC');
 
+        // Kontributor can only see their own articles
+        if (session('admin_role') === 'kontributor') {
+            $builder->where('artikel.user_id', session('admin_id'));
+        }
+
         if ($status !== '') {
             $builder->where('artikel.status', $status);
         }
@@ -114,6 +119,11 @@ class ArtikelController extends BaseController
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Artikel tidak ditemukan.');
         }
 
+        // Kontributor can only edit their own articles
+        if (session('admin_role') === 'kontributor' && (int)$artikel['user_id'] !== (int)session('admin_id')) {
+            return redirect()->to(base_url('admin/artikel'))->with('error', 'Anda tidak memiliki izin untuk mengedit artikel ini.');
+        }
+
         return view('admin/artikel/edit', [
             'title'    => 'Edit Artikel',
             'artikel'  => $artikel,
@@ -126,6 +136,11 @@ class ArtikelController extends BaseController
         $artikel = $this->model->find($id);
         if (! $artikel) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Artikel tidak ditemukan.');
+        }
+
+        // Kontributor can only update their own articles
+        if (session('admin_role') === 'kontributor' && (int)$artikel['user_id'] !== (int)session('admin_id')) {
+            return redirect()->to(base_url('admin/artikel'))->with('error', 'Anda tidak memiliki izin untuk mengubah artikel ini.');
         }
 
         $rules = [
@@ -187,6 +202,11 @@ class ArtikelController extends BaseController
         $artikel = $this->model->find($id);
         if (! $artikel) {
             return redirect()->back()->with('error', 'Artikel tidak ditemukan.');
+        }
+
+        // Kontributor can only delete their own articles
+        if (session('admin_role') === 'kontributor' && (int)$artikel['user_id'] !== (int)session('admin_id')) {
+            return redirect()->to(base_url('admin/artikel'))->with('error', 'Anda tidak memiliki izin untuk menghapus artikel ini.');
         }
 
         if (! empty($artikel['thumbnail'])) {

@@ -197,6 +197,9 @@
         <a href="<?= site_url('admin/menu') ?>" class="nav-link <?= str_contains(current_url(), '/admin/menu') ? 'active' : '' ?>">
             <i class="bi bi-list-nested"></i> Manajemen Menu
         </a>
+        <a href="<?= site_url('admin/users') ?>" class="nav-link <?= str_contains(current_url(), '/admin/users') ? 'active' : '' ?>">
+            <i class="bi bi-people"></i> Pengguna
+        </a>
         <a href="<?= site_url('admin/pengaturan') ?>" class="nav-link <?= str_contains(current_url(), '/admin/pengaturan') ? 'active' : '' ?>">
             <i class="bi bi-gear"></i> Pengaturan Situs
         </a>

@@ -45,9 +45,14 @@
                         </div>
                     <?php endif; ?>
                     <label class="form-label">Ganti File (opsional)</label>
-                    <input type="file" class="form-control" name="file_path" id="mainFileInput"
-                        accept="image/jpeg,image/png,image/webp">
-                    <div class="form-text">Kosongkan jika tidak ingin mengganti. Maks. 2 MB.</div>
+                    <input type="file" class="form-control crop-input" name="file_path" id="mainFileInput"
+                        accept="image/jpeg,image/png,image/webp"
+                        data-aspect-ratio="1.778">
+                    <div class="form-text">Kosongkan jika tidak ingin mengganti. Maks. 2 MB. Akan di-crop 16:9.</div>
+                    <div id="newFilePreviewWrap" class="mt-2 text-center d-none">
+                        <img id="newFilePreview" src="" style="max-height:120px;border-radius:.5rem" alt="">
+                        <p id="newFileName" class="mt-1 mb-0 text-muted small"></p>
+                    </div>
                 </div>
             </div>
 
@@ -134,8 +139,9 @@
                             <img id="thumbPreview" src="" style="max-height:80px;border-radius:.5rem" alt="">
                         </div>
                     <?php endif; ?>
-                    <input type="file" class="form-control" name="thumbnail" id="thumbInput"
-                        accept="image/jpeg,image/png,image/webp">
+                    <input type="file" class="form-control crop-input" name="thumbnail" id="thumbInput"
+                        accept="image/jpeg,image/png,image/webp"
+                        data-aspect-ratio="1.778">
                     <div class="form-text">Upload baru untuk mengganti.</div>
                 </div>
             </div>
@@ -144,20 +150,84 @@
     </div>
 </form>
 
+<!-- Modal Crop -->
+<div class="modal fade" id="cropModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-crop me-2"></i>Crop Gambar</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center bg-dark p-3">
+                <img id="cropImage" src="" style="max-width:100%;max-height:450px;">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary" id="cropConfirm">
+                    <i class="bi bi-check-lg me-1"></i>Crop &amp; Gunakan
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?= $this->endSection() ?>
+
+<?= $this->section('styles') ?>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 <script>
-document.getElementById('thumbInput').addEventListener('change', function() {
-    const file = this.files[0];
-    if (file) {
+let cropperInstance = null;
+let activeCropInput = null;
+
+document.querySelectorAll('.crop-input').forEach(input => {
+    input.addEventListener('change', function () {
+        if (!this.files[0]) return;
+        activeCropInput = this;
+        const ratio = parseFloat(this.dataset.aspectRatio || 1);
         const reader = new FileReader();
         reader.onload = e => {
-            document.getElementById('thumbPreview').src = e.target.result;
-            document.getElementById('thumbPreviewWrap').classList.remove('d-none');
+            document.getElementById('cropImage').src = e.target.result;
+            const modal = new bootstrap.Modal(document.getElementById('cropModal'));
+            modal.show();
+            document.getElementById('cropModal').addEventListener('shown.bs.modal', () => {
+                if (cropperInstance) cropperInstance.destroy();
+                cropperInstance = new Cropper(document.getElementById('cropImage'), {
+                    aspectRatio: ratio,
+                    viewMode: 1,
+                    autoCropArea: 0.9,
+                });
+            }, { once: true });
         };
-        reader.readAsDataURL(file);
-    }
+        reader.readAsDataURL(this.files[0]);
+    });
+});
+
+document.getElementById('cropConfirm')?.addEventListener('click', function () {
+    if (!cropperInstance || !activeCropInput) return;
+    const ratio = parseFloat(activeCropInput.dataset.aspectRatio || 1);
+    const w = ratio >= 1 ? 800 : 600;
+    const h = Math.round(w / ratio);
+    cropperInstance.getCroppedCanvas({ width: w, height: h }).toBlob(blob => {
+        const origName = activeCropInput.files[0] ? activeCropInput.files[0].name : 'foto-crop.jpg';
+        const file = new File([blob], origName.replace(/\.[^.]+$/, '-crop.jpg'), { type: 'image/jpeg' });
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        activeCropInput.files = dt.files;
+
+        if (activeCropInput.id === 'mainFileInput') {
+            document.getElementById('newFilePreview').src = URL.createObjectURL(blob);
+            document.getElementById('newFileName').textContent = file.name;
+            document.getElementById('newFilePreviewWrap').classList.remove('d-none');
+        } else if (activeCropInput.id === 'thumbInput') {
+            document.getElementById('thumbPreview').src = URL.createObjectURL(blob);
+            document.getElementById('thumbPreviewWrap').classList.remove('d-none');
+        }
+        bootstrap.Modal.getInstance(document.getElementById('cropModal'))?.hide();
+    }, 'image/jpeg', 0.88);
 });
 </script>
 <?= $this->endSection() ?>
