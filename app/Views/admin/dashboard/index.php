@@ -7,7 +7,7 @@
         <small class="text-muted">Selamat datang, <?= esc(session('admin_nama')) ?>!</small>
     </div>
     <div class="d-flex gap-2">
-        <a href="<?= site_url('admin/artikel/create') ?>" class="btn btn-primary btn-action">
+        <a href="<?= site_url('admin/artikel/create') ?>" class="btn btn-primary btn-lg">
             <i class="bi bi-plus-lg me-1"></i><span class="d-none d-sm-inline">Tulis Artikel</span>
         </a>
     </div>
