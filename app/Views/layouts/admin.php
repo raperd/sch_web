@@ -180,7 +180,7 @@
     $inSistem    = str_contains($cu, '/admin/menu') || str_contains($cu, '/admin/users')
                 || str_contains($cu, '/admin/pengaturan');
     ?>
-    <div class="overflow-y-auto flex-grow-1 py-2">
+    <div class="overflow-y-auto flex-grow-1 py-2" style="overflow-x:hidden!important">
 
         <!-- Dashboard -->
         <a href="<?= site_url('admin/dashboard') ?>" class="nav-link <?= str_ends_with($cu, 'dashboard') ? 'active' : '' ?>">

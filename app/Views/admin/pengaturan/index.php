@@ -165,6 +165,7 @@
                                     <?php elseif ($setting['tipe'] === 'color'): ?>
                                         <div class="d-flex align-items-center gap-2">
                                             <input type="color" class="form-control form-control-color"
+                                                id="colorPicker_<?= esc($key) ?>"
                                                 name="pengaturan[<?= esc($key) ?>]"
                                                 value="<?= esc($setting['setting_value'] ?: '#1a5276') ?>"
                                                 style="width:56px;height:38px;">
@@ -172,7 +173,7 @@
                                                 id="colorText_<?= esc($key) ?>"
                                                 value="<?= esc($setting['setting_value'] ?: '#1a5276') ?>"
                                                 maxlength="7" placeholder="#000000"
-                                                oninput="document.querySelector('[name=\'pengaturan[<?= esc($key) ?>]\'][type=color]').value=this.value">
+                                                oninput="document.getElementById('colorPicker_<?= esc($key) ?>').value=this.value">
                                         </div>
                                         <div class="form-text">Format: #RRGGBB</div>
 
@@ -190,12 +191,13 @@
                                             accept="<?= $key === 'favicon_path' ? '.ico,.png,.svg,image/x-icon,image/png,image/svg+xml' : 'image/jpeg,image/png,image/webp' ?>"
                                             data-max-width="<?= $key === 'hero_image_path' ? '1920' : '800' ?>"
                                             data-max-height="<?= $key === 'hero_image_path' ? '1080' : '800' ?>"
-                                            data-quality="0.85"
+                                            data-quality="<?= $key === 'hero_image_path' ? '0.82' : '0.85' ?>"
                                             data-aspect-ratio="<?= $key === 'foto_kepsek' ? '1' : '' ?>"
                                             <?= in_array($key, ['logo_path', 'favicon_path']) ? 'data-no-compress="true"' : '' ?>
-                                            <?= $key === 'logo_path' ? 'data-preserve-alpha="true"' : '' ?>>
+                                            <?= $key === 'logo_path' ? 'data-preserve-alpha="true"' : '' ?>
+                                            <?= $key === 'hero_image_path' ? 'data-force-jpeg="true"' : '' ?>>
                                         <div class="form-text d-flex justify-content-between">
-                                            <span>Upload baru untuk mengganti.<?= $key === 'favicon_path' ? ' ICO/PNG/SVG.' : ' JPG/PNG/WebP.' ?></span>
+                                            <span>Upload baru untuk mengganti.<?= $key === 'favicon_path' ? ' ICO/PNG/SVG.' : ($key === 'hero_image_path' ? ' Otomatis dikompres ke JPEG max 1920×1080.' : ' JPG/PNG/WebP.') ?></span>
                                             <span class="img-size-info text-muted"></span>
                                         </div>
                                         <div class="img-preview-new mt-2 d-none">
@@ -316,11 +318,14 @@ document.querySelectorAll('.img-compress-input').forEach(input => {
         const maxH    = parseInt(this.dataset.maxHeight || 1080);
         const quality  = parseFloat(this.dataset.quality || 0.82);
 
-        // Determine output format: preserve PNG and WebP, only convert JPEG to JPEG
+        // data-force-jpeg="true" → selalu output JPEG (cocok untuk hero bg, tidak perlu transparansi)
+        const forceJpeg = this.dataset.forceJpeg === 'true';
         const originalType = file.type;
-        const outType = (originalType === 'image/jpeg' || originalType === 'image/jpg')
+        const outType = forceJpeg
             ? 'image/jpeg'
-            : (originalType === 'image/webp' ? 'image/webp' : 'image/png');
+            : (originalType === 'image/jpeg' || originalType === 'image/jpg')
+                ? 'image/jpeg'
+                : (originalType === 'image/webp' ? 'image/webp' : 'image/png');
         const extMap  = { 'image/jpeg': '.jpg', 'image/png': '.png', 'image/webp': '.webp' };
         const outExt  = extMap[outType] || '.jpg';
         const outQuality = outType === 'image/png' ? undefined : quality;
@@ -364,41 +369,41 @@ document.querySelectorAll('.img-compress-input').forEach(input => {
     });
 });
 
-/* Sync color text input → color picker */
+/* Sync color picker → text input (gunakan ID langsung, bukan querySelector dengan bracket) */
 document.querySelectorAll('input[type=color]').forEach(picker => {
     picker.addEventListener('input', function () {
-        const key = this.name.replace(/^pengaturan\[(.+)\]$/, '$1');
+        const key = this.id.replace('colorPicker_', '');
         const textInput = document.getElementById('colorText_' + key);
         if (textInput) textInput.value = this.value;
     });
 });
 
+/* Helper: set warna tema (picker + text + live CSS preview) */
+function applyColorPreset(primary, secondary, accent) {
+    const fields = {
+        tema_primary:   primary,
+        tema_secondary: secondary,
+        tema_accent:    accent,
+    };
+    Object.entries(fields).forEach(([key, val]) => {
+        const picker = document.getElementById('colorPicker_' + key);
+        const text   = document.getElementById('colorText_'   + key);
+        if (picker) picker.value = val;
+        if (text)   text.value   = val;
+    });
+}
+
 /* Theme presets */
 document.querySelectorAll('.preset-card').forEach(card => {
     card.addEventListener('click', function () {
-        const primary   = this.dataset.primary;
-        const secondary = this.dataset.secondary;
-        const accent    = this.dataset.accent;
-
-        // Update color pickers
-        const pPicker = document.querySelector('[name="pengaturan[tema_primary]"][type=color]');
-        const sPicker = document.querySelector('[name="pengaturan[tema_secondary]"][type=color]');
-        const aPicker = document.querySelector('[name="pengaturan[tema_accent]"][type=color]');
-        if (pPicker) pPicker.value = primary;
-        if (sPicker) sPicker.value = secondary;
-        if (aPicker) aPicker.value = accent;
-
-        // Update text inputs
-        const pText = document.getElementById('colorText_tema_primary');
-        const sText = document.getElementById('colorText_tema_secondary');
-        const aText = document.getElementById('colorText_tema_accent');
-        if (pText) pText.value = primary;
-        if (sText) sText.value = secondary;
-        if (aText) aText.value = accent;
-
-        // Visual feedback: highlight selected preset
-        document.querySelectorAll('.preset-card').forEach(c => c.classList.remove('border-primary', 'border-2'));
-        this.classList.add('border-primary', 'border-2');
+        applyColorPreset(
+            this.dataset.primary,
+            this.dataset.secondary,
+            this.dataset.accent
+        );
+        // Highlight preset terpilih
+        document.querySelectorAll('.preset-card').forEach(c => c.classList.remove('border-primary', 'border-2', 'shadow'));
+        this.classList.add('border-primary', 'border-2', 'shadow');
     });
 });
 </script>

@@ -200,7 +200,7 @@ a:hover { text-decoration: none; }
     font-size: 1rem;
 }
 .footer-social a:hover { background: var(--bs-secondary); color: #fff; }
-.footer-bottom { background: #080f18; font-size: .8rem; }
+.footer-bottom { background: #0b1622; border-top: 1px solid rgba(255,255,255,.06); font-size: .8rem; }
 
 /* ----- PPDB BANNER ----- */
 .ppdb-banner {

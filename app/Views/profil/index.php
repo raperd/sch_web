@@ -144,7 +144,7 @@
                                 </div>
                                 <?php $misi = setting('misi'); ?>
                                 <?php if ($misi): ?>
-                                    <div class="lh-lg text-secondary"><?= $misi ?></div>
+                                    <div class="lh-lg text-secondary" style="white-space:pre-line"><?= esc($misi) ?></div>
                                 <?php else: ?>
                                     <p class="text-muted">Misi belum diisi.</p>
                                 <?php endif; ?>
