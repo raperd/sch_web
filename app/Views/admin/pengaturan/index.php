@@ -139,9 +139,20 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- Tombol terapkan langsung -->
+                            <div class="mt-3 d-flex align-items-center gap-3">
+                                <button type="button" id="btnSaveTema" class="btn btn-success">
+                                    <i class="bi bi-save me-1"></i>Terapkan ke Website
+                                </button>
+                                <small class="text-muted">Langsung menerapkan tema ke halaman publik.</small>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <!-- Label sebelum color picker custom -->
+                <p class="fw-semibold text-muted small text-uppercase mb-2 mt-1" style="letter-spacing:.05em">
+                    <i class="bi bi-palette me-1"></i>Atau pilih warna sendiri
+                </p>
                 <?php endif; ?>
 
                 <div class="card border-0 shadow-sm mb-4">
@@ -293,117 +304,182 @@ document.getElementById('cropConfirmPengaturan')?.addEventListener('click', func
 </script>
 
 <script>
-/* Client-side image compress & resize */
+/**
+ * =====================================================================
+ * COMPRESS + FORM SUBMIT
+ * Semua gambar dikompres via Canvas sebelum dikirim ke server.
+ * Menggunakan Map untuk menyimpan hasil kompres, lalu FormData + fetch
+ * saat submit agar file yang dikirim PASTI yang sudah dikompres.
+ * =====================================================================
+ */
+const compressedBlobs = new Map(); // input element → { file, fieldName }
+let  pendingCompress  = 0;         // counter kompresi yg masih berjalan
+
+function setSubmitState(busy) {
+    const btn = document.querySelector('#settingsForm [type=submit]');
+    if (!btn) return;
+    btn.disabled = busy;
+    btn.innerHTML = busy
+        ? '<span class="spinner-border spinner-border-sm me-2"></span>Sedang mengompres...'
+        : '<i class="bi bi-save me-1"></i>Simpan Semua Pengaturan';
+}
+
 document.querySelectorAll('.img-compress-input').forEach(input => {
     input.addEventListener('change', function () {
         const file = this.files[0];
         if (!file) return;
 
-        const wrap      = this.closest('.col-md-6, .col-md-12');
-        const preview   = wrap.querySelector('.img-preview-new');
-        const previewImg = preview.querySelector('img');
-        const badge     = preview.querySelector('.img-compress-badge');
-        const sizeInfo  = wrap.querySelector('.img-size-info');
+        const wrap     = this.closest('[class*="col-"]');
+        const preview  = wrap?.querySelector('.img-preview-new');
+        const badge    = wrap?.querySelector('.img-compress-badge');
+        const sizeInfo = wrap?.querySelector('.img-size-info');
 
-        // Skip compress for logo, foto kepsek, and favicon — preserve original file
+        /* --- No-compress (logo, favicon) → simpan asli --- */
         if (this.dataset.noCompress === 'true') {
-            const kb = Math.round(file.size / 1024);
-            badge.textContent = `${kb} KB`;
-            previewImg.src = URL.createObjectURL(file);
-            preview.classList.remove('d-none');
+            if (badge)    badge.textContent = Math.round(file.size / 1024) + ' KB (asli)';
+            if (preview)  { preview.querySelector('img').src = URL.createObjectURL(file); preview.classList.remove('d-none'); }
+            compressedBlobs.set(this, { file, fieldName: this.name });
             return;
         }
 
-        const maxW    = parseInt(this.dataset.maxWidth  || 1920);
-        const maxH    = parseInt(this.dataset.maxHeight || 1080);
-        const quality  = parseFloat(this.dataset.quality || 0.82);
+        /* --- Compress via Canvas --- */
+        pendingCompress++;
+        setSubmitState(true);
+        if (sizeInfo) sizeInfo.textContent = 'Sedang mengompres…';
 
-        // data-force-jpeg="true" → selalu output JPEG (cocok untuk hero bg, tidak perlu transparansi)
+        const maxW      = parseInt(this.dataset.maxWidth  || 1920);
+        const maxH      = parseInt(this.dataset.maxHeight || 1080);
+        const quality   = parseFloat(this.dataset.quality || 0.82);
         const forceJpeg = this.dataset.forceJpeg === 'true';
-        const originalType = file.type;
-        const outType = forceJpeg
-            ? 'image/jpeg'
-            : (originalType === 'image/jpeg' || originalType === 'image/jpg')
-                ? 'image/jpeg'
-                : (originalType === 'image/webp' ? 'image/webp' : 'image/png');
-        const extMap  = { 'image/jpeg': '.jpg', 'image/png': '.png', 'image/webp': '.webp' };
-        const outExt  = extMap[outType] || '.jpg';
+        const origType  = file.type;
+        const outType   = forceJpeg ? 'image/jpeg'
+                        : (origType === 'image/jpeg' || origType === 'image/jpg') ? 'image/jpeg'
+                        : (origType === 'image/webp') ? 'image/webp' : 'image/png';
+        const extMap    = {'image/jpeg':'.jpg','image/png':'.png','image/webp':'.webp'};
+        const outExt    = extMap[outType] || '.jpg';
         const outQuality = outType === 'image/png' ? undefined : quality;
 
+        const capturedInput = this;
+
         const reader = new FileReader();
-        reader.onload = e => {
+        reader.onerror = () => { pendingCompress--; if (!pendingCompress) setSubmitState(false); };
+        reader.onload  = ev => {
             const img = new Image();
-            img.onload = () => {
+            img.onerror = () => { pendingCompress--; if (!pendingCompress) setSubmitState(false); };
+            img.onload  = () => {
                 let w = img.width, h = img.height;
                 if (w > maxW || h > maxH) {
-                    const ratio = Math.min(maxW / w, maxH / h);
-                    w = Math.round(w * ratio);
-                    h = Math.round(h * ratio);
+                    const r = Math.min(maxW / w, maxH / h);
+                    w = Math.round(w * r); h = Math.round(h * r);
                 }
                 const canvas = document.createElement('canvas');
                 canvas.width = w; canvas.height = h;
                 const ctx = canvas.getContext('2d');
-                // For JPEG only: fill white background to flatten transparency
-                if (outType === 'image/jpeg') {
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fillRect(0, 0, w, h);
-                }
+                if (outType === 'image/jpeg') { ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h); }
                 ctx.drawImage(img, 0, 0, w, h);
+
                 canvas.toBlob(blob => {
+                    pendingCompress--;
+                    if (!pendingCompress) setSubmitState(false);
                     if (!blob) return;
-                    const compressed = new File([blob], file.name.replace(/\.[^.]+$/, outExt), { type: outType });
-                    const dt = new DataTransfer();
-                    dt.items.add(compressed);
-                    input.files = dt.files;
+
+                    const compressed = new File([blob],
+                        file.name.replace(/\.[^.]+$/, outExt), { type: outType });
+
+                    // Simpan ke Map (digunakan saat form submit)
+                    compressedBlobs.set(capturedInput, { file: compressed, fieldName: capturedInput.name });
+
+                    // Update input.files (opsional, fallback)
+                    try { const dt = new DataTransfer(); dt.items.add(compressed); capturedInput.files = dt.files; } catch(_) {}
+
+                    // Tampilkan info
                     const kb     = Math.round(compressed.size / 1024);
                     const origKb = Math.round(file.size / 1024);
-                    badge.textContent   = `${kb} KB (dari ${origKb} KB)`;
-                    sizeInfo.textContent = `${w}×${h}px`;
-                    previewImg.src = URL.createObjectURL(blob);
-                    preview.classList.remove('d-none');
+                    const saved  = Math.round((1 - compressed.size / file.size) * 100);
+                    if (badge)    badge.textContent    = `${kb} KB (hemat ${saved}% dari ${origKb} KB)`;
+                    if (sizeInfo) sizeInfo.textContent = `${w}×${h}px`;
+                    if (preview)  { preview.querySelector('img').src = URL.createObjectURL(blob); preview.classList.remove('d-none'); }
                 }, outType, outQuality);
             };
-            img.src = e.target.result;
+            img.src = ev.target.result;
         };
         reader.readAsDataURL(file);
     });
 });
 
-/* Sync color picker → text input (gunakan ID langsung, bukan querySelector dengan bracket) */
+/* Form submit — gunakan FormData + fetch agar file kompres PASTI terkirim */
+document.getElementById('settingsForm')?.addEventListener('submit', function (e) {
+    if (compressedBlobs.size === 0) return; // tidak ada gambar → submit biasa
+    e.preventDefault();
+
+    if (pendingCompress > 0) {
+        alert('Tunggu sebentar, gambar sedang dikompres…');
+        return;
+    }
+
+    setSubmitState(true);
+    const fd = new FormData(this);
+
+    // Ganti field file dengan blob yang sudah dikompres
+    compressedBlobs.forEach(({ file, fieldName }) => {
+        if (file && fieldName) fd.set(fieldName, file, file.name);
+    });
+
+    fetch(this.action, { method: 'POST', body: fd })
+        .then(r => { window.location.href = r.url || window.location.href; })
+        .catch(() => { setSubmitState(false); alert('Gagal menyimpan. Coba lagi.'); });
+});
+
+/* =====================================================================
+ * THEME SWITCHER + COLOR PICKERS
+ * Simpan warna via AJAX saat preset dipilih agar langsung terlihat di publik
+ * ===================================================================== */
+
+/* Sync color picker → text input */
 document.querySelectorAll('input[type=color]').forEach(picker => {
     picker.addEventListener('input', function () {
         const key = this.id.replace('colorPicker_', '');
-        const textInput = document.getElementById('colorText_' + key);
-        if (textInput) textInput.value = this.value;
+        const txt = document.getElementById('colorText_' + key);
+        if (txt) txt.value = this.value;
     });
 });
 
-/* Helper: set warna tema (picker + text + live CSS preview) */
 function applyColorPreset(primary, secondary, accent) {
-    const fields = {
-        tema_primary:   primary,
-        tema_secondary: secondary,
-        tema_accent:    accent,
-    };
-    Object.entries(fields).forEach(([key, val]) => {
-        const picker = document.getElementById('colorPicker_' + key);
-        const text   = document.getElementById('colorText_'   + key);
-        if (picker) picker.value = val;
-        if (text)   text.value   = val;
+    const map = { tema_primary: primary, tema_secondary: secondary, tema_accent: accent };
+    Object.entries(map).forEach(([key, val]) => {
+        const p = document.getElementById('colorPicker_' + key);
+        const t = document.getElementById('colorText_'   + key);
+        if (p) p.value = val;
+        if (t) t.value = val;
     });
 }
 
-/* Theme presets */
+/* Simpan warna tema via AJAX (tanpa reload halaman) */
+function saveThemeAjax(primary, secondary, accent) {
+    const btn = document.getElementById('btnSaveTema');
+    if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>'; }
+
+    const fd = new FormData();
+    fd.append('<?= csrf_token() ?>', '<?= csrf_hash() ?>');
+    fd.append('pengaturan[tema_primary]',   primary);
+    fd.append('pengaturan[tema_secondary]', secondary);
+    fd.append('pengaturan[tema_accent]',    accent);
+
+    fetch('<?= base_url('admin/pengaturan/update') ?>', { method: 'POST', body: fd })
+        .then(() => {
+            if (btn) { btn.disabled = false; btn.innerHTML = '<i class="bi bi-check-lg me-1"></i>Tersimpan!'; }
+            setTimeout(() => { if (btn) btn.innerHTML = '<i class="bi bi-save me-1"></i>Terapkan ke Website'; }, 2000);
+        })
+        .catch(() => { if (btn) { btn.disabled = false; btn.innerHTML = 'Coba lagi'; } });
+}
+
 document.querySelectorAll('.preset-card').forEach(card => {
     card.addEventListener('click', function () {
-        applyColorPreset(
-            this.dataset.primary,
-            this.dataset.secondary,
-            this.dataset.accent
-        );
-        // Highlight preset terpilih
-        document.querySelectorAll('.preset-card').forEach(c => c.classList.remove('border-primary', 'border-2', 'shadow'));
+        const { primary, secondary, accent } = this.dataset;
+        applyColorPreset(primary, secondary, accent);
+        document.querySelectorAll('.preset-card').forEach(c => c.classList.remove('border-primary','border-2','shadow'));
         this.classList.add('border-primary', 'border-2', 'shadow');
+        saveThemeAjax(primary, secondary, accent);
     });
 });
 </script>
