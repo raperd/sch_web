@@ -56,17 +56,29 @@
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-header bg-white fw-semibold border-bottom"><i class="bi bi-image me-1 text-primary"></i>Foto & Urutan</div>
                 <div class="card-body p-3">
-                    <?php if (!empty($fasilitas['foto'])): ?>
-                        <div class="mb-2 text-center" id="fotoWrap">
-                            <img id="fotoPreview" src="<?= base_url('uploads/fasilitas/' . esc($fasilitas['foto'])) ?>"
-                                class="rounded" style="max-height:120px;max-width:100%" alt="">
-                        </div>
-                    <?php else: ?>
-                        <div class="mb-2 text-center d-none" id="fotoWrap"><img id="fotoPreview" src="" class="rounded" style="max-height:120px" alt=""></div>
-                    <?php endif; ?>
+                    <div class="mb-2 text-center <?= empty($fasilitas['foto']) ? 'd-none' : '' ?>" id="fotoWrap">
+                        <img id="fotoPreview"
+                             src="<?= !empty($fasilitas['foto']) ? base_url('uploads/fasilitas/' . esc($fasilitas['foto'])) : '' ?>"
+                             class="rounded" style="max-height:120px;max-width:100%" alt="">
+                        <button type="button" class="btn btn-sm btn-outline-secondary d-block mx-auto mt-2" id="reCropFotoBtn">
+                            <i class="bi bi-crop me-1"></i>Ubah Crop
+                        </button>
+                    </div>
                     <div class="mb-3">
                         <label class="form-label">Ganti Foto</label>
-                        <input type="file" class="form-control" name="foto" id="fotoInput" accept="image/*">
+                        <!-- File input tersembunyi, hanya sebagai pemicu kamera/file picker -->
+                        <input type="file" id="fotoInput" accept="image/*" style="display:none">
+                        <!-- Nilai base64 hasil crop yang dikirim ke server (kosong = tidak ganti foto) -->
+                        <input type="hidden" name="foto_cropped" id="fotoCropped">
+                        <div class="d-flex gap-2 align-items-center">
+                            <button type="button" class="btn btn-sm btn-outline-primary" id="pickFotoBtn">
+                                <i class="bi bi-upload me-1"></i>Pilih Foto Baru
+                            </button>
+                            <span class="text-muted small" id="fotoFileName">
+                                <?= !empty($fasilitas['foto']) ? 'Foto terpasang — pilih untuk mengganti' : 'Belum ada foto' ?>
+                            </span>
+                        </div>
+                        <div class="form-text">JPEG/PNG. Foto akan dipotong otomatis rasio 4:3.</div>
                     </div>
                     <div>
                         <label class="form-label">Urutan</label>
@@ -88,13 +100,19 @@
 document.getElementById('iconInput').addEventListener('input', function () {
     document.getElementById('iconPreview').className = 'bi ' + this.value;
 });
+document.getElementById('pickFotoBtn').addEventListener('click', () => document.getElementById('fotoInput').click());
+document.getElementById('reCropFotoBtn').addEventListener('click', () => document.getElementById('fotoInput').click());
+
 document.getElementById('fotoInput').addEventListener('change', function () {
     const file = this.files[0];
     if (!file) return;
-    this.value = '';
-    AppCrop.open(file, this, {
+    document.getElementById('fotoFileName').textContent = file.name;
+    AppCrop.open(file, null, {
         bw: 320, bh: 240, ow: 800, oh: 600,
         onDone(blob, url) {
+            const reader = new FileReader();
+            reader.onload = e => { document.getElementById('fotoCropped').value = e.target.result; };
+            reader.readAsDataURL(blob);
             document.getElementById('fotoPreview').src = url;
             document.getElementById('fotoWrap').classList.remove('d-none');
         }

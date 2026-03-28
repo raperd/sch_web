@@ -38,23 +38,15 @@ class AplikasiController extends BaseController
         if (! $this->validate([
             'nama' => 'required|max_length[255]',
             'url'  => 'required|max_length[255]',
-            'icon' => 'max_size[icon,1024]|is_image[icon]|mime_in[icon,image/jpg,image/jpeg,image/png,image/webp]'
         ])) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
-        }
-
-        $iconName = null;
-        $iconFile = $this->request->getFile('icon');
-        if ($iconFile && $iconFile->isValid() && !$iconFile->hasMoved()) {
-            $iconName = $iconFile->getRandomName();
-            $iconFile->move(FCPATH . 'uploads/aplikasi', $iconName);
         }
 
         $this->model->insert([
             'nama'      => $this->request->getPost('nama'),
             'url'       => $this->request->getPost('url'),
             'deskripsi' => $this->request->getPost('deskripsi'),
-            'icon'      => $iconName,
+            'icon'      => $this->_saveCroppedIcon(),
             'urutan'    => (int) ($this->request->getPost('urutan') ?: 0),
             'is_active' => $this->request->getPost('is_active') === '1' ? 1 : 0,
         ]);
@@ -82,20 +74,17 @@ class AplikasiController extends BaseController
         if (! $this->validate([
             'nama' => 'required|max_length[255]',
             'url'  => 'required|max_length[255]',
-            'icon' => 'max_size[icon,1024]|is_image[icon]|mime_in[icon,image/jpg,image/jpeg,image/png,image/webp]'
         ])) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        $iconName = $app['icon'];
-        $iconFile = $this->request->getFile('icon');
-        if ($iconFile && $iconFile->isValid() && !$iconFile->hasMoved()) {
-            $iconName = $iconFile->getRandomName();
-            $iconFile->move(FCPATH . 'uploads/aplikasi', $iconName);
-            // Delete old
-            if ($app['icon'] && file_exists(FCPATH . 'uploads/aplikasi/' . $app['icon'])) {
-                @unlink(FCPATH . 'uploads/aplikasi/' . $app['icon']);
+        $iconName  = $app['icon'];
+        $newIcon   = $this->_saveCroppedIcon();
+        if ($newIcon) {
+            if ($iconName && file_exists(FCPATH . 'uploads/aplikasi/' . $iconName)) {
+                @unlink(FCPATH . 'uploads/aplikasi/' . $iconName);
             }
+            $iconName = $newIcon;
         }
 
         $this->model->update($id, [
@@ -114,23 +103,35 @@ class AplikasiController extends BaseController
     {
         $app = $this->model->find($id);
         if (! $app) {
-            if ($this->request->isAJAX()) {
-                return $this->response->setJSON(['ok' => false, 'message' => 'Link tidak ditemukan.']);
-            }
-            return redirect()->back()->with('error', 'Link tidak ditemukan.');
+            return $this->response->setJSON(['ok' => false, 'message' => 'Link tidak ditemukan.']);
         }
 
         $newStatus = $app['is_active'] == 1 ? 0 : 1;
         $this->model->update($id, ['is_active' => $newStatus]);
 
-        if ($this->request->isAJAX()) {
-            return $this->response->setJSON([
+        return $this->response->setJSON([
                 'ok'        => true,
                 'is_active' => $newStatus,
                 'csrf'      => \Config\Services::security()->getCSRFHash(),
             ]);
+    }
+
+    private function _saveCroppedIcon(): ?string
+    {
+        $b64 = $this->request->getPost('icon_cropped');
+        if (empty($b64) || ! str_starts_with($b64, 'data:image/')) {
+            return null;
         }
-        return redirect()->back()->with('success', 'Status link diperbarui.');
+        [, $data] = explode(',', $b64, 2);
+        $imgData  = base64_decode($data);
+        if (! $imgData) return null;
+
+        $dir = FCPATH . 'uploads/aplikasi/';
+        if (! is_dir($dir)) mkdir($dir, 0775, true);
+
+        $filename = 'icon_' . bin2hex(random_bytes(8)) . '.png';
+        file_put_contents($dir . $filename, $imgData);
+        return $filename;
     }
 
     public function delete(int $id)

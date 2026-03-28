@@ -39,22 +39,37 @@
             <div class="row g-3 mb-4">
                 <div class="col-md-4">
                     <label class="form-label fw-semibold">Icon Aplikasi (Opsional)</label>
-                    <input type="file" class="form-control" name="icon" id="iconFileInput" accept="image/*">
-                    <div class="form-text mt-1">Gunakan gambar persegi. Gambar akan dipotong otomatis menjadi 256×256 px.</div>
+                    <!-- File input tersembunyi, hanya sebagai pemicu kamera/file picker -->
+                    <input type="file" id="iconFileInput" accept="image/*" style="display:none">
+                    <!-- Nilai base64 hasil crop yang dikirim ke server -->
+                    <input type="hidden" name="icon_cropped" id="iconCropped">
                     <?php if (!empty($app['icon'])): ?>
-                        <div class="mt-2">
+                        <div class="mb-2" id="iconCurrentWrap">
                             <span class="d-block small text-muted mb-1">Ikon Saat Ini:</span>
                             <?php if (str_starts_with($app['icon'], 'bi-')): ?>
                                 <i class="bi <?= esc($app['icon']) ?> fs-3 text-primary"></i>
                             <?php else: ?>
-                                <img src="<?= base_url('uploads/aplikasi/' . esc($app['icon'])) ?>" alt="Icon" width="48" height="48" class="rounded object-fit-cover shadow-sm">
+                                <img src="<?= base_url('uploads/aplikasi/' . esc($app['icon'])) ?>" alt="Icon"
+                                     width="48" height="48" class="rounded object-fit-cover shadow-sm">
                             <?php endif; ?>
                         </div>
                     <?php endif; ?>
-                    <div id="iconPreviewWrap" class="mt-2 d-none">
+                    <div id="iconPreviewWrap" class="mb-2 d-none">
                         <span class="d-block small text-muted mb-1">Preview Baru:</span>
                         <img id="iconPreviewImg" width="48" height="48" class="rounded object-fit-cover shadow-sm" alt="">
+                        <button type="button" class="btn btn-sm btn-outline-secondary mt-1 d-block" id="reCropIconBtn">
+                            <i class="bi bi-crop me-1"></i>Ubah Crop
+                        </button>
                     </div>
+                    <div class="d-flex gap-2 align-items-center">
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="pickIconBtn">
+                            <i class="bi bi-upload me-1"></i>Pilih Icon
+                        </button>
+                        <span class="text-muted small" id="iconFileName">
+                            <?= !empty($app['icon']) ? 'Pilih untuk mengganti' : 'Belum ada icon' ?>
+                        </span>
+                    </div>
+                    <div class="form-text mt-1">Gambar persegi, dipotong otomatis 256×256 px.</div>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label fw-semibold">Urutan</label>
@@ -86,14 +101,20 @@
 <?= $this->endSection() ?>
 <?= $this->section('scripts') ?>
 <script>
+document.getElementById('pickIconBtn').addEventListener('click', () => document.getElementById('iconFileInput').click());
+document.getElementById('reCropIconBtn').addEventListener('click', () => document.getElementById('iconFileInput').click());
+
 document.getElementById('iconFileInput').addEventListener('change', function () {
     const file = this.files[0];
     if (!file) return;
-    this.value = '';
-    AppCrop.open(file, this, {
+    document.getElementById('iconFileName').textContent = file.name;
+    AppCrop.open(file, null, {
         bw: 256, bh: 256, ow: 256, oh: 256,
         fmt: 'image/png', quality: 1,
         onDone(blob, url) {
+            const reader = new FileReader();
+            reader.onload = e => { document.getElementById('iconCropped').value = e.target.result; };
+            reader.readAsDataURL(blob);
             document.getElementById('iconPreviewImg').src = url;
             document.getElementById('iconPreviewWrap').classList.remove('d-none');
         }

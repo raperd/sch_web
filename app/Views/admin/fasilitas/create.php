@@ -60,10 +60,23 @@
                 <div class="card-body p-3">
                     <div class="mb-3 text-center d-none" id="fotoWrap">
                         <img id="fotoPreview" src="" class="rounded" style="max-height:120px;max-width:100%" alt="">
+                        <button type="button" class="btn btn-sm btn-outline-secondary d-block mx-auto mt-2" id="reCropFotoBtn">
+                            <i class="bi bi-crop me-1"></i>Ubah Crop
+                        </button>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Foto</label>
-                        <input type="file" class="form-control" name="foto" id="fotoInput" accept="image/*">
+                        <!-- File input tersembunyi, hanya sebagai pemicu kamera/file picker -->
+                        <input type="file" id="fotoInput" accept="image/*" style="display:none">
+                        <!-- Nilai base64 hasil crop yang dikirim ke server -->
+                        <input type="hidden" name="foto_cropped" id="fotoCropped">
+                        <div class="d-flex gap-2 align-items-center">
+                            <button type="button" class="btn btn-sm btn-outline-primary" id="pickFotoBtn">
+                                <i class="bi bi-upload me-1"></i>Pilih Foto
+                            </button>
+                            <span class="text-muted small" id="fotoFileName">Belum ada foto dipilih</span>
+                        </div>
+                        <div class="form-text">JPEG/PNG. Foto akan dipotong otomatis rasio 4:3.</div>
                     </div>
                     <div>
                         <label class="form-label">Urutan</label>
@@ -85,13 +98,19 @@
 document.getElementById('iconInput').addEventListener('input', function () {
     document.getElementById('iconPreview').className = 'bi ' + this.value;
 });
+document.getElementById('pickFotoBtn').addEventListener('click', () => document.getElementById('fotoInput').click());
+document.getElementById('reCropFotoBtn').addEventListener('click', () => document.getElementById('fotoInput').click());
+
 document.getElementById('fotoInput').addEventListener('change', function () {
     const file = this.files[0];
     if (!file) return;
-    this.value = '';
-    AppCrop.open(file, this, {
+    document.getElementById('fotoFileName').textContent = file.name;
+    AppCrop.open(file, null, {
         bw: 320, bh: 240, ow: 800, oh: 600,
         onDone(blob, url) {
+            const reader = new FileReader();
+            reader.onload = e => { document.getElementById('fotoCropped').value = e.target.result; };
+            reader.readAsDataURL(blob);
             document.getElementById('fotoPreview').src = url;
             document.getElementById('fotoWrap').classList.remove('d-none');
         }
