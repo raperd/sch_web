@@ -110,7 +110,7 @@
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Urutan Tampil</label>
                         <input type="number" name="urutan" class="form-control"
-                            value="<?= old('urutan', 0) ?>" min="0">
+                            value="<?= old('urutan', $next_urutan ?? 0) ?>" min="0">
                     </div>
                     <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox" name="is_featured" value="1"

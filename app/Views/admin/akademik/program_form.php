@@ -94,7 +94,7 @@ $icons   = [
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Urutan</label>
                             <input type="number" class="form-control" name="urutan"
-                                   value="<?= esc($val('urutan', 0)) ?>" min="0" max="99">
+                                   value="<?= esc($val('urutan', $next_urutan ?? 0)) ?>" min="0" max="99">
                         </div>
                         <div class="col-md-6 d-flex align-items-end">
                             <div class="form-check form-switch mb-2">

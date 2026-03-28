@@ -26,7 +26,10 @@ class EkstrakurikulerController extends BaseController
 
     public function create(): string
     {
-        return view('admin/ekskul/create', ['title' => 'Tambah Ekstrakurikuler']);
+        return view('admin/ekskul/create', [
+            'title'       => 'Tambah Ekstrakurikuler',
+            'next_urutan' => ($this->model->selectMax('urutan')->first()['urutan'] ?? 0) + 1,
+        ]);
     }
 
     public function store()

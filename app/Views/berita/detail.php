@@ -3,11 +3,20 @@
 <?= $this->section('styles') ?>
 <style>
 .artikel-konten img { max-width: 100%; height: auto; border-radius: .5rem; margin: 1rem 0; }
-.artikel-konten p { margin-bottom: 1.25rem; line-height: 1.85; }
-.artikel-konten h2, .artikel-konten h3 { margin-top: 2rem; margin-bottom: 1rem; font-weight: 700; }
+.artikel-konten p { margin-bottom: 1.25rem; line-height: 1.85; color: #212529; }
+.artikel-konten h2, .artikel-konten h3 { margin-top: 2rem; margin-bottom: 1rem; font-weight: 700; color: #212529; }
+.artikel-konten h4, .artikel-konten h5, .artikel-konten h6 { margin-top: 1.5rem; margin-bottom: .75rem; font-weight: 600; color: #212529; }
 .artikel-konten blockquote { border-left: 4px solid var(--bs-primary); padding-left: 1rem; color: #555; font-style: italic; margin: 1.5rem 0; }
 .artikel-konten ul, .artikel-konten ol { margin-bottom: 1.25rem; padding-left: 1.5rem; }
-.artikel-konten li { margin-bottom: .4rem; line-height: 1.7; }
+.artikel-konten li { margin-bottom: .4rem; line-height: 1.7; color: #212529; }
+.artikel-konten a { color: var(--bs-primary); }
+.artikel-konten strong, .artikel-konten b { color: #212529; }
+/* Video embed responsif */
+.artikel-konten iframe {
+    max-width: 100%; border-radius: .5rem;
+    aspect-ratio: 16/9; width: 100%; height: auto;
+    margin: 1rem 0; display: block;
+}
 </style>
 <?= $this->endSection() ?>
 
@@ -44,6 +53,9 @@
 
                 <!-- Meta -->
                 <div class="d-flex flex-wrap gap-3 text-muted small mb-4 pb-3 border-bottom">
+                    <?php if (!empty($artikel['penulis'])): ?>
+                        <span><i class="bi bi-person-circle me-1"></i><?= esc($artikel['penulis']) ?></span>
+                    <?php endif; ?>
                     <span><i class="bi bi-calendar3 me-1"></i><?= format_tanggal($artikel['published_at'] ?? $artikel['created_at'], 'full') ?></span>
                     <span><i class="bi bi-eye me-1"></i><?= number_format($artikel['view_count'] ?? 0) ?> kali dibaca</span>
                     <?php if (!empty($artikel['tags'])): ?>
@@ -63,13 +75,13 @@
 
                 <!-- Ringkasan -->
                 <?php if (!empty($artikel['ringkasan'])): ?>
-                    <div class="alert border-start border-4 border-primary bg-primary bg-opacity-5 mb-4 py-3">
-                        <p class="mb-0 fst-italic text-secondary"><?= esc($artikel['ringkasan']) ?></p>
+                    <div class="mb-4 py-3 px-3 rounded-end" style="background:#f0f4f8; border-left:4px solid var(--bs-primary)">
+                        <p class="mb-0 fst-italic" style="color:#444"><?= esc($artikel['ringkasan']) ?></p>
                     </div>
                 <?php endif; ?>
 
                 <!-- Konten Utama -->
-                <div class="artikel-konten fs-6 lh-lg text-secondary">
+                <div class="artikel-konten fs-6 lh-lg" style="color:#212529">
                     <?= $artikel['konten'] ?>
                 </div>
 

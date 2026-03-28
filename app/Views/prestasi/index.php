@@ -2,7 +2,7 @@
 <?= $this->section('content') ?>
 
 <!-- Page Header -->
-<section class="page-header py-5" style="background: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-secondary) 100%);">
+<section class="page-header py-5" style="background: linear-gradient(135deg, var(--bs-primary) 0%, var(--site-secondary) 100%);">
     <div class="container text-center text-white">
         <h1 class="fw-bold mb-2">Prestasi Sekolah</h1>
         <p class="opacity-75 mb-3">Kebanggaan yang kami raih, inspirasi untuk terus berprestasi</p>
@@ -142,4 +142,77 @@
     </div>
 </section>
 
+<?php if (!empty($galeri_prestasi)): ?>
+<!-- Galeri Prestasi -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-4">
+            <span class="section-title">Galeri Prestasi</span>
+            <p class="text-muted mt-3">Dokumentasi momen-momen membanggakan</p>
+        </div>
+        <div class="row g-3">
+            <?php foreach ($galeri_prestasi as $g): ?>
+                <div class="col-6 col-md-4 col-lg-3">
+                    <?php $img = !empty($g['thumbnail']) ? $g['thumbnail'] : $g['file_path']; ?>
+                    <a href="#" class="d-block rounded overflow-hidden shadow-sm galeri-thumb-link"
+                        data-src="<?= base_url('uploads/galeri/' . esc($g['file_path'])) ?>"
+                        data-caption="<?= esc($g['judul']) ?>">
+                        <?php if ($img): ?>
+                            <img src="<?= base_url('uploads/galeri/' . esc($img)) ?>"
+                                class="w-100 galeri-thumb-img"
+                                style="height:180px;object-fit:cover;transition:.3s;"
+                                alt="<?= esc($g['judul']) ?>">
+                        <?php else: ?>
+                            <div class="bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center" style="height:180px;">
+                                <i class="bi bi-image text-muted fs-1"></i>
+                            </div>
+                        <?php endif; ?>
+                        <?php if (!empty($g['judul'])): ?>
+                            <div class="bg-white py-2 px-3">
+                                <p class="mb-0 small fw-semibold text-truncate text-dark"><?= esc($g['judul']) ?></p>
+                            </div>
+                        <?php endif; ?>
+                    </a>
+                </div>
+            <?php endforeach; ?>
+        </div>
+
+    </div>
+</section>
+
+<!-- Galeri Modal -->
+<div class="modal fade" id="galeriModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content bg-dark border-0">
+            <div class="modal-header border-0 pb-0">
+                <h6 class="modal-title text-white" id="galeriModalCaption"></h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center p-2">
+                <img id="galeriModalImg" src="" class="img-fluid rounded" style="max-height:80vh;" alt="">
+            </div>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+
+<?= $this->endSection() ?>
+
+<?= $this->section('scripts') ?>
+<?php if (!empty($galeri_prestasi)): ?>
+<script>
+document.querySelectorAll('.galeri-thumb-link').forEach(function(el) {
+    el.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('galeriModalImg').src = this.dataset.src;
+        document.getElementById('galeriModalCaption').textContent = this.dataset.caption;
+        new bootstrap.Modal(document.getElementById('galeriModal')).show();
+    });
+});
+document.querySelectorAll('.galeri-thumb-img').forEach(function(img) {
+    img.closest('a').addEventListener('mouseenter', function() { img.style.transform = 'scale(1.05)'; });
+    img.closest('a').addEventListener('mouseleave', function() { img.style.transform = ''; });
+});
+</script>
+<?php endif; ?>
 <?= $this->endSection() ?>

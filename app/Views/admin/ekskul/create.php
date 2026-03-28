@@ -57,7 +57,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Urutan</label>
-                        <input type="number" class="form-control" name="urutan" value="<?= esc(old('urutan', 0)) ?>" min="0">
+                        <input type="number" class="form-control" name="urutan" value="<?= esc(old('urutan', $next_urutan ?? 0)) ?>" min="0">
                     </div>
                     <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox" id="isActive" name="is_active" value="1" checked>

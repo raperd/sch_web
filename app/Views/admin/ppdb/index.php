@@ -43,6 +43,33 @@ $tipeColors = ['persyaratan' => 'primary', 'jadwal' => 'info', 'alur' => 'succes
                     <span class="text-muted small"><?= count($items) ?> blok</span>
                 </span>
             </div>
+            <!-- Mobile Cards -->
+            <div class="d-md-none p-3">
+                <?php foreach ($items as $item): ?>
+                    <div class="d-flex align-items-start gap-2 py-2 border-bottom">
+                        <div class="flex-grow-1" style="min-width:0">
+                            <div class="fw-semibold"><?= esc($item['judul_blok']) ?></div>
+                            <small class="text-muted"><?= truncate_text(strip_tags($item['konten']), 70) ?></small>
+                        </div>
+                        <span class="badge <?= $item['is_active'] ? 'text-bg-success' : 'text-bg-secondary' ?> flex-shrink-0">
+                            <?= $item['is_active'] ? 'Aktif' : 'Nonaktif' ?>
+                        </span>
+                        <a href="<?= base_url('admin/ppdb/edit/' . $item['id']) ?>"
+                            class="btn btn-sm btn-outline-primary flex-shrink-0">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <form method="post" action="<?= base_url('admin/ppdb/delete/' . $item['id']) ?>"
+                            data-confirm="Hapus blok ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
+                            <?= csrf_field() ?>
+                            <button type="submit" class="btn btn-sm btn-outline-danger flex-shrink-0">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+            <!-- Desktop Table -->
+            <div class="d-none d-md-block">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
@@ -73,7 +100,7 @@ $tipeColors = ['persyaratan' => 'primary', 'jadwal' => 'info', 'alur' => 'succes
                                             <i class="bi bi-pencil"></i>
                                         </a>
                                         <form method="post" action="<?= base_url('admin/ppdb/delete/' . $item['id']) ?>"
-                                            class="d-inline" onsubmit="return confirm('Hapus blok ini?')">
+                                            class="d-inline" data-confirm="Hapus blok ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                                             <?= csrf_field() ?>
                                             <button type="submit" class="btn btn-sm btn-outline-danger">
                                                 <i class="bi bi-trash"></i>
@@ -85,6 +112,7 @@ $tipeColors = ['persyaratan' => 'primary', 'jadwal' => 'info', 'alur' => 'succes
                         <?php endforeach; ?>
                     </tbody>
                 </table>
+            </div>
             </div>
         </div>
     <?php endforeach; ?>

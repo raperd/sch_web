@@ -1,6 +1,12 @@
 <?= $this->extend('layouts/admin') ?>
 <?= $this->section('styles') ?>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+<style>
+.richtext-editor { min-height: 220px; font-size: 1rem; }
+.ql-toolbar.ql-snow { border-radius: .375rem .375rem 0 0; background: #f8f9fa; }
+.ql-container.ql-snow { border-radius: 0 0 .375rem .375rem; font-size: 0.95rem; }
+</style>
 <?= $this->endSection() ?>
 <?= $this->section('content') ?>
 
@@ -159,69 +165,77 @@
                     <div class="card-body p-4">
                         <div class="row g-4">
                             <?php foreach ($grouped[$grupKey] as $key => $setting): ?>
-                                <div class="col-md-<?= in_array($setting['tipe'], ['textarea']) ? '12' : '6' ?>">
-                                    <label class="form-label fw-semibold"><?= esc($setting['label']) ?></label>
+                                <div class="col-md-<?= in_array($setting['tipe'], ['textarea','richtext']) ? '12' : '6' ?>">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold"><?= esc($setting['label']) ?></label>
 
-                                    <?php if ($setting['tipe'] === 'textarea'): ?>
-                                        <textarea class="form-control" name="pengaturan[<?= esc($key) ?>]" rows="4"><?= esc($setting['setting_value']) ?></textarea>
+                                        <?php if ($setting['tipe'] === 'richtext'): ?>
+                                            <div id="quill_<?= esc($key) ?>" class="richtext-editor"></div>
+                                            <textarea name="pengaturan[<?= esc($key) ?>]"
+                                                id="richtextInput_<?= esc($key) ?>"
+                                                class="d-none"><?= esc($setting['setting_value']) ?></textarea>
+                                            <div class="form-text">Mendukung format teks, daftar, dan tautan.</div>
 
-                                    <?php elseif ($setting['tipe'] === 'boolean'): ?>
-                                        <div class="form-check form-switch mt-1">
-                                            <input class="form-check-input" type="checkbox"
-                                                name="pengaturan[<?= esc($key) ?>]" value="1"
-                                                <?= $setting['setting_value'] == '1' ? 'checked' : '' ?>>
-                                            <label class="form-check-label">Aktifkan</label>
-                                        </div>
+                                        <?php elseif ($setting['tipe'] === 'textarea'): ?>
+                                            <textarea class="form-control" name="pengaturan[<?= esc($key) ?>]" rows="4"><?= esc($setting['setting_value']) ?></textarea>
 
-                                    <?php elseif ($setting['tipe'] === 'color'): ?>
-                                        <div class="d-flex align-items-center gap-2">
-                                            <input type="color" class="form-control form-control-color"
-                                                id="colorPicker_<?= esc($key) ?>"
-                                                name="pengaturan[<?= esc($key) ?>]"
-                                                value="<?= esc($setting['setting_value'] ?: '#1a5276') ?>"
-                                                style="width:56px;height:38px;">
-                                            <input type="text" class="form-control font-monospace"
-                                                id="colorText_<?= esc($key) ?>"
-                                                value="<?= esc($setting['setting_value'] ?: '#1a5276') ?>"
-                                                maxlength="7" placeholder="#000000"
-                                                oninput="document.getElementById('colorPicker_<?= esc($key) ?>').value=this.value">
-                                        </div>
-                                        <div class="form-text">Format: #RRGGBB</div>
-
-                                    <?php elseif ($setting['tipe'] === 'image'): ?>
-                                        <?php if (!empty($setting['setting_value'])): ?>
-                                            <div class="mb-2">
-                                                <img src="<?= base_url('uploads/pengaturan/' . esc($setting['setting_value'])) ?>"
-                                                    class="img-preview-current"
-                                                    style="max-height:80px;border-radius:.375rem" alt="Current">
+                                        <?php elseif ($setting['tipe'] === 'boolean'): ?>
+                                            <div class="form-check form-switch mt-1">
+                                                <input class="form-check-input" type="checkbox"
+                                                    name="pengaturan[<?= esc($key) ?>]" value="1"
+                                                    <?= $setting['setting_value'] == '1' ? 'checked' : '' ?>>
+                                                <label class="form-check-label">Aktifkan</label>
                                             </div>
+
+                                        <?php elseif ($setting['tipe'] === 'color'): ?>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <input type="color" class="form-control form-control-color"
+                                                    id="colorPicker_<?= esc($key) ?>"
+                                                    name="pengaturan[<?= esc($key) ?>]"
+                                                    value="<?= esc($setting['setting_value'] ?: '#1a5276') ?>"
+                                                    style="width:56px;height:38px;">
+                                                <input type="text" class="form-control font-monospace"
+                                                    id="colorText_<?= esc($key) ?>"
+                                                    value="<?= esc($setting['setting_value'] ?: '#1a5276') ?>"
+                                                    maxlength="7" placeholder="#000000"
+                                                    oninput="document.getElementById('colorPicker_<?= esc($key) ?>').value=this.value">
+                                            </div>
+                                            <div class="form-text">Format: #RRGGBB</div>
+
+                                        <?php elseif ($setting['tipe'] === 'image'): ?>
+                                            <?php if (!empty($setting['setting_value'])): ?>
+                                                <div class="mb-2">
+                                                    <img src="<?= base_url('uploads/pengaturan/' . esc($setting['setting_value'])) ?>"
+                                                        class="img-preview-current"
+                                                        style="max-height:80px;border-radius:.375rem" alt="Current">
+                                                </div>
+                                            <?php endif; ?>
+                                            <input type="file"
+                                                class="form-control <?= in_array($key, ['foto_kepsek']) ? 'crop-input' : 'img-compress-input' ?>"
+                                                name="pengaturan_file[<?= esc($key) ?>]"
+                                                accept="<?= $key === 'favicon_path' ? '.ico,.png,.svg,image/x-icon,image/png,image/svg+xml' : 'image/jpeg,image/png,image/webp' ?>"
+                                                data-max-width="<?= $key === 'hero_image_path' ? '1920' : '800' ?>"
+                                                data-max-height="<?= $key === 'hero_image_path' ? '1080' : '800' ?>"
+                                                data-quality="<?= $key === 'hero_image_path' ? '0.82' : '0.85' ?>"
+                                                data-aspect-ratio="<?= $key === 'foto_kepsek' ? '1' : '' ?>"
+                                                <?= in_array($key, ['logo_path', 'favicon_path']) ? 'data-no-compress="true"' : '' ?>
+                                                <?= $key === 'logo_path' ? 'data-preserve-alpha="true"' : '' ?>
+                                                <?= $key === 'hero_image_path' ? 'data-force-jpeg="true"' : '' ?>>
+                                            <div class="form-text d-flex justify-content-between">
+                                                <span>Upload baru untuk mengganti.<?= $key === 'favicon_path' ? ' ICO/PNG/SVG.' : ($key === 'hero_image_path' ? ' Otomatis dikompres ke JPEG max 1920×1080.' : ' JPG/PNG/WebP.') ?></span>
+                                                <span class="img-size-info text-muted"></span>
+                                            </div>
+                                            <div class="img-preview-new mt-2 d-none">
+                                                <img src="" class="rounded" style="max-height:120px;" alt="Preview">
+                                                <span class="badge text-bg-success ms-2 img-compress-badge"></span>
+                                            </div>
+
+                                        <?php else: ?>
+                                            <input type="text" class="form-control"
+                                                name="pengaturan[<?= esc($key) ?>]"
+                                                value="<?= esc($setting['setting_value']) ?>">
                                         <?php endif; ?>
-                                        <input type="file"
-                                            class="form-control <?= in_array($key, ['foto_kepsek']) ? 'crop-input' : 'img-compress-input' ?>"
-                                            name="pengaturan_file[<?= esc($key) ?>]"
-                                            accept="<?= $key === 'favicon_path' ? '.ico,.png,.svg,image/x-icon,image/png,image/svg+xml' : 'image/jpeg,image/png,image/webp' ?>"
-                                            data-max-width="<?= $key === 'hero_image_path' ? '1920' : '800' ?>"
-                                            data-max-height="<?= $key === 'hero_image_path' ? '1080' : '800' ?>"
-                                            data-quality="<?= $key === 'hero_image_path' ? '0.82' : '0.85' ?>"
-                                            data-aspect-ratio="<?= $key === 'foto_kepsek' ? '1' : '' ?>"
-                                            <?= in_array($key, ['logo_path', 'favicon_path']) ? 'data-no-compress="true"' : '' ?>
-                                            <?= $key === 'logo_path' ? 'data-preserve-alpha="true"' : '' ?>
-                                            <?= $key === 'hero_image_path' ? 'data-force-jpeg="true"' : '' ?>>
-                                        <div class="form-text d-flex justify-content-between">
-                                            <span>Upload baru untuk mengganti.<?= $key === 'favicon_path' ? ' ICO/PNG/SVG.' : ($key === 'hero_image_path' ? ' Otomatis dikompres ke JPEG max 1920×1080.' : ' JPG/PNG/WebP.') ?></span>
-                                            <span class="img-size-info text-muted"></span>
-                                        </div>
-                                        <div class="img-preview-new mt-2 d-none">
-                                            <img src="" class="rounded" style="max-height:120px;" alt="Preview">
-                                            <span class="badge text-bg-success ms-2 img-compress-badge"></span>
-                                        </div>
-
-                                    <?php else: ?>
-                                        <input type="text" class="form-control"
-                                            name="pengaturan[<?= esc($key) ?>]"
-                                            value="<?= esc($setting['setting_value']) ?>">
-                                    <?php endif; ?>
-
+                                    </div>
                                 </div>
                             <?php endforeach; ?>
                         </div>
@@ -240,7 +254,43 @@
 </form>
 
 <?= $this->section('scripts') ?>
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
+<script>
+// Init Quill untuk setiap field richtext
+(function() {
+    const richtextEditors = document.querySelectorAll('[id^="quill_"]');
+    richtextEditors.forEach(function(editorEl) {
+        const key         = editorEl.id.replace('quill_', '');
+        const hiddenInput = document.getElementById('richtextInput_' + key);
+        if (!hiddenInput) return;
+
+        const quill = new Quill(editorEl, {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    [{ header: [2, 3, false] }],
+                    ['bold', 'italic', 'underline'],
+                    [{ list: 'ordered' }, { list: 'bullet' }],
+                    ['link'],
+                    ['clean']
+                ]
+            }
+        });
+
+        // Load existing content
+        const existing = hiddenInput.value;
+        if (existing && existing.trim()) {
+            quill.clipboard.dangerouslyPasteHTML(existing);
+        }
+
+        // Sync ke hidden input saat form submit
+        document.getElementById('settingsForm').addEventListener('submit', function() {
+            hiddenInput.value = quill.root.innerHTML;
+        });
+    });
+})();
+</script>
 
 <!-- Crop Modal (untuk foto_kepsek) -->
 <div class="modal fade" id="cropModalPengaturan" tabindex="-1">

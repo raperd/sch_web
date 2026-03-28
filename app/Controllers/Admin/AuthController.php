@@ -46,6 +46,7 @@ class AuthController extends BaseController
             'admin_nama'      => $user['nama'],
             'admin_username'  => $user['username'],
             'admin_role'      => $user['role'],
+            'admin_avatar'    => $user['avatar'] ?? null,
         ]);
 
         $model->updateLastLogin($user['id']);

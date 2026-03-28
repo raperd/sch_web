@@ -11,6 +11,72 @@
     </a>
 </div>
 
+<!-- Mobile Cards (xs/sm) -->
+<div class="d-md-none">
+    <?php if (empty($users)): ?>
+        <div class="text-center py-4 text-muted">Belum ada pengguna</div>
+    <?php else: ?>
+        <?php foreach ($users as $u): ?>
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body p-3">
+                    <div class="d-flex justify-content-between align-items-start mb-1">
+                        <div>
+                            <div class="fw-semibold"><?= esc($u['nama']) ?></div>
+                            <small class="text-muted font-monospace"><?= esc($u['username']) ?></small>
+                        </div>
+                        <div class="d-flex flex-wrap gap-1 justify-content-end">
+                            <?php if ($u['role'] === 'superadmin'): ?>
+                                <span class="badge bg-danger">Superadmin</span>
+                            <?php elseif ($u['role'] === 'admin'): ?>
+                                <span class="badge bg-primary">Admin</span>
+                            <?php else: ?>
+                                <span class="badge bg-info text-dark">Kontributor</span>
+                            <?php endif; ?>
+                            <?php if ($u['is_active']): ?>
+                                <span class="badge bg-success-subtle text-success">Aktif</span>
+                            <?php else: ?>
+                                <span class="badge bg-secondary-subtle text-secondary">Nonaktif</span>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <?php if ($u['email']): ?>
+                        <small class="text-muted"><i class="bi bi-envelope me-1"></i><?= esc($u['email']) ?></small>
+                    <?php endif; ?>
+                    <?php if ($u['last_login_at']): ?>
+                        <div><small class="text-muted"><i class="bi bi-clock me-1"></i><?= format_tanggal($u['last_login_at'], 'short') ?></small></div>
+                    <?php endif; ?>
+                </div>
+                <?php if ($u['role'] !== 'superadmin'): ?>
+                    <div class="card-footer bg-white border-top p-2 d-flex gap-2">
+                        <a href="<?= site_url('admin/users/edit/' . $u['id']) ?>"
+                            class="btn btn-sm btn-outline-primary flex-grow-1">
+                            <i class="bi bi-pencil me-1"></i>Edit
+                        </a>
+                        <form method="post" action="<?= site_url('admin/users/toggle/' . $u['id']) ?>"
+                            data-confirm="<?= $u['is_active'] ? 'Nonaktifkan' : 'Aktifkan' ?> pengguna ini?" data-confirm-ok="Lanjutkan" data-confirm-class="btn-warning" data-confirm-type="warning">
+                            <?= csrf_field() ?>
+                            <button type="submit" class="btn btn-sm <?= $u['is_active'] ? 'btn-outline-warning' : 'btn-outline-success' ?>">
+                                <i class="bi <?= $u['is_active'] ? 'bi-person-slash' : 'bi-person-check' ?>"></i>
+                            </button>
+                        </form>
+                        <?php if ((int)$u['id'] !== (int)session('admin_id')): ?>
+                            <form method="post" action="<?= site_url('admin/users/delete/' . $u['id']) ?>"
+                                data-confirm="Hapus pengguna &quot;<?= esc($u['nama']) ?>&quot;? Tindakan ini tidak dapat dibatalkan." data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
+                                <?= csrf_field() ?>
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</div>
+
+<!-- Desktop Table (md+) -->
+<div class="d-none d-md-block">
 <div class="card table-card">
     <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
@@ -67,19 +133,19 @@
                                             class="btn btn-sm btn-outline-primary" title="Edit">
                                             <i class="bi bi-pencil"></i>
                                         </a>
-                                        <form method="post" action="<?= site_url('admin/users/toggle/' . $u['id']) ?>" class="d-inline">
+                                        <form method="post" action="<?= site_url('admin/users/toggle/' . $u['id']) ?>" class="d-inline"
+                                            data-confirm="<?= $u['is_active'] ? 'Nonaktifkan' : 'Aktifkan' ?> pengguna ini?" data-confirm-ok="Lanjutkan" data-confirm-class="btn-warning" data-confirm-type="warning">
                                             <?= csrf_field() ?>
                                             <button type="submit" class="btn btn-sm <?= $u['is_active'] ? 'btn-outline-warning' : 'btn-outline-success' ?>"
-                                                title="<?= $u['is_active'] ? 'Nonaktifkan' : 'Aktifkan' ?>"
-                                                onclick="return confirm('<?= $u['is_active'] ? 'Nonaktifkan' : 'Aktifkan' ?> pengguna ini?')">
+                                                title="<?= $u['is_active'] ? 'Nonaktifkan' : 'Aktifkan' ?>">
                                                 <i class="bi <?= $u['is_active'] ? 'bi-person-slash' : 'bi-person-check' ?>"></i>
                                             </button>
                                         </form>
                                         <?php if ((int)$u['id'] !== (int)session('admin_id')): ?>
-                                            <form method="post" action="<?= site_url('admin/users/delete/' . $u['id']) ?>" class="d-inline">
+                                            <form method="post" action="<?= site_url('admin/users/delete/' . $u['id']) ?>" class="d-inline"
+                                                data-confirm="Hapus pengguna &quot;<?= esc($u['nama']) ?>&quot;? Tindakan ini tidak dapat dibatalkan." data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                                                 <?= csrf_field() ?>
-                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus"
-                                                    onclick="return confirm('Hapus pengguna <?= esc($u['nama']) ?>? Tindakan ini tidak dapat dibatalkan.')">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus">
                                                     <i class="bi bi-trash"></i>
                                                 </button>
                                             </form>
@@ -95,6 +161,7 @@
             </tbody>
         </table>
     </div>
+</div>
 </div>
 
 <?= $this->endSection() ?>

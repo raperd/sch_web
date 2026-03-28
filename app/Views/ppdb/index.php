@@ -205,7 +205,7 @@
 <?php endif; ?>
 
 <!-- CTA Bottom -->
-<section class="py-5 text-white" style="background: linear-gradient(135deg, var(--bs-primary), var(--bs-secondary));">
+<section class="py-5 text-white" style="background: linear-gradient(135deg, var(--bs-primary), var(--site-secondary));">
     <div class="container text-center">
         <h3 class="fw-bold mb-2">Masih ada pertanyaan?</h3>
         <p class="mb-4 opacity-75">Hubungi kami langsung melalui telepon atau email untuk informasi lebih lanjut</p>

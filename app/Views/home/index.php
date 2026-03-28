@@ -272,6 +272,63 @@
 <?php endif; ?>
 
 <!-- ============================================================
+     ALBUM FOTO
+     ============================================================ -->
+<?php if (!empty($album_foto)): ?>
+<section class="py-5">
+    <div class="container">
+        <div class="d-flex align-items-end justify-content-between mb-4">
+            <div>
+                <span class="badge text-bg-primary mb-2">Dokumentasi</span>
+                <h2 class="section-title mb-0">Album Foto</h2>
+            </div>
+            <a href="<?= site_url('album-foto') ?>" class="btn btn-outline-primary btn-sm">
+                Lihat Semua <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+        <div class="row g-3">
+            <?php foreach (array_slice($album_foto, 0, 4) as $al): ?>
+            <div class="col-6 col-md-3">
+                <a href="<?= esc($al['link_google_foto']) ?>" target="_blank" rel="noopener noreferrer"
+                    class="text-decoration-none d-block album-home-card">
+                    <!-- Cover persegi 1:1 -->
+                    <div class="album-home-thumb rounded-3 overflow-hidden mb-2 position-relative">
+                        <?php if (!empty($al['cover_foto'])): ?>
+                            <img src="<?= base_url('uploads/album_foto/' . esc($al['cover_foto'])) ?>"
+                                class="w-100 h-100" style="object-fit:cover;position:absolute;inset:0;"
+                                alt="<?= esc($al['judul']) ?>">
+                        <?php else: ?>
+                            <div class="w-100 h-100 bg-light d-flex align-items-center justify-content-center"
+                                style="position:absolute;inset:0;">
+                                <i class="bi bi-images text-muted" style="font-size:2.5rem;"></i>
+                            </div>
+                        <?php endif; ?>
+                        <!-- Overlay hover -->
+                        <div class="album-home-overlay position-absolute inset-0 d-flex align-items-center justify-content-center"
+                            style="inset:0;background:rgba(var(--bs-primary-rgb),.65);opacity:0;transition:.25s;">
+                            <i class="bi bi-google text-white fs-3"></i>
+                        </div>
+                    </div>
+                    <div class="fw-semibold small text-dark text-truncate"><?= esc($al['judul']) ?></div>
+                    <?php if (!empty($al['tanggal'])): ?>
+                        <div class="text-muted" style="font-size:.75rem;">
+                            <i class="bi bi-calendar3 me-1"></i><?= format_tanggal($al['tanggal'], 'long') ?>
+                        </div>
+                    <?php endif; ?>
+                </a>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
+<style>
+.album-home-thumb { aspect-ratio: 16/9; background: #e9ecef; }
+.album-home-card:hover .album-home-overlay { opacity: 1 !important; }
+.album-home-card:hover .fw-semibold { color: var(--bs-primary) !important; }
+</style>
+<?php endif; ?>
+
+<!-- ============================================================
      TENTANG SEKOLAH (MINI)
      ============================================================ -->
 <section class="py-5 section-light">
@@ -304,26 +361,26 @@
                 <div class="row g-3">
                     <div class="col-6">
                         <div class="card border-0 bg-primary text-white rounded-3 p-4 text-center h-100">
-                            <div class="display-6 fw-bold mb-1">1000+</div>
+                            <div class="display-6 fw-bold mb-1"><?= esc(setting('stat_siswa') ?: '1.000+') ?></div>
                             <div class="small opacity-75">Siswa Aktif</div>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="card border-0 bg-warning text-dark rounded-3 p-4 text-center h-100">
-                            <div class="display-6 fw-bold mb-1">60+</div>
-                            <div class="small">Guru & Staf</div>
+                            <div class="display-6 fw-bold mb-1"><?= esc(setting('stat_guru') ?: '60+') ?></div>
+                            <div class="small">Guru &amp; Staf</div>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="card border-0 bg-success text-white rounded-3 p-4 text-center h-100">
-                            <div class="display-6 fw-bold mb-1">20+</div>
+                            <div class="display-6 fw-bold mb-1"><?= esc(setting('stat_ekskul') ?: '20+') ?></div>
                             <div class="small opacity-75">Ekstrakurikuler</div>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="card border-0 bg-info text-white rounded-3 p-4 text-center h-100">
-                            <div class="display-6 fw-bold mb-1">100%</div>
-                            <div class="small opacity-75">Kelulusan</div>
+                            <div class="display-6 fw-bold mb-1"><?= esc(setting('stat_prestasi') ?: '50+') ?></div>
+                            <div class="small opacity-75">Prestasi</div>
                         </div>
                     </div>
                 </div>
@@ -331,5 +388,47 @@
         </div>
     </div>
 </section>
+
+<!-- ============================================================
+     LINK TERKAIT
+     ============================================================ -->
+<?php if (!empty($aplikasi_terkait)): ?>
+<section class="py-5" style="background:#fff;">
+    <div class="container">
+        <div class="text-center mb-4">
+            <h2 class="section-title mx-auto">Link Terkait</h2>
+            <p class="text-muted mt-2">Daftar tautan terintegrasi atau website bermanfaat lainnya untuk sekolah</p>
+        </div>
+        <div class="row justify-content-center g-4 mt-2">
+            <?php foreach ($aplikasi_terkait as $app): ?>
+                <div class="col-6 col-md-3 col-lg-2">
+                    <a href="<?= esc($app['url']) ?>" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+                        <div class="card border-0 shadow-sm h-100 text-center p-3 transition" style="border-bottom: 3px solid transparent;">
+                            <div class="mx-auto bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mb-3 overflow-hidden" style="width: 64px; height: 64px;">
+                                <?php if (!empty($app['icon']) && !str_starts_with($app['icon'], 'bi-')): ?>
+                                    <img src="<?= base_url('uploads/aplikasi/' . esc($app['icon'])) ?>" alt="<?= esc($app['nama']) ?>" class="w-100 h-100 object-fit-cover shadow-sm">
+                                <?php else: ?>
+                                    <i class="bi <?= esc($app['icon'] ?: 'bi-app') ?> text-primary fs-3"></i>
+                                <?php endif; ?>
+                            </div>
+                            <h6 class="fw-bold mb-0 text-dark" style="font-size: .9rem;"><?= esc($app['nama']) ?></h6>
+                        </div>
+                    </a>
+                </div>
+            <?php endforeach; ?>
+        </div>
+        
+        <div class="text-center mt-5">
+            <a href="<?= site_url('link-terkait') ?>" class="btn btn-outline-primary px-4 rounded-pill">
+                Lihat Semua Tautan <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+    </div>
+</section>
+<style>
+.quick-link-card, .news-card, .guru-card, .card.transition { transition: transform .25s, box-shadow .25s !important; }
+.card.transition:hover { transform: translateY(-5px); box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important; border-bottom-color: var(--bs-primary) !important; }
+</style>
+<?php endif; ?>
 
 <?= $this->endSection() ?>

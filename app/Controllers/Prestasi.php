@@ -3,14 +3,20 @@
 namespace App\Controllers;
 
 use App\Models\PrestasiModel;
+use App\Models\GaleriModel;
+use App\Models\KategoriGaleriModel;
 
 class Prestasi extends BaseController
 {
     public function index(): string
     {
-        $model    = new PrestasiModel();
-        $kategori = $this->request->getGet('kategori') ?? '';
-        $tahun    = $this->request->getGet('tahun') ?? '';
+        $model               = new PrestasiModel();
+        $galeriModel         = new GaleriModel();
+        $kategoriGaleriModel = new KategoriGaleriModel();
+        $kategori            = $this->request->getGet('kategori') ?? '';
+        $tahun               = $this->request->getGet('tahun') ?? '';
+
+        $katPrestasi  = $kategoriGaleriModel->where('slug', 'prestasi')->first();
 
         $builder = $model->orderBy('tahun', 'DESC')->orderBy('urutan', 'ASC');
 
@@ -34,8 +40,9 @@ class Prestasi extends BaseController
             'tahun_list'   => array_column($tahunList, 'tahun'),
             'kategori_filter' => $kategori,
             'tahun_filter'    => $tahun,
-            'total_akademik'     => $model->where('kategori', 'akademik')->countAllResults(false),
-            'total_non_akademik' => $model->where('kategori', 'non_akademik')->countAllResults(false),
+            'total_akademik'     => $model->where('kategori', 'akademik')->countAllResults(true),
+            'total_non_akademik' => $model->where('kategori', 'non_akademik')->countAllResults(true),
+            'galeri_prestasi'    => $katPrestasi ? $galeriModel->getByKategori($katPrestasi['id']) : [],
         ]);
     }
 }

@@ -33,8 +33,9 @@ class AkademikController extends BaseController
     public function programCreate(): string
     {
         return view('admin/akademik/program_form', [
-            'title'   => 'Tambah Program Unggulan',
-            'program' => null,
+            'title'       => 'Tambah Program Unggulan',
+            'program'     => null,
+            'next_urutan' => ($this->programModel->selectMax('urutan')->first()['urutan'] ?? 0) + 1,
         ]);
     }
 
@@ -125,8 +126,9 @@ class AkademikController extends BaseController
     public function kurikulumCreate(): string
     {
         return view('admin/akademik/kurikulum_form', [
-            'title' => 'Tambah Blok Kurikulum',
-            'blok'  => null,
+            'title'       => 'Tambah Blok Kurikulum',
+            'blok'        => null,
+            'next_urutan' => ($this->kurikulumModel->selectMax('urutan')->first()['urutan'] ?? 0) + 1,
         ]);
     }
 

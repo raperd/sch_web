@@ -23,6 +23,48 @@
     </div>
 <?php endif; ?>
 
+<!-- Mobile Cards (xs/sm) -->
+<div class="d-md-none">
+    <?php if (empty($bloks)): ?>
+        <div class="text-center py-5 text-muted">
+            <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+            Belum ada blok kurikulum. <a href="<?= base_url('admin/akademik/kurikulum/create') ?>">Tambah sekarang</a>
+        </div>
+    <?php else: ?>
+        <?php foreach ($bloks as $b): ?>
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body p-3">
+                    <div class="d-flex justify-content-between align-items-start mb-1">
+                        <div class="fw-semibold"><?= esc($b['judul']) ?></div>
+                        <?= $b['is_active']
+                            ? '<span class="badge text-bg-success">Aktif</span>'
+                            : '<span class="badge text-bg-secondary">Non-aktif</span>' ?>
+                    </div>
+                    <?php if (!empty($b['konten'])): ?>
+                        <small class="text-muted"><?= esc(mb_strimwidth(strip_tags($b['konten']), 0, 80, '...')) ?></small>
+                    <?php endif; ?>
+                    <div class="mt-1"><small class="text-muted">Urutan: <?= $b['urutan'] ?></small></div>
+                </div>
+                <div class="card-footer bg-white border-top p-2 d-flex gap-2 justify-content-end">
+                    <a href="<?= base_url('admin/akademik/kurikulum/' . $b['id'] . '/edit') ?>"
+                        class="btn btn-sm btn-outline-primary flex-grow-1">
+                        <i class="bi bi-pencil me-1"></i>Edit
+                    </a>
+                    <form method="post" action="<?= base_url('admin/akademik/kurikulum/' . $b['id'] . '/delete') ?>"
+                        data-confirm="Hapus blok ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
+                        <?= csrf_field() ?>
+                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</div>
+
+<!-- Desktop Table (md+) -->
+<div class="d-none d-md-block">
 <div class="card border-0 shadow-sm">
     <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
@@ -66,7 +108,7 @@
                                 </a>
                                 <form method="post" action="<?= base_url('admin/akademik/kurikulum/' . $b['id'] . '/delete') ?>"
                                       class="d-inline"
-                                      onsubmit="return confirm('Hapus blok ini?')">
+                                      data-confirm="Hapus blok ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                                     <?= csrf_field() ?>
                                     <button type="submit" class="btn btn-sm btn-outline-danger">
                                         <i class="bi bi-trash"></i>
@@ -79,6 +121,7 @@
             </tbody>
         </table>
     </div>
+</div>
 </div>
 
 <?= $this->endSection() ?>

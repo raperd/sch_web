@@ -26,8 +26,8 @@
         :root {
             --bs-primary: <?= esc($tp) ?>;
             --bs-primary-rgb: <?= $hexToRgb($tp) ?>;
-            --bs-secondary: <?= esc($ts) ?>;
-            --bs-secondary-rgb: <?= $hexToRgb($ts) ?>;
+            --site-secondary: <?= esc($ts) ?>;
+            --site-secondary-rgb: <?= $hexToRgb($ts) ?>;
             --accent-gold: <?= esc($ta) ?>;
             --accent-gold-rgb: <?= $hexToRgb($ta) ?>;
         }

@@ -74,8 +74,27 @@
 <?= $this->section('scripts') ?>
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
 <script>
-const quill = new Quill('#quill-editor', { theme: 'snow', modules: { toolbar: [[{header:[2,3,false]}],['bold','italic','underline'],[{list:'ordered'},{list:'bullet'}],['link'],['clean']] } });
-quill.root.innerHTML = document.getElementById('kontenInput').value;
-document.getElementById('ppdbForm').addEventListener('submit', () => { document.getElementById('kontenInput').value = quill.root.innerHTML; });
+const quill = new Quill('#quill-editor', {
+    theme: 'snow',
+    modules: {
+        toolbar: [
+            [{ header: [2, 3, false] }],
+            ['bold', 'italic', 'underline'],
+            [{ list: 'ordered' }, { list: 'bullet' }],
+            ['link'],
+            ['clean']
+        ]
+    }
+});
+
+// Quill 2.x: gunakan dangerouslyPasteHTML agar konten HTML termuat dengan benar
+const existingHtml = document.getElementById('kontenInput').value;
+if (existingHtml && existingHtml.trim()) {
+    quill.clipboard.dangerouslyPasteHTML(existingHtml);
+}
+
+document.getElementById('ppdbForm').addEventListener('submit', function() {
+    document.getElementById('kontenInput').value = quill.root.innerHTML;
+});
 </script>
 <?= $this->endSection() ?>

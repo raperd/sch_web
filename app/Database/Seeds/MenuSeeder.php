@@ -38,6 +38,7 @@ class MenuSeeder extends Seeder
             ['nama' => 'Profil Sekolah',   'url' => '/profil',          'urutan' => 2],
             ['nama' => 'Berita & Artikel', 'url' => '/berita',          'urutan' => 3],
             ['nama' => 'SPMB',             'url' => '/ppdb',            'urutan' => 4],
+            ['nama' => 'Link Terkait',     'url' => '/link-terkait',    'urutan' => 5],
         ];
 
         foreach ($menuFooter as $item) {
@@ -59,7 +60,7 @@ class MenuSeeder extends Seeder
             ['label' => 'Akademik',         'url' => '/akademik',        'icon' => 'bi-book-half',       'warna' => 'success',  'urutan' => 2],
             ['label' => 'Ekstrakurikuler',  'url' => '/kehidupan-siswa', 'icon' => 'bi-trophy',          'warna' => 'warning',  'urutan' => 3],
             ['label' => 'Direktori Guru',   'url' => '/direktori',       'icon' => 'bi-person-badge',    'warna' => 'info',     'urutan' => 4],
-            ['label' => 'Galeri Sekolah',   'url' => '/profil#fasilitas','icon' => 'bi-images',          'warna' => 'secondary','urutan' => 5],
+            ['label' => 'Galeri Sekolah',   'url' => '/profil#tab-galeri','icon' => 'bi-images',          'warna' => 'secondary','urutan' => 5],
             ['label' => 'Berita Terbaru',   'url' => '/berita',          'icon' => 'bi-newspaper',       'warna' => 'danger',   'urutan' => 6],
         ];
 

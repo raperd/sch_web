@@ -95,7 +95,85 @@
     </div>
 </div>
 
-<!-- Tabel -->
+<?php
+$tingkatLabel = [
+    'sekolah'         => ['Sekolah',        'secondary'],
+    'kecamatan'       => ['Kecamatan',      'info'],
+    'kota_kabupaten'  => ['Kota/Kab.',      'primary'],
+    'provinsi'        => ['Provinsi',       'warning'],
+    'nasional'        => ['Nasional',       'danger'],
+    'internasional'   => ['Internasional',  'dark'],
+];
+?>
+
+<!-- Mobile Cards (xs/sm) -->
+<div class="d-md-none">
+    <?php if (empty($prestasi)): ?>
+        <div class="text-center py-5 text-muted">
+            <i class="bi bi-trophy fs-2 d-block mb-2 opacity-25"></i>
+            Belum ada data prestasi.
+        </div>
+    <?php else: ?>
+        <?php foreach ($prestasi as $p): ?>
+            <?php [$tLabel, $tColor] = $tingkatLabel[$p['tingkat']] ?? [$p['tingkat'], 'secondary']; ?>
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body p-3">
+                    <div class="d-flex gap-3 mb-2">
+                        <?php if (!empty($p['foto'])): ?>
+                            <img src="<?= base_url('uploads/prestasi/' . esc($p['foto'])) ?>"
+                                class="rounded flex-shrink-0" style="width:52px;height:52px;object-fit:cover" alt="">
+                        <?php else: ?>
+                            <div class="rounded bg-warning bg-opacity-15 d-flex align-items-center justify-content-center flex-shrink-0"
+                                style="width:52px;height:52px">
+                                <i class="bi bi-trophy-fill text-warning fs-5"></i>
+                            </div>
+                        <?php endif; ?>
+                        <div>
+                            <div class="fw-semibold"><?= esc($p['judul']) ?></div>
+                            <?php if (!empty($p['pembimbing'])): ?>
+                                <small class="text-muted"><i class="bi bi-person me-1"></i><?= esc($p['pembimbing']) ?></small>
+                            <?php endif; ?>
+                            <?php if (!empty($p['nama_siswa'])): ?>
+                                <small class="text-muted d-block"><?= esc($p['nama_siswa']) ?></small>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-wrap gap-1">
+                        <?php if ($p['kategori'] === 'akademik'): ?>
+                            <span class="badge text-bg-success">Akademik</span>
+                        <?php else: ?>
+                            <span class="badge text-bg-warning text-dark">Non-Akademik</span>
+                        <?php endif; ?>
+                        <span class="badge text-bg-<?= $tColor ?>"><?= $tLabel ?></span>
+                        <span class="badge text-bg-light border"><?= esc($p['tahun']) ?></span>
+                        <?php if ($p['is_featured']): ?>
+                            <span class="badge text-bg-warning"><i class="bi bi-star-fill me-1"></i>Unggulan</span>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <div class="card-footer bg-white border-top p-2 d-flex gap-2 justify-content-end">
+                    <a href="<?= base_url('admin/prestasi/edit/' . $p['id']) ?>"
+                        class="btn btn-sm btn-outline-primary flex-grow-1">
+                        <i class="bi bi-pencil me-1"></i>Edit
+                    </a>
+                    <form method="post" action="<?= base_url('admin/prestasi/delete/' . $p['id']) ?>"
+                        data-confirm="Hapus prestasi ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
+                        <?= csrf_field() ?>
+                        <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                    </form>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
+    <?php if ($pager): ?>
+        <div class="d-flex justify-content-center py-3">
+            <?= $pager->links('prestasi', 'default_full') ?>
+        </div>
+    <?php endif; ?>
+</div>
+
+<!-- Desktop Table (md+) -->
+<div class="d-none d-md-block">
 <div class="card border-0 shadow-sm">
     <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
@@ -120,6 +198,7 @@
                     </tr>
                 <?php else: ?>
                     <?php foreach ($prestasi as $p): ?>
+                        <?php [$label, $color] = $tingkatLabel[$p['tingkat']] ?? [$p['tingkat'], 'secondary']; ?>
                         <tr>
                             <td>
                                 <div class="d-flex align-items-center gap-2">
@@ -149,20 +228,7 @@
                                     <span class="badge text-bg-warning text-dark">Non-Akademik</span>
                                 <?php endif; ?>
                             </td>
-                            <td>
-                                <?php
-                                $tingkatLabel = [
-                                    'sekolah'         => ['Sekolah',        'secondary'],
-                                    'kecamatan'       => ['Kecamatan',      'info'],
-                                    'kota_kabupaten'  => ['Kota/Kab.',      'primary'],
-                                    'provinsi'        => ['Provinsi',       'warning'],
-                                    'nasional'        => ['Nasional',       'danger'],
-                                    'internasional'   => ['Internasional',  'dark'],
-                                ];
-                                [$label, $color] = $tingkatLabel[$p['tingkat']] ?? [$p['tingkat'], 'secondary'];
-                                ?>
-                                <span class="badge text-bg-<?= $color ?>"><?= $label ?></span>
-                            </td>
+                            <td><span class="badge text-bg-<?= $color ?>"><?= $label ?></span></td>
                             <td><?= esc($p['tahun']) ?></td>
                             <td class="text-muted small"><?= esc($p['nama_siswa'] ?? '-') ?></td>
                             <td>
@@ -177,7 +243,7 @@
                                         <i class="bi bi-pencil"></i>
                                     </a>
                                     <form method="post" action="<?= base_url('admin/prestasi/delete/' . $p['id']) ?>"
-                                        onsubmit="return confirm('Hapus prestasi ini?')">
+                                        data-confirm="Hapus prestasi ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                                         <?= csrf_field() ?>
                                         <button class="btn btn-sm btn-outline-danger" title="Hapus">
                                             <i class="bi bi-trash"></i>
@@ -196,6 +262,7 @@
             <?= $pager->links('prestasi', 'default_full') ?>
         </div>
     <?php endif; ?>
+</div>
 </div>
 
 <?= $this->endSection() ?>

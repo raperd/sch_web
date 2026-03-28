@@ -23,6 +23,54 @@
     </div>
 <?php endif; ?>
 
+<!-- Mobile Cards (xs/sm) -->
+<div class="d-md-none">
+    <?php if (empty($programs)): ?>
+        <div class="text-center py-5 text-muted">
+            <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+            Belum ada program. <a href="<?= base_url('admin/akademik/program/create') ?>">Tambah sekarang</a>
+        </div>
+    <?php else: ?>
+        <?php foreach ($programs as $p): ?>
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body p-3">
+                    <div class="d-flex gap-3 mb-1">
+                        <span class="rounded-circle bg-<?= esc($p['warna']) ?> bg-opacity-15 d-flex align-items-center justify-content-center flex-shrink-0"
+                            style="width:48px;height:48px;">
+                            <i class="bi <?= esc($p['icon']) ?> text-<?= esc($p['warna']) ?> fs-5"></i>
+                        </span>
+                        <div>
+                            <div class="fw-semibold"><?= esc($p['judul']) ?></div>
+                            <div class="text-muted small"><?= esc(mb_strimwidth($p['deskripsi'] ?? '', 0, 80, '...')) ?></div>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2 small">
+                        <?= $p['is_active']
+                            ? '<span class="badge text-bg-success">Aktif</span>'
+                            : '<span class="badge text-bg-secondary">Non-aktif</span>' ?>
+                        <span class="text-muted">Urutan: <?= $p['urutan'] ?></span>
+                    </div>
+                </div>
+                <div class="card-footer bg-white border-top p-2 d-flex gap-2 justify-content-end">
+                    <a href="<?= base_url('admin/akademik/program/' . $p['id'] . '/edit') ?>"
+                        class="btn btn-sm btn-outline-primary flex-grow-1">
+                        <i class="bi bi-pencil me-1"></i>Edit
+                    </a>
+                    <form method="post" action="<?= base_url('admin/akademik/program/' . $p['id'] . '/delete') ?>"
+                        data-confirm="Hapus program ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
+                        <?= csrf_field() ?>
+                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</div>
+
+<!-- Desktop Table (md+) -->
+<div class="d-none d-md-block">
 <div class="card border-0 shadow-sm">
     <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
@@ -76,7 +124,7 @@
                                 </a>
                                 <form method="post" action="<?= base_url('admin/akademik/program/' . $p['id'] . '/delete') ?>"
                                       class="d-inline"
-                                      onsubmit="return confirm('Hapus program ini?')">
+                                      data-confirm="Hapus program ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                                     <?= csrf_field() ?>
                                     <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus">
                                         <i class="bi bi-trash"></i>
@@ -89,6 +137,7 @@
             </tbody>
         </table>
     </div>
+</div>
 </div>
 
 <?= $this->endSection() ?>

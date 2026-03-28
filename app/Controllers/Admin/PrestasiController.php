@@ -39,17 +39,18 @@ class PrestasiController extends BaseController
             'tahun_filter'       => $tahun,
             'search'             => $search,
             'tahun_list'         => array_column($tahunList, 'tahun'),
-            'total_all'          => $this->model->countAllResults(false),
-            'total_akademik'     => $this->model->where('kategori', 'akademik')->countAllResults(false),
-            'total_non_akademik' => $this->model->where('kategori', 'non_akademik')->countAllResults(false),
-            'total_featured'     => $this->model->where('is_featured', 1)->countAllResults(false),
+            'total_all'          => $this->model->countAllResults(true),
+            'total_akademik'     => $this->model->where('kategori', 'akademik')->countAllResults(true),
+            'total_non_akademik' => $this->model->where('kategori', 'non_akademik')->countAllResults(true),
+            'total_featured'     => $this->model->where('is_featured', 1)->countAllResults(true),
         ]);
     }
 
     public function create(): string
     {
         return view('admin/prestasi/create', [
-            'title' => 'Tambah Prestasi',
+            'title'       => 'Tambah Prestasi',
+            'next_urutan' => ($this->model->selectMax('urutan')->first()['urutan'] ?? 0) + 1,
         ]);
     }
 

@@ -25,7 +25,10 @@ class FasilitasController extends BaseController
 
     public function create(): string
     {
-        return view('admin/fasilitas/create', ['title' => 'Tambah Fasilitas']);
+        return view('admin/fasilitas/create', [
+            'title'       => 'Tambah Fasilitas',
+            'next_urutan' => ($this->model->selectMax('urutan')->first()['urutan'] ?? 0) + 1,
+        ]);
     }
 
     public function store()

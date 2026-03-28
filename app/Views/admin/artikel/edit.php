@@ -2,11 +2,13 @@
 
 <?= $this->section('styles') ?>
 <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css" rel="stylesheet">
 <style>
 #quill-editor { min-height: 360px; font-size: 1rem; }
 .ql-toolbar.ql-snow { border-radius: .375rem .375rem 0 0; }
 .ql-container.ql-snow { border-radius: 0 0 .375rem .375rem; font-size: 1rem; }
-.thumb-preview { max-height: 160px; object-fit: cover; border-radius: .5rem; }
+.thumb-preview { max-height: 200px; object-fit: cover; border-radius: .5rem; width:100%; }
+#cropImageThumb { max-width: 100%; display: block; }
 </style>
 <?= $this->endSection() ?>
 
@@ -145,21 +147,35 @@
                     <i class="bi bi-image me-1 text-primary"></i>Thumbnail
                 </div>
                 <div class="card-body p-3">
+                    <div id="thumbPreviewWrap" class="mb-3 text-center <?= empty($artikel['thumbnail']) ? 'd-none' : '' ?>">
+                        <img id="thumbPreview"
+                            src="<?= !empty($artikel['thumbnail']) ? base_url('uploads/artikel/' . esc($artikel['thumbnail'])) : '' ?>"
+                            class="thumb-preview" alt="Thumbnail">
+                        <div class="d-flex justify-content-center gap-2 mt-2">
+                            <small class="text-muted" id="thumbLabel"><?= !empty($artikel['thumbnail']) ? 'Thumbnail saat ini' : '' ?></small>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="reCropBtn">
+                                <i class="bi bi-crop me-1"></i>Ganti & Crop
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Hidden inputs -->
+                    <input type="file" name="thumbnail" id="thumbnailInput"
+                        accept="image/jpeg,image/png,image/webp" style="display:none">
+                    <input type="hidden" name="thumbnail_cropped" id="thumbnailCropped">
+                    <div class="d-flex gap-2 align-items-center <?= !empty($artikel['thumbnail']) ? 'd-none' : '' ?>" id="pickBtnWrap">
+                        <button type="button" class="btn btn-outline-primary" id="pickThumbBtn">
+                            <i class="bi bi-upload me-1"></i>Pilih Gambar
+                        </button>
+                        <span class="text-muted small" id="thumbFileName">Belum ada gambar dipilih</span>
+                    </div>
                     <?php if (!empty($artikel['thumbnail'])): ?>
-                        <div class="mb-2 text-center" id="thumbPreviewWrap">
-                            <img id="thumbPreview"
-                                src="<?= base_url('uploads/artikel/' . esc($artikel['thumbnail'])) ?>"
-                                class="thumb-preview w-100" alt="Thumbnail saat ini">
-                            <small class="text-muted d-block mt-1">Thumbnail saat ini</small>
-                        </div>
-                    <?php else: ?>
-                        <div id="thumbPreviewWrap" class="mb-2 text-center d-none">
-                            <img id="thumbPreview" src="" class="thumb-preview w-100" alt="Preview">
-                        </div>
+                    <div class="mt-2">
+                        <button type="button" class="btn btn-outline-primary btn-sm" id="pickThumbBtn">
+                            <i class="bi bi-upload me-1"></i>Ganti Thumbnail
+                        </button>
+                    </div>
                     <?php endif; ?>
-                    <input type="file" class="form-control" name="thumbnail" id="thumbnailInput"
-                        accept="image/jpeg,image/png,image/webp">
-                    <div class="form-text">Upload baru untuk mengganti. JPEG, PNG, WebP. Maks. 2 MB.</div>
+                    <div class="form-text mt-2">Upload baru untuk mengganti. Disarankan rasio 16:9.</div>
                 </div>
             </div>
 
@@ -189,31 +205,175 @@
 
 </form>
 
+<!-- Modal Crop Thumbnail -->
+<div class="modal fade" id="thumbCropModal" tabindex="-1" data-bs-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-crop me-2"></i>Crop Thumbnail (16:9)</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body bg-dark p-2" style="max-height:65vh;overflow:auto;">
+                <img id="cropImageThumb" src="" alt="Crop" style="max-width:100%;display:block;">
+            </div>
+            <div class="modal-footer justify-content-between">
+                <span class="text-muted small"><i class="bi bi-info-circle me-1"></i>Geser/zoom untuk menyesuaikan area crop. Rasio 16:9 otomatis.</span>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="thumbCropConfirm">
+                        <i class="bi bi-check-lg me-1"></i>Terapkan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 <script>
+// ===================== QUILL IMAGE UPLOAD TO SERVER =====================
+const UPLOAD_URL = '<?= base_url('admin/artikel/upload-image') ?>';
+const CSRF_TOKEN = '<?= csrf_token() ?>';
+const CSRF_HASH  = '<?= csrf_hash() ?>';
+
+async function uploadImageToServer(file) {
+    const b64 = await new Promise((res, rej) => {
+        const reader = new FileReader();
+        reader.onload = ev => {
+            const img = new Image();
+            img.onload = () => {
+                const maxPx = 1400;
+                let { width: w, height: h } = img;
+                if (w > maxPx || h > maxPx) {
+                    if (w >= h) { h = Math.round(h * maxPx / w); w = maxPx; }
+                    else        { w = Math.round(w * maxPx / h); h = maxPx; }
+                }
+                const canvas = document.createElement('canvas');
+                canvas.width = w; canvas.height = h;
+                canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                res(canvas.toDataURL('image/jpeg', 0.88));
+            };
+            img.onerror = rej;
+            img.src = ev.target.result;
+        };
+        reader.onerror = rej;
+        reader.readAsDataURL(file);
+    });
+
+    const arr  = b64.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    const u8   = new Uint8Array(bstr.length);
+    for (let i = 0; i < bstr.length; i++) u8[i] = bstr.charCodeAt(i);
+    const blob = new Blob([u8], { type: mime });
+
+    const origKB = Math.round(file.size / 1024);
+    const compKB = Math.round(blob.size / 1024);
+
+    const fd = new FormData();
+    fd.append(CSRF_TOKEN, CSRF_HASH);
+    fd.append('image', blob, 'image.jpg');
+
+    showUploadProgress(true);
+    try {
+        const resp = await fetch(UPLOAD_URL, { method: 'POST', body: fd });
+        const json = await resp.json();
+        showUploadProgress(false);
+        if (json.success) {
+            showImgUploadToast(origKB, compKB);
+            return json.url;
+        } else {
+            alert('Gagal upload gambar: ' + (json.error || 'Unknown error'));
+            return null;
+        }
+    } catch (e) {
+        showUploadProgress(false);
+        alert('Gagal upload gambar: ' + e.message);
+        return null;
+    }
+}
+
+function showUploadProgress(show) {
+    let el = document.getElementById('quillUploadBadge');
+    if (!el) {
+        el = document.createElement('div');
+        el.id = 'quillUploadBadge';
+        el.style.cssText = 'position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;';
+        document.body.appendChild(el);
+    }
+    el.innerHTML = show
+        ? `<div class="badge text-bg-secondary fs-6 shadow p-3">
+               <span class="spinner-border spinner-border-sm me-2"></span>Mengupload gambar...
+           </div>`
+        : '';
+}
+
+function showImgUploadToast(origKB, compKB) {
+    const saved = origKB > compKB ? Math.round((1 - compKB / origKB) * 100) : 0;
+    let wrap = document.getElementById('imgCompressToast');
+    if (!wrap) {
+        wrap = document.createElement('div');
+        wrap.id = 'imgCompressToast';
+        wrap.style.cssText = 'position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;min-width:280px;';
+        document.body.appendChild(wrap);
+    }
+    wrap.innerHTML = `
+        <div class="toast show align-items-center text-bg-success border-0 shadow" role="alert">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi bi-cloud-upload me-2"></i>
+                    Gambar tersimpan di server.<br>
+                    <small>${origKB} KB → ${compKB} KB${saved > 0 ? ` <span class="badge bg-white text-success">hemat ${saved}%</span>` : ''}</small>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" onclick="this.closest('.toast').remove()"></button>
+            </div>
+        </div>`;
+    setTimeout(() => { if (wrap.firstChild) wrap.firstChild.remove(); }, 5000);
+}
+
 // Init Quill dengan konten yang ada
 const quill = new Quill('#quill-editor', {
     theme: 'snow',
     modules: {
-        toolbar: [
-            [{ header: [2, 3, 4, false] }],
-            ['bold', 'italic', 'underline', 'strike'],
-            [{ list: 'ordered' }, { list: 'bullet' }],
-            ['blockquote', 'code-block'],
-            ['link', 'image'],
-            [{ align: [] }],
-            ['clean']
-        ]
+        toolbar: {
+            container: [
+                [{ header: [2, 3, 4, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ list: 'ordered' }, { list: 'bullet' }],
+                ['blockquote', 'code-block'],
+                ['link', 'image', 'video'],
+                [{ align: [] }],
+                ['clean']
+            ],
+            handlers: {
+                image: function() {
+                    const input = document.createElement('input');
+                    input.setAttribute('type', 'file');
+                    input.setAttribute('accept', 'image/jpeg,image/png,image/webp,image/gif');
+                    input.click();
+                    input.onchange = async () => {
+                        const file = input.files[0];
+                        if (!file) return;
+                        const url = await uploadImageToServer(file);
+                        if (!url) return;
+                        const range = quill.getSelection(true);
+                        quill.insertEmbed(range.index, 'image', url);
+                        quill.setSelection(range.index + 1);
+                    };
+                }
+            }
+        }
     }
 });
 
-// Set existing content
+// Set existing content — gunakan dangerouslyPasteHTML agar Quill 2.x memuat HTML dengan benar
 const existing = document.getElementById('kontenInput').value;
-if (existing) {
-    quill.root.innerHTML = existing;
+if (existing && existing.trim()) {
+    quill.clipboard.dangerouslyPasteHTML(existing);
 }
 
 // Sync ke hidden textarea saat submit
@@ -243,17 +403,57 @@ function togglePublishDate() {
 document.getElementById('statusSelect').addEventListener('change', togglePublishDate);
 togglePublishDate();
 
-// Thumbnail preview
+// ===================== THUMBNAIL CROP =====================
+let thumbCropper = null;
+
+document.getElementById('pickThumbBtn').addEventListener('click', () => {
+    document.getElementById('thumbnailInput').click();
+});
+document.getElementById('reCropBtn')?.addEventListener('click', () => {
+    document.getElementById('thumbnailInput').click();
+});
+
 document.getElementById('thumbnailInput').addEventListener('change', function() {
     const file = this.files[0];
-    if (file) {
+    if (!file) return;
+    const nameEl = document.getElementById('thumbFileName');
+    if (nameEl) nameEl.textContent = file.name;
+    const reader = new FileReader();
+    reader.onload = e => openThumbCropModal(e.target.result);
+    reader.readAsDataURL(file);
+});
+
+function openThumbCropModal(src) {
+    document.getElementById('cropImageThumb').src = src;
+    const modal = new bootstrap.Modal(document.getElementById('thumbCropModal'));
+    modal.show();
+    document.getElementById('thumbCropModal').addEventListener('shown.bs.modal', () => {
+        if (thumbCropper) thumbCropper.destroy();
+        thumbCropper = new Cropper(document.getElementById('cropImageThumb'), {
+            aspectRatio: 16 / 9,
+            viewMode: 1,
+            dragMode: 'move',
+            autoCropArea: 0.9,
+        });
+    }, { once: true });
+}
+
+document.getElementById('thumbCropConfirm').addEventListener('click', function() {
+    if (!thumbCropper) return;
+    const canvas = thumbCropper.getCroppedCanvas({ width: 1200, height: 675, imageSmoothingQuality: 'high' });
+    canvas.toBlob(blob => {
+        const url = URL.createObjectURL(blob);
+        document.getElementById('thumbPreview').src = url;
+        document.getElementById('thumbPreviewWrap').classList.remove('d-none');
+        document.getElementById('pickBtnWrap')?.classList.add('d-none');
+        const lbl = document.getElementById('thumbLabel');
+        if (lbl) lbl.textContent = 'Thumbnail baru (belum disimpan)';
         const reader = new FileReader();
-        reader.onload = e => {
-            document.getElementById('thumbPreview').src = e.target.result;
-            document.getElementById('thumbPreviewWrap').classList.remove('d-none');
-        };
-        reader.readAsDataURL(file);
-    }
+        reader.onload = e => { document.getElementById('thumbnailCropped').value = e.target.result; };
+        reader.readAsDataURL(blob);
+        bootstrap.Modal.getInstance(document.getElementById('thumbCropModal')).hide();
+        thumbCropper.destroy(); thumbCropper = null;
+    }, 'image/jpeg', 0.88);
 });
 </script>
 <?= $this->endSection() ?>

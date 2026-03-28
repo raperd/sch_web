@@ -67,7 +67,7 @@
                     </div>
                     <div>
                         <label class="form-label">Urutan</label>
-                        <input type="number" class="form-control" name="urutan" value="<?= esc(old('urutan', 0)) ?>" min="0">
+                        <input type="number" class="form-control" name="urutan" value="<?= esc(old('urutan', $next_urutan ?? 0)) ?>" min="0">
                     </div>
                 </div>
                 <div class="card-footer bg-white border-top d-grid gap-2">
@@ -82,12 +82,20 @@
 <?= $this->endSection() ?>
 <?= $this->section('scripts') ?>
 <script>
-document.getElementById('iconInput').addEventListener('input', function() {
+document.getElementById('iconInput').addEventListener('input', function () {
     document.getElementById('iconPreview').className = 'bi ' + this.value;
 });
-document.getElementById('fotoInput').addEventListener('change', function() {
+document.getElementById('fotoInput').addEventListener('change', function () {
     const file = this.files[0];
-    if (file) { const r = new FileReader(); r.onload = e => { document.getElementById('fotoPreview').src = e.target.result; document.getElementById('fotoWrap').classList.remove('d-none'); }; r.readAsDataURL(file); }
+    if (!file) return;
+    this.value = '';
+    AppCrop.open(file, this, {
+        bw: 320, bh: 240, ow: 800, oh: 600,
+        onDone(blob, url) {
+            document.getElementById('fotoPreview').src = url;
+            document.getElementById('fotoWrap').classList.remove('d-none');
+        }
+    });
 });
 </script>
 <?= $this->endSection() ?>

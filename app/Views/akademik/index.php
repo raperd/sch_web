@@ -3,7 +3,7 @@
 <?= $this->section('content') ?>
 
 <!-- Page Header -->
-<section class="page-header py-5" style="background: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-secondary) 100%);">
+<section class="page-header py-5" style="background: linear-gradient(135deg, var(--bs-primary) 0%, var(--site-secondary) 100%);">
     <div class="container text-center text-white">
         <h1 class="fw-bold mb-2">Akademik</h1>
         <nav aria-label="breadcrumb">
@@ -241,7 +241,7 @@
 </section>
 
 <!-- CTA Banner -->
-<section class="py-5 text-white" style="background: linear-gradient(135deg, var(--bs-primary), var(--bs-secondary));">
+<section class="py-5 text-white" style="background: linear-gradient(135deg, var(--bs-primary), var(--site-secondary));">
     <div class="container text-center">
         <h3 class="fw-bold mb-2">Tahun Ajaran <?= esc(setting('tahun_ajaran_aktif') ?? '2024/2025') ?></h3>
         <p class="mb-4 opacity-75">Informasi akademik lengkap tersedia di portal siswa dan orang tua</p>
