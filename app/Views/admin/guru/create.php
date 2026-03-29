@@ -116,7 +116,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Urutan</label>
-                        <input type="number" class="form-control" name="urutan" value="<?= esc(old('urutan', 0)) ?>" min="0">
+                        <input type="number" class="form-control" name="urutan" value="<?= esc(old('urutan', $next_urutan ?? 0)) ?>" min="0">
                     </div>
                     <div>
                         <div class="form-check form-switch">
@@ -137,8 +137,8 @@
 </form>
 
 <!-- Modal Crop -->
-<div class="modal fade" id="cropModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+<div class="modal fade" id="cropModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title"><i class="bi bi-crop me-2"></i>Crop Gambar</h5>
@@ -168,6 +168,7 @@
 <script>
 let cropperInstance = null;
 let activeCropInput = null;
+let guruCropApplied = false;
 
 document.querySelectorAll('.crop-input').forEach(input => {
     input.addEventListener('change', function () {
@@ -177,7 +178,7 @@ document.querySelectorAll('.crop-input').forEach(input => {
         const reader = new FileReader();
         reader.onload = e => {
             document.getElementById('cropImage').src = e.target.result;
-            const modal = new bootstrap.Modal(document.getElementById('cropModal'));
+            const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('cropModal'));
             modal.show();
             document.getElementById('cropModal').addEventListener('shown.bs.modal', () => {
                 if (cropperInstance) cropperInstance.destroy();
@@ -208,8 +209,18 @@ document.getElementById('cropConfirm')?.addEventListener('click', function () {
             prev.src = URL.createObjectURL(blob);
             document.getElementById('fotoPreviewWrap').classList.remove('d-none');
         }
+        guruCropApplied = true;
         bootstrap.Modal.getInstance(document.getElementById('cropModal'))?.hide();
     }, 'image/jpeg', 0.88);
+});
+
+document.getElementById('cropModal').addEventListener('hidden.bs.modal', function () {
+    if (cropperInstance) { cropperInstance.destroy(); cropperInstance = null; }
+    if (!guruCropApplied && activeCropInput) {
+        activeCropInput.value = '';
+        document.getElementById('fotoPreviewWrap')?.classList.add('d-none');
+    }
+    guruCropApplied = false;
 });
 </script>
 <?= $this->endSection() ?>

@@ -39,9 +39,10 @@ class KategoriArtikelController extends BaseController
     public function create(): string
     {
         return view('admin/kategori_artikel/form', [
-            'title'      => 'Tambah Kategori',
-            'breadcrumb' => 'Tambah Kategori',
-            'kategori'   => null,
+            'title'       => 'Tambah Kategori',
+            'breadcrumb'  => 'Tambah Kategori',
+            'kategori'    => null,
+            'next_urutan' => ($this->model->selectMax('urutan')->first()['urutan'] ?? 0) + 1,
         ]);
     }
 

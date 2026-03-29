@@ -117,7 +117,7 @@
                         <div class="col-md-3">
                             <label class="form-label fw-semibold" for="urutanInput">Urutan</label>
                             <input type="number" id="urutanInput" name="urutan" class="form-control" min="0"
-                                value="<?= esc(old('urutan', $album['urutan'] ?? 0)) ?>">
+                                value="<?= esc(old('urutan', $album['urutan'] ?? ($next_urutan ?? 0))) ?>">
                             <div class="form-text">0 = tampil berdasar tanggal.</div>
                         </div>
                         <div class="col-md-3 d-flex align-items-end pb-1">
@@ -175,7 +175,7 @@
 <?= $this->section('scripts') ?>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 <script>
-let albumCropper = null;
+let albumCropper = null, albumCropApplied = false;
 
 document.getElementById('pickCoverBtn').addEventListener('click', () => {
     document.getElementById('coverInput').click();
@@ -187,7 +187,7 @@ document.getElementById('coverInput').addEventListener('change', function () {
     const reader = new FileReader();
     reader.onload = e => {
         document.getElementById('cropImageAlbum').src = e.target.result;
-        const modal = new bootstrap.Modal(document.getElementById('albumCoverCropModal'));
+        const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('albumCoverCropModal'));
         modal.show();
         document.getElementById('albumCoverCropModal').addEventListener('shown.bs.modal', () => {
             if (albumCropper) albumCropper.destroy();
@@ -215,10 +215,20 @@ document.getElementById('albumCropConfirm').addEventListener('click', function (
         const reader = new FileReader();
         reader.onload = e => { document.getElementById('coverCropped').value = e.target.result; };
         reader.readAsDataURL(blob);
+        albumCropApplied = true;
         bootstrap.Modal.getInstance(document.getElementById('albumCoverCropModal')).hide();
         albumCropper.destroy();
         albumCropper = null;
     }, 'image/jpeg', 0.85);
+});
+
+document.getElementById('albumCoverCropModal').addEventListener('hidden.bs.modal', function () {
+    if (albumCropper) { albumCropper.destroy(); albumCropper = null; }
+    if (!albumCropApplied) {
+        document.getElementById('coverCropped').value = '';
+        document.getElementById('coverInput').value = '';
+    }
+    albumCropApplied = false;
 });
 </script>
 <?= $this->endSection() ?>

@@ -64,7 +64,7 @@ $action = $kategori
                     <div class="mb-4" style="max-width:160px">
                         <label class="form-label fw-semibold">Urutan Tampil</label>
                         <input type="number" name="urutan" class="form-control" min="0"
-                            value="<?= esc(old('urutan', $kategori['urutan'] ?? 0)) ?>">
+                            value="<?= esc(old('urutan', $kategori['urutan'] ?? ($next_urutan ?? 0))) ?>">
                         <div class="form-text">Angka kecil tampil lebih awal.</div>
                     </div>
 
