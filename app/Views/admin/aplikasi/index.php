@@ -64,10 +64,12 @@
                                 <?= $a['deskripsi'] ? esc(truncate_text($a['deskripsi'], 60)) : '<em>Tidak ada deskripsi</em>' ?>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-sm border-0 p-0" title="Klik untuk ubah status"
-                                        onclick="toggleAplikasi(<?= $a['id'] ?>, this)">
-                                    <i class="bi <?= $a['is_active'] ? 'bi-toggle-on text-success' : 'bi-toggle-off text-muted' ?>" style="font-size:1.5rem;"></i>
-                                </button>
+                                <form method="post" action="<?= base_url('admin/aplikasi/toggle/' . $a['id']) ?>" class="d-inline">
+                                    <?= csrf_field() ?>
+                                    <button type="submit" class="btn btn-sm border-0 p-0" title="Klik untuk ubah status">
+                                        <i class="bi <?= $a['is_active'] ? 'bi-toggle-on text-success' : 'bi-toggle-off text-muted' ?>" style="font-size:1.5rem;"></i>
+                                    </button>
+                                </form>
                             </td>
                             <td class="text-end pe-3">
                                 <a href="<?= base_url('admin/aplikasi/edit/' . $a['id']) ?>" class="btn btn-sm btn-outline-primary me-1">
@@ -94,35 +96,4 @@
         <?php endif; ?>
     </div>
 </div>
-<?= $this->endSection() ?>
-<?= $this->section('scripts') ?>
-<script>
-let _csrfHash = '<?= csrf_hash() ?>';
-
-function toggleAplikasi(id, btn) {
-    btn.disabled = true;
-    fetch('<?= base_url('admin/aplikasi/toggle/') ?>' + id, {
-        method: 'POST',
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRF-TOKEN': _csrfHash,
-        },
-    })
-    .then(r => {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.json();
-    })
-    .then(data => {
-        if (!data.ok) throw new Error(data.message || 'Gagal');
-        _csrfHash = data.csrf;
-        const icon = btn.querySelector('i');
-        icon.className = data.is_active
-            ? 'bi bi-toggle-on text-success'
-            : 'bi bi-toggle-off text-muted';
-        icon.style.fontSize = '1.5rem';
-    })
-    .catch(() => AppDialog.alert('Gagal memperbarui status. Coba muat ulang halaman.', { type: 'danger' }))
-    .finally(() => { btn.disabled = false; });
-}
-</script>
 <?= $this->endSection() ?>

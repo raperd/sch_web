@@ -170,7 +170,7 @@ class ArtikelController extends BaseController
             'judul'       => $judul,
             'slug'        => $slug,
             'ringkasan'   => $this->request->getPost('ringkasan'),
-            'konten'      => $this->request->getPost('konten'),
+            'konten'      => html_purify($this->request->getPost('konten')),
             'thumbnail'   => $thumbnail,
             'status'      => $status,
             'is_featured' => (int) ($this->request->getPost('is_featured') === '1'),
@@ -259,7 +259,7 @@ class ArtikelController extends BaseController
             'judul'       => $judul,
             'slug'        => $slug,
             'ringkasan'   => $this->request->getPost('ringkasan'),
-            'konten'      => $this->request->getPost('konten'),
+            'konten'      => html_purify($this->request->getPost('konten')),
             'thumbnail'   => $thumbnail,
             'status'      => $status,
             'is_featured' => (int) ($this->request->getPost('is_featured') === '1'),
@@ -347,7 +347,7 @@ class ArtikelController extends BaseController
             return null;
         }
 
-        $dir      = WRITEPATH . 'uploads/artikel/';
+        $dir = FCPATH . 'uploads/artikel/';
         if (! is_dir($dir)) {
             mkdir($dir, 0775, true);
         }

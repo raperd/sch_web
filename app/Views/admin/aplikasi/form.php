@@ -98,27 +98,98 @@
     </div>
 </div>
 
+
+<!-- Modal Crop Icon -->
+<div class="modal fade" id="iconCropModal" tabindex="-1" data-bs-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-crop me-2"></i>Crop Icon (1:1)</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body bg-dark p-2" style="max-height:60vh;overflow:auto;">
+                <img id="iconCropImg" src="" alt="Crop" style="max-width:100%;display:block;">
+            </div>
+            <div class="modal-footer justify-content-between">
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="iconZoomOut" title="Perkecil"><i class="bi bi-zoom-out"></i></button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="iconZoomIn"  title="Perbesar"><i class="bi bi-zoom-in"></i></button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="iconRotL"   title="Putar Kiri"><i class="bi bi-arrow-counterclockwise"></i></button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="iconRotR"   title="Putar Kanan"><i class="bi bi-arrow-clockwise"></i></button>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="iconCropConfirm">
+                        <i class="bi bi-check-lg me-1"></i>Crop &amp; Gunakan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?= $this->endSection() ?>
 <?= $this->section('scripts') ?>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 <script>
 document.getElementById('pickIconBtn').addEventListener('click', () => document.getElementById('iconFileInput').click());
 document.getElementById('reCropIconBtn').addEventListener('click', () => document.getElementById('iconFileInput').click());
 
+let iconCropper = null, iconCropApplied = false;
+const iconModalEl = document.getElementById('iconCropModal');
+
 document.getElementById('iconFileInput').addEventListener('change', function () {
     const file = this.files[0];
     if (!file) return;
+    const prevFileName = document.getElementById('iconFileName').textContent;
     document.getElementById('iconFileName').textContent = file.name;
-    AppCrop.open(file, null, {
-        bw: 256, bh: 256, ow: 256, oh: 256,
-        fmt: 'image/png', quality: 1,
-        onDone(blob, url) {
-            const reader = new FileReader();
-            reader.onload = e => { document.getElementById('iconCropped').value = e.target.result; };
-            reader.readAsDataURL(blob);
-            document.getElementById('iconPreviewImg').src = url;
-            document.getElementById('iconPreviewWrap').classList.remove('d-none');
-        }
-    });
+    const reader = new FileReader();
+    reader.onload = e => {
+        document.getElementById('iconCropImg').src = e.target.result;
+        bootstrap.Modal.getOrCreateInstance(iconModalEl).show();
+        iconModalEl.addEventListener('shown.bs.modal', () => {
+            if (iconCropper) iconCropper.destroy();
+            iconCropper = new Cropper(document.getElementById('iconCropImg'), {
+                aspectRatio: 1,
+                viewMode: 1,
+                dragMode: 'move',
+                autoCropArea: 0.9,
+            });
+        }, { once: true });
+        iconModalEl.addEventListener('hidden.bs.modal', function () {
+            if (iconCropper) { iconCropper.destroy(); iconCropper = null; }
+            if (!iconCropApplied) {
+                document.getElementById('iconCropped').value = '';
+                document.getElementById('iconPreviewWrap').classList.add('d-none');
+                document.getElementById('iconFileName').textContent = prevFileName;
+                document.getElementById('iconFileInput').value = '';
+            }
+            iconCropApplied = false;
+        }, { once: true });
+    };
+    reader.readAsDataURL(file);
+});
+
+document.getElementById('iconZoomIn').addEventListener('click',  () => iconCropper?.zoom(0.1));
+document.getElementById('iconZoomOut').addEventListener('click', () => iconCropper?.zoom(-0.1));
+document.getElementById('iconRotL').addEventListener('click',    () => iconCropper?.rotate(-90));
+document.getElementById('iconRotR').addEventListener('click',    () => iconCropper?.rotate(90));
+
+document.getElementById('iconCropConfirm').addEventListener('click', function () {
+    if (!iconCropper) return;
+    const canvas = iconCropper.getCroppedCanvas({ width: 256, height: 256, imageSmoothingQuality: 'high' });
+    canvas.toBlob(blob => {
+        const url = URL.createObjectURL(blob);
+        document.getElementById('iconPreviewImg').src = url;
+        document.getElementById('iconPreviewWrap').classList.remove('d-none');
+        const reader = new FileReader();
+        reader.onload = e => { document.getElementById('iconCropped').value = e.target.result; };
+        reader.readAsDataURL(blob);
+        iconCropApplied = true;
+        bootstrap.Modal.getInstance(iconModalEl).hide();
+        iconCropper.destroy();
+        iconCropper = null;
+    }, 'image/png', 1);
 });
 </script>
 <?= $this->endSection() ?>

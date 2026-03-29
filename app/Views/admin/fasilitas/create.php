@@ -76,7 +76,7 @@
                             </button>
                             <span class="text-muted small" id="fotoFileName">Belum ada foto dipilih</span>
                         </div>
-                        <div class="form-text">JPEG/PNG. Foto akan dipotong otomatis rasio 4:3.</div>
+                        <div class="form-text">JPEG/PNG. Foto akan dipotong otomatis rasio 16:9.</div>
                     </div>
                     <div>
                         <label class="form-label">Urutan</label>
@@ -92,29 +92,113 @@
     </div>
 </form>
 
+
+<!-- Modal Crop Foto -->
+<div class="modal fade" id="fasilitasCropModal" tabindex="-1" data-bs-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-crop me-2"></i>Crop Foto (16:9)</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body bg-dark p-2" style="max-height:60vh;overflow:auto;">
+                <img id="fasilitasCropImg" src="" alt="Crop" style="max-width:100%;display:block;">
+            </div>
+            <div class="modal-footer justify-content-between">
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="fasZoomOut" title="Perkecil"><i class="bi bi-zoom-out"></i></button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="fasZoomIn" title="Perbesar"><i class="bi bi-zoom-in"></i></button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="fasRotL" title="Putar Kiri"><i class="bi bi-arrow-counterclockwise"></i></button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="fasRotR" title="Putar Kanan"><i class="bi bi-arrow-clockwise"></i></button>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="fasilitasCropConfirm">
+                        <i class="bi bi-check-lg me-1"></i>Crop &amp; Gunakan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?= $this->endSection() ?>
 <?= $this->section('scripts') ?>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 <script>
-document.getElementById('iconInput').addEventListener('input', function () {
-    document.getElementById('iconPreview').className = 'bi ' + this.value;
-});
-document.getElementById('pickFotoBtn').addEventListener('click', () => document.getElementById('fotoInput').click());
-document.getElementById('reCropFotoBtn').addEventListener('click', () => document.getElementById('fotoInput').click());
+    document.getElementById('iconInput').addEventListener('input', function() {
+        document.getElementById('iconPreview').className = 'bi ' + this.value;
+    });
+    document.getElementById('pickFotoBtn').addEventListener('click', () => document.getElementById('fotoInput').click());
+    document.getElementById('reCropFotoBtn').addEventListener('click', () => document.getElementById('fotoInput').click());
 
-document.getElementById('fotoInput').addEventListener('change', function () {
-    const file = this.files[0];
-    if (!file) return;
-    document.getElementById('fotoFileName').textContent = file.name;
-    AppCrop.open(file, null, {
-        bw: 320, bh: 240, ow: 800, oh: 600,
-        onDone(blob, url) {
-            const reader = new FileReader();
-            reader.onload = e => { document.getElementById('fotoCropped').value = e.target.result; };
-            reader.readAsDataURL(blob);
+    let fasCropper = null,
+        fasCropApplied = false;
+    const fasModalEl = document.getElementById('fasilitasCropModal');
+
+    document.getElementById('fotoInput').addEventListener('change', function() {
+        const file = this.files[0];
+        if (!file) return;
+        document.getElementById('fotoFileName').textContent = file.name;
+        const reader = new FileReader();
+        reader.onload = e => {
+            document.getElementById('fasilitasCropImg').src = e.target.result;
+            bootstrap.Modal.getOrCreateInstance(fasModalEl).show();
+            fasModalEl.addEventListener('shown.bs.modal', () => {
+                if (fasCropper) fasCropper.destroy();
+                fasCropper = new Cropper(document.getElementById('fasilitasCropImg'), {
+                    aspectRatio: 16 / 9,
+                    viewMode: 1,
+                    dragMode: 'move',
+                    autoCropArea: 0.9,
+                });
+            }, {
+                once: true
+            });
+        };
+        reader.readAsDataURL(file);
+    });
+
+    document.getElementById('fasZoomIn').addEventListener('click', () => fasCropper?.zoom(0.1));
+    document.getElementById('fasZoomOut').addEventListener('click', () => fasCropper?.zoom(-0.1));
+    document.getElementById('fasRotL').addEventListener('click', () => fasCropper?.rotate(-90));
+    document.getElementById('fasRotR').addEventListener('click', () => fasCropper?.rotate(90));
+
+    document.getElementById('fasilitasCropConfirm').addEventListener('click', function() {
+        if (!fasCropper) return;
+        const canvas = fasCropper.getCroppedCanvas({
+            width: 1200,
+            height: 675,
+            imageSmoothingQuality: 'high'
+        });
+        canvas.toBlob(blob => {
+            const url = URL.createObjectURL(blob);
             document.getElementById('fotoPreview').src = url;
             document.getElementById('fotoWrap').classList.remove('d-none');
-        }
+            const reader = new FileReader();
+            reader.onload = e => {
+                document.getElementById('fotoCropped').value = e.target.result;
+            };
+            reader.readAsDataURL(blob);
+            fasCropApplied = true;
+            bootstrap.Modal.getInstance(fasModalEl).hide();
+            fasCropper.destroy();
+            fasCropper = null;
+        }, 'image/jpeg', 0.85);
     });
-});
+
+    fasModalEl.addEventListener('hidden.bs.modal', function() {
+        if (fasCropper) {
+            fasCropper.destroy();
+            fasCropper = null;
+        }
+        if (!fasCropApplied) {
+            document.getElementById('fotoCropped').value = '';
+            document.getElementById('fotoWrap').classList.add('d-none');
+            document.getElementById('fotoFileName').textContent = 'Belum ada foto dipilih';
+            document.getElementById('fotoInput').value = '';
+        }
+        fasCropApplied = false;
+    });
 </script>
 <?= $this->endSection() ?>

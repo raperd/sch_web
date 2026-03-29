@@ -26,8 +26,9 @@ class AlbumFotoController extends BaseController
     public function create(): string
     {
         return view('admin/album_foto/form', [
-            'title' => 'Tambah Album Foto',
-            'album' => null,
+            'title'       => 'Tambah Album Foto',
+            'album'       => null,
+            'next_urutan' => ($this->model->selectMax('urutan')->first()['urutan'] ?? 0) + 1,
         ]);
     }
 

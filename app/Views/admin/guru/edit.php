@@ -153,8 +153,8 @@
 </form>
 
 <!-- Modal Crop -->
-<div class="modal fade" id="cropModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+<div class="modal fade" id="cropModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title"><i class="bi bi-crop me-2"></i>Crop Gambar</h5>
@@ -184,16 +184,20 @@
 <script>
 let cropperInstance = null;
 let activeCropInput = null;
+let guruCropApplied = false;
 
 document.querySelectorAll('.crop-input').forEach(input => {
     input.addEventListener('change', function () {
         if (!this.files[0]) return;
         activeCropInput = this;
         const ratio = parseFloat(this.dataset.aspectRatio || 1);
+        const previewWrap = document.getElementById('fotoPreviewWrap');
+        const wasVisible  = !previewWrap.classList.contains('d-none');
+        const prevSrc     = document.getElementById('fotoPreview')?.src || '';
         const reader = new FileReader();
         reader.onload = e => {
             document.getElementById('cropImage').src = e.target.result;
-            const modal = new bootstrap.Modal(document.getElementById('cropModal'));
+            const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('cropModal'));
             modal.show();
             document.getElementById('cropModal').addEventListener('shown.bs.modal', () => {
                 if (cropperInstance) cropperInstance.destroy();
@@ -202,6 +206,19 @@ document.querySelectorAll('.crop-input').forEach(input => {
                     viewMode: 1,
                     autoCropArea: 0.9,
                 });
+            }, { once: true });
+            document.getElementById('cropModal').addEventListener('hidden.bs.modal', function () {
+                if (cropperInstance) { cropperInstance.destroy(); cropperInstance = null; }
+                if (!guruCropApplied && activeCropInput) {
+                    activeCropInput.value = '';
+                    if (wasVisible) {
+                        // Restore existing photo preview — do NOT hide
+                        document.getElementById('fotoPreview').src = prevSrc;
+                    } else {
+                        previewWrap.classList.add('d-none');
+                    }
+                }
+                guruCropApplied = false;
             }, { once: true });
         };
         reader.readAsDataURL(this.files[0]);
@@ -224,6 +241,7 @@ document.getElementById('cropConfirm')?.addEventListener('click', function () {
             prev.src = URL.createObjectURL(blob);
             document.getElementById('fotoPreviewWrap').classList.remove('d-none');
         }
+        guruCropApplied = true;
         bootstrap.Modal.getInstance(document.getElementById('cropModal'))?.hide();
     }, 'image/jpeg', 0.88);
 });

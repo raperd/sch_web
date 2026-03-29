@@ -383,7 +383,7 @@ document.getElementById('statusSelect').addEventListener('change', togglePublish
 togglePublishDate();
 
 // ===================== THUMBNAIL CROP =====================
-let thumbCropper = null;
+let thumbCropper = null, thumbCropApplied = false;
 
 document.getElementById('pickThumbBtn').addEventListener('click', () => {
     document.getElementById('thumbnailInput').click();
@@ -403,7 +403,7 @@ document.getElementById('thumbnailInput').addEventListener('change', function() 
 
 function openThumbCropModal(src) {
     document.getElementById('cropImageThumb').src = src;
-    const modal = new bootstrap.Modal(document.getElementById('thumbCropModal'));
+    const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('thumbCropModal'));
     modal.show();
     document.getElementById('thumbCropModal').addEventListener('shown.bs.modal', () => {
         if (thumbCropper) thumbCropper.destroy();
@@ -427,9 +427,21 @@ document.getElementById('thumbCropConfirm').addEventListener('click', function()
         const reader = new FileReader();
         reader.onload = e => { document.getElementById('thumbnailCropped').value = e.target.result; };
         reader.readAsDataURL(blob);
+        thumbCropApplied = true;
         bootstrap.Modal.getInstance(document.getElementById('thumbCropModal')).hide();
         thumbCropper.destroy(); thumbCropper = null;
     }, 'image/jpeg', 0.88);
+});
+
+document.getElementById('thumbCropModal').addEventListener('hidden.bs.modal', function () {
+    if (thumbCropper) { thumbCropper.destroy(); thumbCropper = null; }
+    if (!thumbCropApplied) {
+        document.getElementById('thumbnailCropped').value = '';
+        document.getElementById('thumbnailInput').value = '';
+        document.getElementById('thumbPreviewWrap').classList.add('d-none');
+        document.getElementById('thumbFileName').textContent = 'Belum ada thumbnail';
+    }
+    thumbCropApplied = false;
 });
 </script>
 <?= $this->endSection() ?>

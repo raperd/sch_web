@@ -107,7 +107,7 @@ class FasilitasController extends BaseController
         $imgData  = base64_decode($data);
         if (! $imgData) return null;
 
-        $dir = WRITEPATH . 'uploads/fasilitas/';
+        $dir = FCPATH . 'uploads/fasilitas/';
         if (! is_dir($dir)) mkdir($dir, 0775, true);
 
         $filename = 'foto_' . bin2hex(random_bytes(8)) . '.jpg';

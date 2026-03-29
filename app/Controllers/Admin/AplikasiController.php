@@ -103,31 +103,51 @@ class AplikasiController extends BaseController
     {
         $app = $this->model->find($id);
         if (! $app) {
-            return $this->response->setJSON(['ok' => false, 'message' => 'Link tidak ditemukan.']);
+            return redirect()->back()->with('error', 'Link tidak ditemukan.');
         }
 
-        $newStatus = $app['is_active'] == 1 ? 0 : 1;
-        $this->model->update($id, ['is_active' => $newStatus]);
+        $this->model->update($id, ['is_active' => $app['is_active'] == 1 ? 0 : 1]);
 
-        return $this->response->setJSON([
-                'ok'        => true,
-                'is_active' => $newStatus,
-                'csrf'      => \Config\Services::security()->getCSRFHash(),
-            ]);
+        return redirect()->to(base_url('admin/aplikasi'))->with('success', 'Status link berhasil diubah.');
     }
 
     private function _saveCroppedIcon(): ?string
     {
         $b64 = $this->request->getPost('icon_cropped');
-        if (empty($b64) || ! str_starts_with($b64, 'data:image/')) {
+        if (empty($b64)) {
             return null;
         }
+
+        // Whitelist MIME dari header data URI
+        $allowedDataMimes = ['data:image/png', 'data:image/jpeg', 'data:image/webp'];
+        $mimeMatch = false;
+        foreach ($allowedDataMimes as $allowed) {
+            if (str_starts_with($b64, $allowed . ';base64,')) {
+                $mimeMatch = true;
+                break;
+            }
+        }
+        if (! $mimeMatch) {
+            return null;
+        }
+
         [, $data] = explode(',', $b64, 2);
-        $imgData  = base64_decode($data);
-        if (! $imgData) return null;
+        $imgData  = base64_decode($data, true);
+        if (! $imgData) {
+            return null;
+        }
+
+        // Verifikasi binary adalah benar-benar gambar via GD
+        $img = @imagecreatefromstring($imgData);
+        if (! $img) {
+            return null;
+        }
+        imagedestroy($img);
 
         $dir = FCPATH . 'uploads/aplikasi/';
-        if (! is_dir($dir)) mkdir($dir, 0775, true);
+        if (! is_dir($dir)) {
+            mkdir($dir, 0775, true);
+        }
 
         $filename = 'icon_' . bin2hex(random_bytes(8)) . '.png';
         file_put_contents($dir . $filename, $imgData);

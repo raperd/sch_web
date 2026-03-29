@@ -211,18 +211,16 @@
                                                 </div>
                                             <?php endif; ?>
                                             <input type="file"
-                                                class="form-control <?= in_array($key, ['foto_kepsek']) ? 'crop-input' : 'img-compress-input' ?>"
+                                                class="form-control <?= in_array($key, ['foto_kepsek', 'hero_image_path', 'logo_path', 'favicon_path']) ? 'crop-input' : 'img-compress-input' ?>"
                                                 name="pengaturan_file[<?= esc($key) ?>]"
-                                                accept="<?= $key === 'favicon_path' ? '.ico,.png,.svg,image/x-icon,image/png,image/svg+xml' : 'image/jpeg,image/png,image/webp' ?>"
-                                                data-max-width="<?= $key === 'hero_image_path' ? '1920' : '800' ?>"
-                                                data-max-height="<?= $key === 'hero_image_path' ? '1080' : '800' ?>"
-                                                data-quality="<?= $key === 'hero_image_path' ? '0.82' : '0.85' ?>"
-                                                data-aspect-ratio="<?= $key === 'foto_kepsek' ? '1' : '' ?>"
-                                                <?= in_array($key, ['logo_path', 'favicon_path']) ? 'data-no-compress="true"' : '' ?>
-                                                <?= $key === 'logo_path' ? 'data-preserve-alpha="true"' : '' ?>
-                                                <?= $key === 'hero_image_path' ? 'data-force-jpeg="true"' : '' ?>>
+                                                accept="<?= in_array($key, ['logo_path', 'favicon_path']) ? 'image/png,image/jpeg,image/webp' : 'image/jpeg,image/png,image/webp' ?>"
+                                                data-aspect-ratio="<?= $key === 'foto_kepsek' || $key === 'favicon_path' ? '1' : ($key === 'hero_image_path' ? '1.7778' : '') ?>"
+                                                data-crop-width="<?= $key === 'hero_image_path' ? '1200' : ($key === 'favicon_path' ? '256' : ($key === 'logo_path' ? '400' : '600')) ?>"
+                                                data-crop-height="<?= $key === 'hero_image_path' ? '675' : ($key === 'favicon_path' ? '256' : ($key === 'logo_path' ? '400' : '600')) ?>"
+                                                data-crop-quality="<?= $key === 'hero_image_path' ? '0.85' : '0.88' ?>"
+                                                <?= in_array($key, ['logo_path', 'favicon_path']) ? 'data-preserve-alpha="true"' : '' ?>>
                                             <div class="form-text d-flex justify-content-between">
-                                                <span>Upload baru untuk mengganti.<?= $key === 'favicon_path' ? ' ICO/PNG/SVG.' : ($key === 'hero_image_path' ? ' Otomatis dikompres ke JPEG max 1920×1080.' : ' JPG/PNG/WebP.') ?></span>
+                                                <span>Upload baru untuk mengganti.<?= $key === 'hero_image_path' ? ' Dipotong rasio 16:9 (1200×675).' : ($key === 'logo_path' ? ' PNG transparan didukung.' : ($key === 'favicon_path' ? ' Output PNG 256×256.' : ' JPG/PNG/WebP.')) ?></span>
                                                 <span class="img-size-info text-muted"></span>
                                             </div>
                                             <div class="img-preview-new mt-2 d-none">
@@ -292,22 +290,30 @@
 })();
 </script>
 
-<!-- Crop Modal (untuk foto_kepsek) -->
-<div class="modal fade" id="cropModalPengaturan" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+<!-- Crop Modal (untuk foto_kepsek, hero, logo, favicon) -->
+<div class="modal fade" id="cropModalPengaturan" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><i class="bi bi-crop me-2"></i>Crop Foto</h5>
+                <h5 class="modal-title" id="cropModalPengaturanTitle"><i class="bi bi-crop me-2"></i>Crop Gambar</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body text-center bg-dark p-3" style="min-height:300px">
                 <img id="cropImgPengaturan" src="" style="max-width:100%;max-height:450px;">
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-primary" id="cropConfirmPengaturan">
-                    <i class="bi bi-check-lg me-1"></i>Crop & Gunakan
-                </button>
+            <div class="modal-footer justify-content-between">
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="pngZoomOut"><i class="bi bi-zoom-out"></i></button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="pngZoomIn"><i class="bi bi-zoom-in"></i></button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="pngRotL"><i class="bi bi-arrow-counterclockwise"></i></button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="pngRotR"><i class="bi bi-arrow-clockwise"></i></button>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="cropConfirmPengaturan">
+                        <i class="bi bi-check-lg me-1"></i>Crop &amp; Gunakan
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -316,21 +322,40 @@
 <script>
 let cropperPengaturan = null;
 let activeCropInputPengaturan = null;
+let pengaturanCropApplied = false;
+
+const cropTitles = {
+    foto_kepsek:    'Crop Foto Kepala Sekolah (1:1)',
+    hero_image_path:'Crop Hero Beranda (16:9 — 1200×675)',
+    logo_path:      'Crop Logo Sekolah (bebas)',
+    favicon_path:   'Crop Favicon (1:1 — 256×256)',
+};
 
 document.querySelectorAll('.crop-input').forEach(input => {
     input.addEventListener('change', function () {
         if (!this.files[0]) return;
         activeCropInputPengaturan = this;
+
+        // Update modal title based on field name
+        const fieldName = this.name.replace('pengaturan_file[', '').replace(']', '');
+        const title = cropTitles[fieldName] || 'Crop Gambar';
+        document.getElementById('cropModalPengaturanTitle').innerHTML = '<i class="bi bi-crop me-2"></i>' + title;
+
         const reader = new FileReader();
         reader.onload = e => {
             document.getElementById('cropImgPengaturan').src = e.target.result;
-            const modal = new bootstrap.Modal(document.getElementById('cropModalPengaturan'));
+            const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('cropModalPengaturan'));
             modal.show();
             document.getElementById('cropModalPengaturan').addEventListener('shown.bs.modal', () => {
                 if (cropperPengaturan) cropperPengaturan.destroy();
+                // Parse aspect ratio: empty string → NaN (free ratio), number → fixed
+                const arStr = activeCropInputPengaturan.dataset.aspectRatio;
+                const ar = arStr ? parseFloat(arStr) : NaN;
                 cropperPengaturan = new Cropper(document.getElementById('cropImgPengaturan'), {
-                    aspectRatio: parseFloat(activeCropInputPengaturan.dataset.aspectRatio || 1),
-                    viewMode: 1, autoCropArea: 0.85,
+                    aspectRatio: ar,
+                    viewMode: 1,
+                    dragMode: 'move',
+                    autoCropArea: 0.85,
                 });
             }, { once: true });
         };
@@ -338,18 +363,42 @@ document.querySelectorAll('.crop-input').forEach(input => {
     });
 });
 
+document.getElementById('pngZoomIn').addEventListener('click',  () => cropperPengaturan?.zoom(0.1));
+document.getElementById('pngZoomOut').addEventListener('click', () => cropperPengaturan?.zoom(-0.1));
+document.getElementById('pngRotL').addEventListener('click',    () => cropperPengaturan?.rotate(-90));
+document.getElementById('pngRotR').addEventListener('click',    () => cropperPengaturan?.rotate(90));
+
 document.getElementById('cropConfirmPengaturan')?.addEventListener('click', function () {
     if (!cropperPengaturan || !activeCropInputPengaturan) return;
-    cropperPengaturan.getCroppedCanvas({ width: 600, height: 600 }).toBlob(blob => {
-        const file = new File([blob], 'foto-crop.jpg', { type: 'image/jpeg' });
+
+    const w           = parseInt(activeCropInputPengaturan.dataset.cropWidth)   || 600;
+    const h           = parseInt(activeCropInputPengaturan.dataset.cropHeight)  || 600;
+    const quality     = parseFloat(activeCropInputPengaturan.dataset.cropQuality) || 0.88;
+    const preserveAlpha = activeCropInputPengaturan.dataset.preserveAlpha === 'true';
+    const mimeType    = preserveAlpha ? 'image/png' : 'image/jpeg';
+    const ext         = preserveAlpha ? 'png' : 'jpg';
+
+    cropperPengaturan.getCroppedCanvas({ width: w, height: h, imageSmoothingQuality: 'high' }).toBlob(blob => {
+        const file = new File([blob], 'foto-crop.' + ext, { type: mimeType });
         const dt = new DataTransfer(); dt.items.add(file);
         activeCropInputPengaturan.files = dt.files;
         // Update preview
-        const wrap = activeCropInputPengaturan.closest('.col-md-6');
+        const wrap = activeCropInputPengaturan.closest('[class*="col-"]');
         const prev = wrap?.querySelector('.img-preview-current');
         if (prev) prev.src = URL.createObjectURL(blob);
+        const newPrev = wrap?.querySelector('.img-preview-new');
+        if (newPrev) { newPrev.querySelector('img').src = URL.createObjectURL(blob); newPrev.classList.remove('d-none'); }
+        pengaturanCropApplied = true;
         bootstrap.Modal.getInstance(document.getElementById('cropModalPengaturan'))?.hide();
-    }, 'image/jpeg', 0.88);
+    }, mimeType, preserveAlpha ? undefined : quality);
+});
+
+document.getElementById('cropModalPengaturan').addEventListener('hidden.bs.modal', function () {
+    if (cropperPengaturan) { cropperPengaturan.destroy(); cropperPengaturan = null; }
+    if (!pengaturanCropApplied && activeCropInputPengaturan) {
+        activeCropInputPengaturan.value = '';
+    }
+    pengaturanCropApplied = false;
 });
 </script>
 

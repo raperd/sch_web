@@ -191,7 +191,7 @@ document.getElementById('masihMenjabat').addEventListener('change', function() {
 })();
 
 // ===== FOTO CROP =====
-let kepsekCropper = null;
+let kepsekCropper = null, kepsekCropApplied = false;
 
 document.getElementById('pickFotoBtn').addEventListener('click', () => {
     document.getElementById('fotoInput').click();
@@ -203,7 +203,7 @@ document.getElementById('fotoInput').addEventListener('change', function() {
     const reader = new FileReader();
     reader.onload = e => {
         document.getElementById('cropImageKepsek').src = e.target.result;
-        const modal = new bootstrap.Modal(document.getElementById('fotoKepsekCropModal'));
+        const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('fotoKepsekCropModal'));
         modal.show();
         document.getElementById('fotoKepsekCropModal').addEventListener('shown.bs.modal', () => {
             if (kepsekCropper) kepsekCropper.destroy();
@@ -233,9 +233,19 @@ document.getElementById('kepsekCropConfirm').addEventListener('click', function(
         const reader = new FileReader();
         reader.onload = e => { document.getElementById('fotoCropped').value = e.target.result; };
         reader.readAsDataURL(blob);
+        kepsekCropApplied = true;
         bootstrap.Modal.getInstance(document.getElementById('fotoKepsekCropModal')).hide();
         kepsekCropper.destroy(); kepsekCropper = null;
     }, 'image/jpeg', 0.88);
+});
+
+document.getElementById('fotoKepsekCropModal').addEventListener('hidden.bs.modal', function () {
+    if (kepsekCropper) { kepsekCropper.destroy(); kepsekCropper = null; }
+    if (!kepsekCropApplied) {
+        document.getElementById('fotoCropped').value = '';
+        document.getElementById('fotoInput').value = '';
+    }
+    kepsekCropApplied = false;
 });
 </script>
 <?= $this->endSection() ?>

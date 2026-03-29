@@ -151,8 +151,8 @@
 </form>
 
 <!-- Modal Crop -->
-<div class="modal fade" id="cropModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+<div class="modal fade" id="cropModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title"><i class="bi bi-crop me-2"></i>Crop Gambar</h5>
@@ -182,16 +182,21 @@
 <script>
 let cropperInstance = null;
 let activeCropInput = null;
+let galeriCropApplied = false;
 
 document.querySelectorAll('.crop-input').forEach(input => {
     input.addEventListener('change', function () {
         if (!this.files[0]) return;
         activeCropInput = this;
         const ratio = parseFloat(this.dataset.aspectRatio || 1);
+        // Capture state before opening modal (for cancel restore)
+        const thumbWrap    = document.getElementById('thumbPreviewWrap');
+        const wasThumbVisible = !thumbWrap.classList.contains('d-none');
+        const thumbPrevSrc = document.getElementById('thumbPreview')?.src || '';
         const reader = new FileReader();
         reader.onload = e => {
             document.getElementById('cropImage').src = e.target.result;
-            const modal = new bootstrap.Modal(document.getElementById('cropModal'));
+            const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('cropModal'));
             modal.show();
             document.getElementById('cropModal').addEventListener('shown.bs.modal', () => {
                 if (cropperInstance) cropperInstance.destroy();
@@ -200,6 +205,24 @@ document.querySelectorAll('.crop-input').forEach(input => {
                     viewMode: 1,
                     autoCropArea: 0.9,
                 });
+            }, { once: true });
+            document.getElementById('cropModal').addEventListener('hidden.bs.modal', function () {
+                if (cropperInstance) { cropperInstance.destroy(); cropperInstance = null; }
+                if (!galeriCropApplied && activeCropInput) {
+                    activeCropInput.value = '';
+                    if (activeCropInput.id === 'mainFileInput') {
+                        // newFilePreviewWrap is always d-none initially — safe to hide
+                        document.getElementById('newFilePreviewWrap').classList.add('d-none');
+                    } else if (activeCropInput.id === 'thumbInput') {
+                        if (wasThumbVisible) {
+                            // Restore existing thumbnail — do NOT hide
+                            document.getElementById('thumbPreview').src = thumbPrevSrc;
+                        } else {
+                            thumbWrap.classList.add('d-none');
+                        }
+                    }
+                }
+                galeriCropApplied = false;
             }, { once: true });
         };
         reader.readAsDataURL(this.files[0]);
@@ -226,6 +249,7 @@ document.getElementById('cropConfirm')?.addEventListener('click', function () {
             document.getElementById('thumbPreview').src = URL.createObjectURL(blob);
             document.getElementById('thumbPreviewWrap').classList.remove('d-none');
         }
+        galeriCropApplied = true;
         bootstrap.Modal.getInstance(document.getElementById('cropModal'))?.hide();
     }, 'image/jpeg', 0.88);
 });
