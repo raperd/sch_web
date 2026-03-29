@@ -67,12 +67,7 @@ class PrestasiController extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        $foto = null;
-        $file = $this->request->getFile('foto');
-        if ($file && $file->isValid() && ! $file->hasMoved()) {
-            $uploader = new \App\Libraries\ImageUpload();
-            $foto = $uploader->upload('foto', 'prestasi');
-        }
+        $foto = $this->_saveCroppedFoto();
 
         $this->model->insert([
             'judul'       => $this->request->getPost('judul'),
@@ -121,15 +116,13 @@ class PrestasiController extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        $foto = $item['foto'];
-        $file = $this->request->getFile('foto');
-        if ($file && $file->isValid() && ! $file->hasMoved()) {
-            $uploader = new \App\Libraries\ImageUpload();
-            $newFoto  = $uploader->upload('foto', 'prestasi');
-            if ($newFoto) {
-                if ($foto) $uploader->delete('prestasi', $foto);
-                $foto = $newFoto;
+        $foto    = $item['foto'];
+        $newFoto = $this->_saveCroppedFoto();
+        if ($newFoto) {
+            if ($foto) {
+                (new \App\Libraries\ImageUpload())->delete('prestasi', $foto);
             }
+            $foto = $newFoto;
         }
 
         $this->model->update($id, [
@@ -161,5 +154,27 @@ class PrestasiController extends BaseController
 
         $this->model->delete($id);
         return redirect()->to(base_url('admin/prestasi'))->with('success', 'Prestasi berhasil dihapus.');
+    }
+
+    private function _saveCroppedFoto(): ?string
+    {
+        $b64 = $this->request->getPost('foto_cropped');
+        if (empty($b64) || ! str_starts_with($b64, 'data:image/')) {
+            return null;
+        }
+        [, $data] = explode(',', $b64, 2);
+        $imgData  = base64_decode($data);
+        if (! $imgData) return null;
+
+        $img = @imagecreatefromstring($imgData);
+        if (! $img) return null;
+        imagedestroy($img);
+
+        $dir = FCPATH . 'uploads/prestasi/';
+        if (! is_dir($dir)) mkdir($dir, 0775, true);
+
+        $filename = 'prestasi_' . bin2hex(random_bytes(8)) . '.jpg';
+        file_put_contents($dir . $filename, $imgData);
+        return $filename;
     }
 }
