@@ -18,6 +18,7 @@ class PengaturanSeeder extends Seeder
             ['setting_key' => 'telepon',           'setting_value' => '(021) 1234-5678',                    'label' => 'Nomor Telepon',            'tipe' => 'text',     'grup' => 'umum',   'urutan' => 6],
             ['setting_key' => 'email',             'setting_value' => 'info@sman1contoh.sch.id',            'label' => 'Email Sekolah',            'tipe' => 'text',     'grup' => 'umum',   'urutan' => 7],
             ['setting_key' => 'logo_path',         'setting_value' => null,                                 'label' => 'Logo Sekolah',             'tipe' => 'image',    'grup' => 'umum',   'urutan' => 8],
+            ['setting_key' => 'favicon_path',      'setting_value' => null,                                 'label' => 'Favicon Website',          'tipe' => 'image',    'grup' => 'umum',   'urutan' => 9],
 
             // Grup: hero
             ['setting_key' => 'hero_image_path',   'setting_value' => null,                                 'label' => 'Foto Hero Beranda',        'tipe' => 'image',    'grup' => 'hero',   'urutan' => 1],
@@ -40,11 +41,26 @@ class PengaturanSeeder extends Seeder
             ['setting_key' => 'youtube_url',       'setting_value' => null,                                 'label' => 'URL YouTube',              'tipe' => 'text',     'grup' => 'sosial', 'urutan' => 3],
             ['setting_key' => 'tiktok_url',        'setting_value' => null,                                 'label' => 'URL TikTok',               'tipe' => 'text',     'grup' => 'sosial', 'urutan' => 4],
             ['setting_key' => 'osis_instagram_embed', 'setting_value' => null,                              'label' => 'Embed Instagram OSIS (URL)','tipe' => 'text',    'grup' => 'sosial', 'urutan' => 5],
+            ['setting_key' => 'twitter_url',       'setting_value' => null,                                 'label' => 'URL Twitter / X',          'tipe' => 'text',     'grup' => 'sosial', 'urutan' => 6],
+            ['setting_key' => 'whatsapp_url',       'setting_value' => null,                                 'label' => 'Nomor WhatsApp',           'tipe' => 'text',     'grup' => 'sosial', 'urutan' => 7],
+
+            // Grup: statistik
+            ['setting_key' => 'stat_tahun_berdiri','setting_value' => '25+',                                'label' => 'Tahun Berdiri',            'tipe' => 'text',     'grup' => 'statistik', 'urutan' => 1],
+            ['setting_key' => 'stat_siswa',        'setting_value' => '1.000+',                             'label' => 'Jumlah Siswa',             'tipe' => 'text',     'grup' => 'statistik', 'urutan' => 2],
+            ['setting_key' => 'stat_guru',         'setting_value' => '60+',                                'label' => 'Tenaga Pendidik',          'tipe' => 'text',     'grup' => 'statistik', 'urutan' => 3],
+            ['setting_key' => 'stat_ekskul',       'setting_value' => '20+',                                'label' => 'Ekstrakurikuler',          'tipe' => 'text',     'grup' => 'statistik', 'urutan' => 4],
+            ['setting_key' => 'stat_prestasi',     'setting_value' => '50+',                                'label' => 'Prestasi Diraih',          'tipe' => 'text',     'grup' => 'statistik', 'urutan' => 5],
 
             // Grup: ppdb
             ['setting_key' => 'ppdb_link_external','setting_value' => '#',                                  'label' => 'Link Portal PPDB (Pemda)',  'tipe' => 'text',     'grup' => 'ppdb',   'urutan' => 1],
             ['setting_key' => 'ppdb_tahun',        'setting_value' => '2026/2027',                          'label' => 'Tahun PPDB',               'tipe' => 'text',     'grup' => 'ppdb',   'urutan' => 2],
             ['setting_key' => 'ppdb_status',       'setting_value' => '0',                                  'label' => 'PPDB Sedang Buka',         'tipe' => 'boolean',  'grup' => 'ppdb',   'urutan' => 3],
+            ['setting_key' => 'ppdb_deskripsi_footer','setting_value' => 'Informasi Penerimaan Peserta Didik Baru. Daftar melalui portal resmi Dinas Pendidikan.', 'label' => 'Deskripsi SPMB di Footer', 'tipe' => 'textarea', 'grup' => 'ppdb', 'urutan' => 4],
+
+            // Grup: tema
+            ['setting_key' => 'tema_primary',      'setting_value' => '#1a5276',                            'label' => 'Warna Primer (Biru Utama)', 'tipe' => 'color',    'grup' => 'tema',   'urutan' => 1],
+            ['setting_key' => 'tema_secondary',    'setting_value' => '#2e86c1',                            'label' => 'Warna Sekunder (Biru Sedang)','tipe' => 'color',   'grup' => 'tema',   'urutan' => 2],
+            ['setting_key' => 'tema_accent',       'setting_value' => '#d4ac0d',                            'label' => 'Warna Aksen (Gold)',        'tipe' => 'color',    'grup' => 'tema',   'urutan' => 3],
         ];
 
         $this->db->table('pengaturan')->insertBatch($data);

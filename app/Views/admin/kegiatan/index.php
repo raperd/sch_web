@@ -69,7 +69,73 @@
     </div>
 </div>
 
-<!-- Tabel -->
+<!-- Mobile Cards (xs/sm) -->
+<div class="d-md-none">
+    <?php if (!empty($kegiatan)): ?>
+        <?php foreach ($kegiatan as $k): ?>
+            <?php
+            $statusMap = [
+                'upcoming' => ['info', 'Upcoming'],
+                'ongoing'  => ['success', 'Ongoing'],
+                'selesai'  => ['secondary', 'Selesai'],
+            ];
+            [$kCls, $kLbl] = $statusMap[$k['status']] ?? ['secondary', $k['status']];
+            ?>
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body p-3">
+                    <div class="d-flex gap-2 mb-2">
+                        <?php if (!empty($k['foto'])): ?>
+                            <img src="<?= base_url('uploads/kegiatan/' . esc($k['foto'])) ?>"
+                                class="rounded flex-shrink-0" style="width:52px;height:42px;object-fit:cover" alt="">
+                        <?php endif; ?>
+                        <div>
+                            <div class="fw-semibold"><?= esc($k['judul']) ?></div>
+                            <small class="text-muted">
+                                <?= format_tanggal($k['tanggal'], 'short') ?>
+                                <?php if (!empty($k['tanggal_selesai']) && $k['tanggal_selesai'] !== $k['tanggal']): ?>
+                                    — <?= format_tanggal($k['tanggal_selesai'], 'short') ?>
+                                <?php endif; ?>
+                            </small>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-wrap gap-1">
+                        <span class="badge text-bg-<?= $kCls ?>"><?= $kLbl ?></span>
+                        <span class="badge text-bg-light border"><?= ucfirst($k['tipe']) ?></span>
+                        <?php if ($k['is_featured']): ?>
+                            <span class="badge text-bg-warning"><i class="bi bi-star-fill me-1"></i>Unggulan</span>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <div class="card-footer bg-white border-top p-2 d-flex gap-2 justify-content-end">
+                    <a href="<?= base_url('admin/kegiatan/edit/' . $k['id']) ?>"
+                        class="btn btn-sm btn-outline-primary flex-grow-1">
+                        <i class="bi bi-pencil me-1"></i>Edit
+                    </a>
+                    <form method="post" action="<?= base_url('admin/kegiatan/delete/' . $k['id']) ?>"
+                        data-confirm="Hapus kegiatan ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
+                        <?= csrf_field() ?>
+                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <div class="text-center py-5 text-muted">
+            <i class="bi bi-calendar3 display-5 d-block mb-2 opacity-25"></i>
+            Belum ada kegiatan. <a href="<?= base_url('admin/kegiatan/create') ?>">Tambah sekarang</a>
+        </div>
+    <?php endif; ?>
+    <?php if (isset($pager)): ?>
+        <div class="d-flex justify-content-center py-3">
+            <?= $pager->links('kegiatan', 'default_full') ?>
+        </div>
+    <?php endif; ?>
+</div>
+
+<!-- Desktop Table (md+) -->
+<div class="d-none d-md-block">
 <div class="card border-0 shadow-sm">
     <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
@@ -137,7 +203,7 @@
                                         <i class="bi bi-pencil"></i>
                                     </a>
                                     <form method="post" action="<?= base_url('admin/kegiatan/delete/' . $k['id']) ?>"
-                                        class="d-inline" onsubmit="return confirm('Hapus kegiatan ini?')">
+                                        class="d-inline" data-confirm="Hapus kegiatan ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                                         <?= csrf_field() ?>
                                         <button type="submit" class="btn btn-sm btn-outline-danger">
                                             <i class="bi bi-trash"></i>
@@ -164,6 +230,7 @@
             <?= $pager->links('kegiatan', 'default_full') ?>
         </div>
     <?php endif; ?>
+</div>
 </div>
 
 <?= $this->endSection() ?>

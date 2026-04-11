@@ -3,7 +3,7 @@
 <?= $this->section('content') ?>
 
 <!-- Page Header -->
-<section class="page-header py-5" style="background: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-secondary) 100%); margin-top: var(--nav-height);">
+<section class="page-header py-5" style="background: linear-gradient(135deg, var(--bs-primary) 0%, var(--site-secondary) 100%);">
     <div class="container text-center text-white">
         <h1 class="fw-bold mb-2">Berita &amp; Artikel</h1>
         <nav aria-label="breadcrumb">
@@ -55,7 +55,10 @@
                                 <?php if (!empty($featured['ringkasan'])): ?>
                                     <p class="text-muted lh-lg"><?= esc(truncate_text($featured['ringkasan'], 200)) ?></p>
                                 <?php endif; ?>
-                                <div class="mt-auto pt-3 border-top d-flex gap-3 text-muted small">
+                                <div class="mt-auto pt-3 border-top d-flex flex-wrap gap-3 text-muted small">
+                                    <?php if (!empty($featured['penulis'])): ?>
+                                        <span><i class="bi bi-person me-1"></i><?= esc($featured['penulis']) ?></span>
+                                    <?php endif; ?>
                                     <span><i class="bi bi-calendar3 me-1"></i><?= format_tanggal($featured['published_at'] ?? $featured['created_at'], 'long') ?></span>
                                     <span><i class="bi bi-eye me-1"></i><?= number_format($featured['view_count'] ?? 0) ?> dibaca</span>
                                 </div>
@@ -95,9 +98,14 @@
                                     <?php if (!empty($a['ringkasan'])): ?>
                                         <p class="card-text text-muted small"><?= esc(truncate_text($a['ringkasan'], 110)) ?></p>
                                     <?php endif; ?>
-                                    <div class="mt-auto pt-2 border-top d-flex justify-content-between text-muted" style="font-size:.8rem;">
-                                        <span><i class="bi bi-calendar3 me-1"></i><?= format_tanggal($a['published_at'] ?? $a['created_at'], 'short') ?></span>
-                                        <span><i class="bi bi-eye me-1"></i><?= number_format($a['view_count'] ?? 0) ?></span>
+                                    <div class="mt-auto pt-2 border-top text-muted" style="font-size:.8rem;">
+                                        <?php if (!empty($a['penulis'])): ?>
+                                            <div class="mb-1"><i class="bi bi-person me-1"></i><?= esc($a['penulis']) ?></div>
+                                        <?php endif; ?>
+                                        <div class="d-flex justify-content-between">
+                                            <span><i class="bi bi-calendar3 me-1"></i><?= format_tanggal($a['published_at'] ?? $a['created_at'], 'short') ?></span>
+                                            <span><i class="bi bi-eye me-1"></i><?= number_format($a['view_count'] ?? 0) ?></span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

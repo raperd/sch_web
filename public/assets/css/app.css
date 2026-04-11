@@ -6,13 +6,14 @@
 :root {
     --bs-primary:       #1a5276;
     --bs-primary-rgb:   26, 82, 118;
-    --bs-secondary:     #2e86c1;
+    --site-secondary:   #2e86c1;
     --accent-gold:      #d4ac0d;
     --accent-gold-rgb:  212, 172, 13;
     --hero-overlay:     rgba(10, 30, 60, .55);
     --section-bg:       #f8f9fb;
     --touch-target:     48px;
     --nav-height:       70px;
+    --nav-height-sticky: var(--nav-height);
     --font-body:        'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
@@ -54,6 +55,9 @@ a:hover { text-decoration: none; }
     height: 58px;
     box-shadow: 0 4px 20px rgba(0,0,0,.12);
 }
+body.scrolled {
+    --nav-height-sticky: 58px;
+}
 .navbar-brand img { height: 44px; }
 .navbar-brand .brand-text { font-weight: 700; color: var(--bs-primary); font-size: .9rem; line-height: 1.2; }
 .navbar-nav .nav-link {
@@ -85,7 +89,7 @@ a:hover { text-decoration: none; }
     padding: .4rem 1rem !important;
     margin-left: .5rem;
 }
-.nav-ppdb .nav-link:hover { background: var(--bs-secondary); }
+.nav-ppdb .nav-link:hover { background: var(--site-secondary); }
 .nav-ppdb .nav-link::after { display: none; }
 
 /* ----- HERO SECTION ----- */
@@ -199,12 +203,12 @@ a:hover { text-decoration: none; }
     transition: background .2s, color .2s;
     font-size: 1rem;
 }
-.footer-social a:hover { background: var(--bs-secondary); color: #fff; }
-.footer-bottom { background: #080f18; font-size: .8rem; }
+.footer-social a:hover { background: var(--site-secondary); color: #fff; }
+.footer-bottom { background: #0b1622; border-top: 1px solid rgba(255,255,255,.06); font-size: .8rem; }
 
 /* ----- PPDB BANNER ----- */
 .ppdb-banner {
-    background: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-secondary) 100%);
+    background: linear-gradient(135deg, var(--bs-primary) 0%, var(--site-secondary) 100%);
     position: relative;
     overflow: hidden;
 }
@@ -228,6 +232,21 @@ a:hover { text-decoration: none; }
 
 /* ----- PAGINATION ----- */
 .page-link { min-height: var(--touch-target); display: flex; align-items: center; }
+
+/* ----- SCROLLABLE TABS ----- */
+.nav-scrollable {
+    overflow-x: auto;
+    overflow-y: hidden;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Hide scrollbar in Firefox */
+}
+.nav-scrollable::-webkit-scrollbar {
+    display: none; /* Hide scrollbar in Chrome/Safari */
+}
+.nav-scrollable .nav-item {
+    flex: 0 0 auto; /* Prevent shrinking */
+}
 
 /* ----- EKSKUL CARD ----- */
 .ekskul-card img { height: 180px; object-fit: cover; }
@@ -273,4 +292,60 @@ a:hover { text-decoration: none; }
     .quick-links-section { margin-top: -20px; }
     .hero-stats { display: none; }
     .navbar-main { height: auto; }
+}
+
+/* ----- MOBILE NAV DROPDOWN OVERLAY ----- */
+@media (max-width: 991.98px) {
+    /* Navbar tetap tinggi 70px; collapse float sebagai overlay di bawahnya */
+    #mainNavbar {
+        position: fixed !important;
+    }
+    .navbar-collapse {
+        position: absolute;
+        top: 100%;          /* tepat di bawah bar navbar */
+        left: 0;
+        right: 0;
+        background: #fff;
+        border-top: 1px solid rgba(0, 0, 0, .06);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, .15);
+        padding: .5rem 1rem 1.25rem;
+        border-radius: 0 0 1rem 1rem;
+        max-height: calc(100svh - var(--nav-height));
+        overflow-y: auto;
+        z-index: 1;         /* di atas konten, dalam stacking context navbar fixed */
+    }
+    /* Item nav mobile: lebih besar, lebih mudah disentuh */
+    .navbar-nav .nav-link {
+        padding: .7rem .75rem !important;
+        border-radius: .5rem;
+        min-height: var(--touch-target);
+        display: flex;
+        align-items: center;
+        color: #212529 !important;
+    }
+    .navbar-nav .nav-link:hover,
+    .navbar-nav .nav-link.active {
+        background: rgba(var(--bs-primary-rgb), .07);
+        color: var(--bs-primary) !important;
+    }
+    /* Sembunyikan garis bawah animasi di mobile (tidak cocok untuk list) */
+    .navbar-nav .nav-link::after { display: none !important; }
+    /* Tombol PPDB di mobile */
+    .nav-ppdb {
+        margin-top: .5rem;
+        padding-top: .5rem;
+        border-top: 1px solid rgba(0,0,0,.06);
+    }
+    .nav-ppdb .nav-link {
+        justify-content: center;
+        font-weight: 600 !important;
+        background: var(--bs-primary);
+        color: #fff !important;
+        border-radius: .5rem;
+    }
+    .nav-ppdb .nav-link:hover,
+    .nav-ppdb .nav-link.active {
+        background: var(--site-secondary) !important;
+        color: #fff !important;
+    }
 }

@@ -3,17 +3,17 @@
 <?= $this->section('content') ?>
 
 <!-- Page Header -->
-<section class="page-header py-5" style="background: linear-gradient(135deg, #1a5276 0%, #2e86c1 100%); margin-top: var(--nav-height);">
+<section class="page-header py-5" style="background: linear-gradient(135deg, #1a5276 0%, #2e86c1 100%);">
     <div class="container text-center text-white">
         <span class="badge bg-warning text-dark fs-6 px-3 py-2 mb-3 fw-bold">
             <i class="bi bi-bell-fill me-1"></i>Pendaftaran Dibuka
         </span>
-        <h1 class="fw-bold mb-2">PPDB <?= esc(setting('tahun_ajaran_aktif') ?? '') ?></h1>
-        <p class="fs-5 opacity-75 mb-3">Penerimaan Peserta Didik Baru</p>
+        <h1 class="fw-bold mb-2">SPMB <?= esc(setting('tahun_ajaran_aktif') ?? '') ?></h1>
+        <p class="fs-5 opacity-75 mb-3">Sistem Penerimaan Murid Baru</p>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb justify-content-center mb-0">
                 <li class="breadcrumb-item"><a href="<?= base_url('/') ?>" class="text-white-50">Beranda</a></li>
-                <li class="breadcrumb-item active text-white">PPDB</li>
+                <li class="breadcrumb-item active text-white">SPMB</li>
             </ol>
         </nav>
     </div>
@@ -101,7 +101,7 @@
     <section class="py-5 bg-light">
         <div class="container">
             <div class="text-center mb-5">
-                <span class="badge text-bg-warning text-dark fs-6 px-3 py-2 mb-3">Kalender PPDB</span>
+                <span class="badge text-bg-warning text-dark fs-6 px-3 py-2 mb-3">Kalender SPMB</span>
                 <h2 class="fw-bold">Jadwal Penerimaan</h2>
                 <p class="text-muted">Pastikan Anda tidak melewati setiap tahapan pendaftaran</p>
             </div>
@@ -205,7 +205,7 @@
 <?php endif; ?>
 
 <!-- CTA Bottom -->
-<section class="py-5 text-white" style="background: linear-gradient(135deg, var(--bs-primary), var(--bs-secondary));">
+<section class="py-5 text-white" style="background: linear-gradient(135deg, var(--bs-primary), var(--site-secondary));">
     <div class="container text-center">
         <h3 class="fw-bold mb-2">Masih ada pertanyaan?</h3>
         <p class="mb-4 opacity-75">Hubungi kami langsung melalui telepon atau email untuk informasi lebih lanjut</p>
@@ -225,7 +225,7 @@
             <?php if ($ppdbLink): ?>
                 <a href="<?= esc($ppdbLink) ?>" target="_blank" rel="noopener"
                     class="btn btn-warning btn-lg fw-bold px-4 text-dark">
-                    <i class="bi bi-box-arrow-up-right me-2"></i>Portal PPDB
+                    <i class="bi bi-box-arrow-up-right me-2"></i>Portal SPMB
                 </a>
             <?php endif; ?>
         </div>

@@ -103,14 +103,15 @@ class CreateArtikelTable extends Migration
         $this->forge->createTable('artikel');
 
         // Foreign keys
-        $this->db->query('ALTER TABLE artikel ADD CONSTRAINT fk_artikel_kategori FOREIGN KEY (kategori_id) REFERENCES kategori_artikel(id) ON DELETE RESTRICT');
-        $this->db->query('ALTER TABLE artikel ADD CONSTRAINT fk_artikel_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT');
+        $p = $this->db->DBPrefix;
+        $this->db->query("ALTER TABLE {$p}artikel ADD CONSTRAINT {$p}fk_artikel_kategori FOREIGN KEY (kategori_id) REFERENCES {$p}kategori_artikel(id) ON DELETE RESTRICT");
+        $this->db->query("ALTER TABLE {$p}artikel ADD CONSTRAINT {$p}fk_artikel_user FOREIGN KEY (user_id) REFERENCES {$p}users(id) ON DELETE RESTRICT");
     }
 
     public function down(): void
     {
-        $this->db->query('ALTER TABLE artikel DROP FOREIGN KEY fk_artikel_kategori');
-        $this->db->query('ALTER TABLE artikel DROP FOREIGN KEY fk_artikel_user');
+        $this->db->query('SET FOREIGN_KEY_CHECKS=0');
         $this->forge->dropTable('artikel', true);
+        $this->db->query('SET FOREIGN_KEY_CHECKS=1');
     }
 }

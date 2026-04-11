@@ -3,7 +3,7 @@
 <?= $this->section('content') ?>
 
 <!-- Page Header -->
-<section class="page-header py-5" style="background: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-secondary) 100%); margin-top: var(--nav-height);">
+<section class="page-header py-5" style="background: linear-gradient(135deg, var(--bs-primary) 0%, var(--site-secondary) 100%);">
     <div class="container text-center text-white">
         <h1 class="fw-bold mb-2">Direktori Guru &amp; Staf</h1>
         <nav aria-label="breadcrumb">
@@ -16,9 +16,9 @@
 </section>
 
 <!-- Filter Tabs -->
-<section class="bg-white shadow-sm sticky-top" style="top: var(--nav-height); z-index: 900;">
+<section class="bg-white shadow-sm sticky-top" style="top: var(--nav-height-sticky); z-index: 900; transition: top 0.3s;">
     <div class="container">
-        <ul class="nav nav-pills gap-1 py-2 overflow-auto flex-nowrap" id="direktoriTab" role="tablist">
+        <ul class="nav nav-pills gap-2 py-2 flex-wrap justify-content-center" id="direktoriTab" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active fw-semibold text-nowrap" data-bs-toggle="pill" data-bs-target="#tab-guru" type="button">
                     <i class="bi bi-mortarboard me-1"></i>Guru
@@ -145,7 +145,7 @@
                                         <?php if (!empty($s['foto'])): ?>
                                             <img src="<?= base_url('uploads/guru/' . esc($s['foto'])) ?>"
                                                 class="rounded-circle mb-3 border border-3"
-                                                style="width:100px;height:100px;object-fit:cover;border-color:var(--bs-secondary)!important;"
+                                                style="width:100px;height:100px;object-fit:cover;border-color:var(--site-secondary)!important;"
                                                 alt="<?= esc($s['nama']) ?>">
                                         <?php else: ?>
                                             <div class="rounded-circle bg-secondary bg-opacity-10 mx-auto mb-3 d-flex align-items-center justify-content-center"

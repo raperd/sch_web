@@ -22,6 +22,44 @@ class App extends BaseConfig
      * berdasarkan HTTP_HOST — mendukung localhost DAN Cloudflare Tunnel.
      */
     public string $baseURL = 'http://localhost:8080/';
+    
+    public function __construct()
+    {
+        parent::__construct();
+
+        if (isset($_SERVER['HTTP_HOST'])) {
+            // Cloudflare Tunnel: deteksi protokol dari header CF-Visitor atau X-Forwarded-Proto
+            $cfVisitor = $_SERVER['HTTP_CF_VISITOR'] ?? '';
+            $cfScheme  = '';
+            if ($cfVisitor !== '') {
+                $decoded  = json_decode($cfVisitor, true);
+                $cfScheme = $decoded['scheme'] ?? '';
+            }
+
+            $forwarded = $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '';
+
+            if ($cfScheme === 'https' || $forwarded === 'https') {
+                $protocol = 'https';
+            } elseif (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+                $protocol = 'https';
+            } else {
+                $protocol = 'http';
+            }
+
+            // Cloudflare Tunnel: gunakan host asli dari X-Forwarded-Host jika ada
+            $host   = $_SERVER['HTTP_X_FORWARDED_HOST'] ?? $_SERVER['HTTP_HOST'];
+            $script = $_SERVER['SCRIPT_NAME'] ?? '';
+
+            // Jika melalui Cloudflare Tunnel, app berada di root domain (tanpa subfolder)
+            if ($cfScheme !== '' || $forwarded !== '') {
+                $basePath = '/';
+            } else {
+                $basePath = rtrim(dirname($script), '/\\') . '/';
+            }
+
+            $this->baseURL = $protocol . '://' . $host . $basePath;
+        }
+    }
 
     /**
      * Allowed Hostnames in the Site URL other than the hostname in the baseURL.
@@ -45,7 +83,7 @@ class App extends BaseConfig
      * something else. If you have configured your web server to remove this file
      * from your site URIs, set this variable to an empty string.
      */
-    public string $indexPage = 'index.php';
+    public string $indexPage = '';
 
     /**
      * --------------------------------------------------------------------------

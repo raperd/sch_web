@@ -26,25 +26,25 @@
                 </p>
                 <div class="d-flex flex-wrap gap-3">
                     <a href="<?= site_url('ppdb') ?>" class="btn btn-warning btn-lg px-4 fw-semibold">
-                        <i class="bi bi-clipboard-check me-2"></i>Info PPDB
+                        <i class="bi bi-clipboard-check me-2"></i>Info SPMB
                     </a>
                     <a href="<?= site_url('profil') ?>" class="btn btn-outline-light btn-lg px-4">
                         <i class="bi bi-building me-2"></i>Profil Sekolah
                     </a>
                 </div>
 
-                <!-- Stats -->
-                <div class="hero-stats d-flex gap-4 mt-5">
+                <!-- Stats dari pengaturan -->
+                <div class="hero-stats d-flex flex-wrap gap-4 mt-5">
                     <div class="stat-item">
-                        <div class="stat-number">1000+</div>
+                        <div class="stat-number"><?= esc(setting('stat_siswa') ?: '1.000+') ?></div>
                         <div class="stat-label">Siswa Aktif</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-number">60+</div>
+                        <div class="stat-number"><?= esc(setting('stat_guru') ?: '60+') ?></div>
                         <div class="stat-label">Tenaga Pendidik</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-number">20+</div>
+                        <div class="stat-number"><?= esc(setting('stat_ekskul') ?: '20+') ?></div>
                         <div class="stat-label">Ekstrakurikuler</div>
                     </div>
                     <div class="stat-item">
@@ -190,7 +190,7 @@
 </section>
 
 <!-- ============================================================
-     PPDB BANNER
+     SPMB BANNER
      ============================================================ -->
 <?php if (setting('ppdb_status') == '1' || setting('ppdb_link_external')): ?>
 <section class="ppdb-banner py-5">
@@ -199,9 +199,9 @@
             <div class="col-12 col-md-8 text-white">
                 <div class="d-flex align-items-center gap-3 mb-2">
                     <i class="bi bi-clipboard-check-fill fs-2 text-warning"></i>
-                    <h3 class="mb-0 fw-bold">PPDB <?= esc(setting('ppdb_tahun') ?? date('Y') . '/' . (date('Y') + 1)) ?></h3>
+                    <h3 class="mb-0 fw-bold">SPMB <?= esc(setting('ppdb_tahun') ?? date('Y') . '/' . (date('Y') + 1)) ?></h3>
                 </div>
-                <p class="mb-0 opacity-75">Penerimaan Peserta Didik Baru sedang dibuka. Daftarkan putra-putri Anda sekarang melalui portal resmi.</p>
+                <p class="mb-0 opacity-75">Sistem Penerimaan Murid Baru sedang dibuka. Daftarkan putra-putri Anda sekarang melalui portal resmi.</p>
             </div>
             <div class="col-12 col-md-4 d-flex gap-2 justify-content-md-end flex-wrap">
                 <a href="<?= site_url('ppdb') ?>" class="btn btn-light btn-lg px-4">
@@ -216,6 +216,116 @@
         </div>
     </div>
 </section>
+<?php endif; ?>
+
+<!-- ============================================================
+     PRESTASI UNGGULAN
+     ============================================================ -->
+<?php if (!empty($prestasi_unggulan)): ?>
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-4">
+            <span class="badge text-bg-warning text-dark fs-6 px-3 py-2 mb-2">
+                <i class="bi bi-star-fill me-1"></i>Kebanggaan Kami
+            </span>
+            <h2 class="section-title mx-auto">Prestasi Terkini</h2>
+        </div>
+        <div class="row g-3 mt-2">
+            <?php
+            $tingkatColor = ['sekolah'=>'secondary','kecamatan'=>'info','kota_kabupaten'=>'primary','provinsi'=>'warning','nasional'=>'danger','internasional'=>'dark'];
+            foreach ($prestasi_unggulan as $p):
+                $color = $tingkatColor[$p['tingkat']] ?? 'secondary';
+                $tingkatLabel = ucwords(str_replace('_', ' ', $p['tingkat']));
+            ?>
+                <div class="col-sm-6 col-lg-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body p-4 d-flex gap-3 align-items-start">
+                            <div class="rounded-circle bg-warning bg-opacity-15 d-flex align-items-center justify-content-center flex-shrink-0"
+                                style="width:52px;height:52px;">
+                                <i class="bi bi-trophy-fill text-warning fs-5"></i>
+                            </div>
+                            <div>
+                                <div class="d-flex gap-1 mb-1 flex-wrap">
+                                    <span class="badge text-bg-<?= $color ?> small"><?= $tingkatLabel ?></span>
+                                    <span class="badge text-bg-<?= $p['kategori']==='akademik'?'success':'warning text-dark' ?> small">
+                                        <?= $p['kategori']==='akademik'?'Akademik':'Non-Akademik' ?>
+                                    </span>
+                                </div>
+                                <h6 class="fw-bold mb-1 small"><?= esc($p['judul']) ?></h6>
+                                <?php if (!empty($p['nama_siswa'])): ?>
+                                    <div class="text-muted" style="font-size:.75rem"><i class="bi bi-person me-1"></i><?= esc($p['nama_siswa']) ?></div>
+                                <?php endif; ?>
+                                <div class="text-muted" style="font-size:.75rem"><i class="bi bi-calendar me-1"></i><?= esc($p['tahun']) ?></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+        <div class="text-center mt-4">
+            <a href="<?= site_url('prestasi') ?>" class="btn btn-outline-primary px-4">
+                <i class="bi bi-trophy me-2"></i>Lihat Semua Prestasi
+            </a>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
+
+<!-- ============================================================
+     ALBUM FOTO
+     ============================================================ -->
+<?php if (!empty($album_foto)): ?>
+<section class="py-5">
+    <div class="container">
+        <div class="d-flex align-items-end justify-content-between mb-4">
+            <div>
+                <span class="badge text-bg-primary mb-2">Dokumentasi</span>
+                <h2 class="section-title mb-0">Album Foto</h2>
+            </div>
+            <a href="<?= site_url('album-foto') ?>" class="btn btn-outline-primary btn-sm">
+                Lihat Semua <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+        <div class="row g-3">
+            <?php foreach (array_slice($album_foto, 0, 4) as $al): ?>
+            <div class="col-6 col-md-3">
+                <a href="<?= esc($al['link_google_foto']) ?>" target="_blank" rel="noopener noreferrer"
+                    class="text-decoration-none d-block album-home-card">
+                    <!-- Cover persegi 1:1 -->
+                    <div class="album-home-thumb rounded-3 overflow-hidden mb-2 position-relative">
+                        <?php if (!empty($al['cover_foto'])): ?>
+                            <img src="<?= base_url('uploads/album_foto/' . esc($al['cover_foto'])) ?>"
+                                class="w-100 h-100" style="object-fit:cover;position:absolute;inset:0;"
+                                alt="<?= esc($al['judul']) ?>">
+                        <?php else: ?>
+                            <div class="w-100 h-100 bg-light d-flex align-items-center justify-content-center"
+                                style="position:absolute;inset:0;">
+                                <i class="bi bi-images text-muted" style="font-size:2.5rem;"></i>
+                            </div>
+                        <?php endif; ?>
+                        <!-- Overlay hover -->
+                        <div class="album-home-overlay position-absolute inset-0 d-flex align-items-center justify-content-center"
+                            style="inset:0;background:rgba(var(--bs-primary-rgb),.65);opacity:0;transition:.25s;">
+                            <i class="bi bi-google text-white fs-3"></i>
+                        </div>
+                    </div>
+                    <div class="fw-semibold small text-dark text-truncate"><?= esc($al['judul']) ?></div>
+                    <?php if (!empty($al['tanggal'])): ?>
+                        <div class="text-muted" style="font-size:.75rem;">
+                            <i class="bi bi-calendar3 me-1"></i><?= format_tanggal($al['tanggal'], 'long') ?>
+                        </div>
+                    <?php endif; ?>
+                </a>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
+<style>
+.album-home-thumb { aspect-ratio: 16/9; background: #e9ecef; }
+.album-home-card:hover .album-home-overlay { opacity: 1 !important; }
+.album-home-card:hover .fw-semibold { color: var(--bs-primary) !important; }
+</style>
 <?php endif; ?>
 
 <!-- ============================================================
@@ -251,26 +361,26 @@
                 <div class="row g-3">
                     <div class="col-6">
                         <div class="card border-0 bg-primary text-white rounded-3 p-4 text-center h-100">
-                            <div class="display-6 fw-bold mb-1">1000+</div>
+                            <div class="display-6 fw-bold mb-1"><?= esc(setting('stat_siswa') ?: '1.000+') ?></div>
                             <div class="small opacity-75">Siswa Aktif</div>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="card border-0 bg-warning text-dark rounded-3 p-4 text-center h-100">
-                            <div class="display-6 fw-bold mb-1">60+</div>
-                            <div class="small">Guru & Staf</div>
+                            <div class="display-6 fw-bold mb-1"><?= esc(setting('stat_guru') ?: '60+') ?></div>
+                            <div class="small">Guru &amp; Staf</div>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="card border-0 bg-success text-white rounded-3 p-4 text-center h-100">
-                            <div class="display-6 fw-bold mb-1">20+</div>
+                            <div class="display-6 fw-bold mb-1"><?= esc(setting('stat_ekskul') ?: '20+') ?></div>
                             <div class="small opacity-75">Ekstrakurikuler</div>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="card border-0 bg-info text-white rounded-3 p-4 text-center h-100">
-                            <div class="display-6 fw-bold mb-1">100%</div>
-                            <div class="small opacity-75">Kelulusan</div>
+                            <div class="display-6 fw-bold mb-1"><?= esc(setting('stat_prestasi') ?: '50+') ?></div>
+                            <div class="small opacity-75">Prestasi</div>
                         </div>
                     </div>
                 </div>
@@ -278,5 +388,47 @@
         </div>
     </div>
 </section>
+
+<!-- ============================================================
+     LINK TERKAIT
+     ============================================================ -->
+<?php if (!empty($aplikasi_terkait)): ?>
+<section class="py-5" style="background:#fff;">
+    <div class="container">
+        <div class="text-center mb-4">
+            <h2 class="section-title mx-auto">Link Terkait</h2>
+            <p class="text-muted mt-2">Daftar tautan terintegrasi atau website bermanfaat lainnya untuk sekolah</p>
+        </div>
+        <div class="row justify-content-center g-4 mt-2">
+            <?php foreach ($aplikasi_terkait as $app): ?>
+                <div class="col-6 col-md-3 col-lg-2">
+                    <a href="<?= esc($app['url']) ?>" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+                        <div class="card border-0 shadow-sm h-100 text-center p-3 transition" style="border-bottom: 3px solid transparent;">
+                            <div class="mx-auto bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mb-3 overflow-hidden" style="width: 64px; height: 64px;">
+                                <?php if (!empty($app['icon']) && !str_starts_with($app['icon'], 'bi-')): ?>
+                                    <img src="<?= base_url('uploads/aplikasi/' . esc($app['icon'])) ?>" alt="<?= esc($app['nama']) ?>" class="w-100 h-100 object-fit-cover shadow-sm">
+                                <?php else: ?>
+                                    <i class="bi <?= esc($app['icon'] ?: 'bi-app') ?> text-primary fs-3"></i>
+                                <?php endif; ?>
+                            </div>
+                            <h6 class="fw-bold mb-0 text-dark" style="font-size: .9rem;"><?= esc($app['nama']) ?></h6>
+                        </div>
+                    </a>
+                </div>
+            <?php endforeach; ?>
+        </div>
+        
+        <div class="text-center mt-5">
+            <a href="<?= site_url('link-terkait') ?>" class="btn btn-outline-primary px-4 rounded-pill">
+                Lihat Semua Tautan <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+    </div>
+</section>
+<style>
+.quick-link-card, .news-card, .guru-card, .card.transition { transition: transform .25s, box-shadow .25s !important; }
+.card.transition:hover { transform: translateY(-5px); box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important; border-bottom-color: var(--bs-primary) !important; }
+</style>
+<?php endif; ?>
 
 <?= $this->endSection() ?>

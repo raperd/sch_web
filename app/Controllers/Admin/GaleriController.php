@@ -50,8 +50,9 @@ class GaleriController extends BaseController
     public function upload(): string
     {
         return view('admin/galeri/upload', [
-            'title'    => 'Upload Foto / Video',
-            'kategori' => $this->kategoriModel->orderBy('urutan', 'ASC')->findAll(),
+            'title'       => 'Upload Foto / Video',
+            'kategori'    => $this->kategoriModel->orderBy('urutan', 'ASC')->findAll(),
+            'next_urutan' => ($this->model->selectMax('urutan')->first()['urutan'] ?? 0) + 1,
         ]);
     }
 

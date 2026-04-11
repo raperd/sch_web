@@ -36,7 +36,7 @@ class AuthController extends BaseController
         $user = $model->findByUsername($username);
 
         if (! $user || ! password_verify($password, $user['password'])) {
-            return redirect()->back()->withInput()->with('error', 'Username atau password salah.');
+            return redirect()->to('/admin/login')->withInput()->with('error', 'Username atau password salah.');
         }
 
         // Set session
@@ -46,6 +46,7 @@ class AuthController extends BaseController
             'admin_nama'      => $user['nama'],
             'admin_username'  => $user['username'],
             'admin_role'      => $user['role'],
+            'admin_avatar'    => $user['avatar'] ?? null,
         ]);
 
         $model->updateLastLogin($user['id']);
