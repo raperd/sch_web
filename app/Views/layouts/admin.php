@@ -609,6 +609,18 @@ const AppDialog = (() => {
 
         e.preventDefault();                                 // cegah browser POST
 
+        // Bersihkan file input yang punya pasangan _cropped berisi base64
+        // Mencegah file asli (bisa >8MB) ikut terkirim bersama base64,
+        // yang bisa melewati post_max_size PHP dan membuat $_POST terhapus silent.
+        form.querySelectorAll('input[type="hidden"]').forEach(function (h) {
+            if (!h.name || !h.name.endsWith('_cropped')) return;
+            if (!h.value || !h.value.startsWith('data:image')) return;
+            var base     = h.name.replace(/_cropped$/, '');           // "cover", "foto", "thumbnail", …
+            var fileInput = form.querySelector('input[type="file"][name="' + base + '"]')
+                         || form.querySelector('input[type="file"][name="' + base + '_foto"]');
+            if (fileInput) fileInput.value = '';
+        });
+
         var fd  = new FormData(form);                       // Quill sudah sync karena terdaftar lebih dulu
         var xhr = new XMLHttpRequest();
 
