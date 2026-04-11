@@ -99,6 +99,52 @@ if (! function_exists('truncate_text')) {
     }
 }
 
+if (! function_exists('html_purify')) {
+    /**
+     * Sanitasi HTML dari Quill editor sebelum disimpan ke database.
+     *
+     * Strategi:
+     *  1. Hapus <script> dan <style> beserta isinya secara keseluruhan.
+     *  2. Izinkan hanya tag yang dihasilkan Quill (allowlist).
+     *  3. Hapus semua atribut event handler (onclick, onerror, dll.).
+     *  4. Blokir href/src dengan nilai javascript: atau data:text.
+     */
+    function html_purify(string $html): string
+    {
+        if (empty($html)) {
+            return '';
+        }
+
+        // 1. Hapus blok <script> dan <style> beserta kontennya
+        $html = preg_replace('/<script\b[^>]*>.*?<\/script>/is', '', $html);
+        $html = preg_replace('/<style\b[^>]*>.*?<\/style>/is', '', $html);
+
+        // 2. Izinkan hanya tag output Quill yang aman
+        $allowedTags = '<p><br><strong><b><em><i><u><s>'
+                     . '<h1><h2><h3><h4><h5><h6>'
+                     . '<ul><ol><li><blockquote><pre><code>'
+                     . '<a><img><figure><figcaption>'
+                     . '<span><div>'
+                     . '<table><thead><tbody><tr><th><td>'
+                     . '<iframe>';
+        $html = strip_tags($html, $allowedTags);
+
+        // 3. Hapus semua event handler (on*)
+        $html = preg_replace('/\s+on[a-zA-Z]+\s*=\s*"[^"]*"/i', '', $html);
+        $html = preg_replace('/\s+on[a-zA-Z]+\s*=\s*\'[^\']*\'/i', '', $html);
+        $html = preg_replace('/\s+on[a-zA-Z]+\s*=[^\s>]*/i', '', $html);
+
+        // 4. Blokir javascript: dan data:text di href/src
+        $html = preg_replace(
+            '/(\s(?:href|src|action)\s*=\s*["\'])\s*(?:javascript|data\s*:\s*text)[^"\']*(["\'])/i',
+            '$1#$2',
+            $html
+        );
+
+        return trim($html);
+    }
+}
+
 if (! function_exists('active_menu')) {
     /**
      * Kembalikan class 'active' jika URL cocok dengan current page.

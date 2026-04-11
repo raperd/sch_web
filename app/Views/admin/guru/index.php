@@ -52,7 +52,83 @@
     </div>
 </div>
 
-<!-- Tabel -->
+<?php
+$tipeBadge = ['guru' => 'primary', 'staf' => 'info', 'tendik' => 'secondary'];
+$tipeLabel = ['guru' => 'Guru', 'staf' => 'Staf', 'tendik' => 'Tendik'];
+?>
+
+<!-- Mobile Cards (xs/sm) -->
+<div class="d-md-none">
+    <?php if (!empty($guru)): ?>
+        <?php foreach ($guru as $g): ?>
+            <?php
+            $gCls = $tipeBadge[$g['tipe']] ?? 'secondary';
+            $gLbl = $tipeLabel[$g['tipe']] ?? $g['tipe'];
+            ?>
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body p-3">
+                    <div class="d-flex gap-3 mb-2">
+                        <?php if (!empty($g['foto'])): ?>
+                            <img src="<?= base_url('uploads/guru/' . esc($g['foto'])) ?>"
+                                class="rounded-circle flex-shrink-0"
+                                style="width:52px;height:52px;object-fit:cover" alt="">
+                        <?php else: ?>
+                            <div class="rounded-circle bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center flex-shrink-0"
+                                style="width:52px;height:52px">
+                                <i class="bi bi-person text-secondary fs-5"></i>
+                            </div>
+                        <?php endif; ?>
+                        <div>
+                            <div class="fw-semibold"><?= esc($g['nama']) ?></div>
+                            <?php if (!empty($g['nip'])): ?>
+                                <small class="text-muted">NIP: <?= esc($g['nip']) ?></small>
+                            <?php endif; ?>
+                            <?php if (!empty($g['jabatan'])): ?>
+                                <div class="small text-muted"><?= esc($g['jabatan']) ?>
+                                    <?php if (!empty($g['bidang_nama'])): ?>
+                                        · <?= esc($g['bidang_nama']) ?>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-wrap gap-1">
+                        <span class="badge text-bg-<?= $gCls ?>"><?= $gLbl ?></span>
+                        <span class="badge <?= $g['is_active'] ? 'text-bg-success' : 'text-bg-danger' ?>">
+                            <?= $g['is_active'] ? 'Aktif' : 'Nonaktif' ?>
+                        </span>
+                    </div>
+                </div>
+                <div class="card-footer bg-white border-top p-2 d-flex gap-2 justify-content-end">
+                    <a href="<?= base_url('admin/guru/edit/' . $g['id']) ?>"
+                        class="btn btn-sm btn-outline-primary flex-grow-1">
+                        <i class="bi bi-pencil me-1"></i>Edit
+                    </a>
+                    <form method="post" action="<?= base_url('admin/guru/delete/' . $g['id']) ?>"
+                        data-confirm="Hapus data ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
+                        <?= csrf_field() ?>
+                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <div class="text-center py-5 text-muted">
+            <i class="bi bi-people display-5 d-block mb-2 opacity-25"></i>
+            Belum ada data. <a href="<?= base_url('admin/guru/create') ?>">Tambah sekarang</a>
+        </div>
+    <?php endif; ?>
+    <?php if (isset($pager)): ?>
+        <div class="d-flex justify-content-center py-3">
+            <?= $pager->links('guru', 'default_full') ?>
+        </div>
+    <?php endif; ?>
+</div>
+
+<!-- Desktop Table (md+) -->
+<div class="d-none d-md-block">
 <div class="card border-0 shadow-sm">
     <div class="table-responsive">
         <table class="table table-hover align-middle mb-0" id="guruTable">
@@ -69,6 +145,10 @@
             <tbody id="guruSortable">
                 <?php if (!empty($guru)): ?>
                     <?php foreach ($guru as $g): ?>
+                        <?php
+                        $cls = $tipeBadge[$g['tipe']] ?? 'secondary';
+                        $lbl = $tipeLabel[$g['tipe']] ?? $g['tipe'];
+                        ?>
                         <tr data-id="<?= $g['id'] ?>">
                             <td class="text-center text-muted" style="cursor:grab">
                                 <i class="bi bi-grip-vertical"></i>
@@ -100,12 +180,6 @@
                                 <?php endif; ?>
                             </td>
                             <td class="text-center">
-                                <?php
-                                $tipeBadge = ['guru' => 'primary', 'staf' => 'info', 'tendik' => 'secondary'];
-                                $tipeLabel = ['guru' => 'Guru', 'staf' => 'Staf', 'tendik' => 'Tendik'];
-                                $cls = $tipeBadge[$g['tipe']] ?? 'secondary';
-                                $lbl = $tipeLabel[$g['tipe']] ?? $g['tipe'];
-                                ?>
                                 <span class="badge text-bg-<?= $cls ?>"><?= $lbl ?></span>
                             </td>
                             <td class="text-center">
@@ -120,7 +194,7 @@
                                         <i class="bi bi-pencil"></i>
                                     </a>
                                     <form method="post" action="<?= base_url('admin/guru/delete/' . $g['id']) ?>"
-                                        class="d-inline" onsubmit="return confirm('Hapus data ini?')">
+                                        class="d-inline" data-confirm="Hapus data ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                                         <?= csrf_field() ?>
                                         <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus">
                                             <i class="bi bi-trash"></i>
@@ -147,6 +221,7 @@
             <?= $pager->links('guru', 'default_full') ?>
         </div>
     <?php endif; ?>
+</div>
 </div>
 
 <?= $this->endSection() ?>

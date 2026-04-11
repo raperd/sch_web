@@ -16,6 +16,61 @@
     <small class="text-muted">Total Fasilitas</small>
 </div>
 
+<!-- Mobile Cards (xs/sm) -->
+<div class="d-md-none">
+    <?php if (!empty($fasilitas)): ?>
+        <?php foreach ($fasilitas as $f): ?>
+            <?php
+            $kondisiMap = ['baik' => ['success', 'Baik'], 'rusak_ringan' => ['warning', 'Rusak Ringan'], 'rusak_berat' => ['danger', 'Rusak Berat']];
+            [$fCls, $fLbl] = $kondisiMap[$f['kondisi']] ?? ['secondary', $f['kondisi']];
+            ?>
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body p-3">
+                    <div class="d-flex gap-3 mb-2">
+                        <?php if (!empty($f['foto'])): ?>
+                            <img src="<?= base_url('uploads/fasilitas/' . esc($f['foto'])) ?>"
+                                class="rounded flex-shrink-0" style="width:52px;height:42px;object-fit:cover" alt="">
+                        <?php elseif (!empty($f['icon'])): ?>
+                            <div class="rounded bg-primary bg-opacity-10 d-flex align-items-center justify-content-center flex-shrink-0" style="width:52px;height:42px">
+                                <i class="bi <?= esc($f['icon']) ?> text-primary fs-5"></i>
+                            </div>
+                        <?php endif; ?>
+                        <div>
+                            <div class="fw-semibold"><?= esc($f['nama']) ?></div>
+                            <?php if (!empty($f['deskripsi'])): ?>
+                                <small class="text-muted"><?= truncate_text($f['deskripsi'], 60) ?></small>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2 small text-muted">
+                        <?php if ($f['jumlah']): ?>
+                            <span><i class="bi bi-hash me-1"></i><?= $f['jumlah'] ?></span>
+                        <?php endif; ?>
+                        <span class="badge text-bg-<?= $fCls ?>"><?= $fLbl ?></span>
+                    </div>
+                </div>
+                <div class="card-footer bg-white border-top p-2 d-flex gap-2 justify-content-end">
+                    <a href="<?= base_url('admin/fasilitas/edit/' . $f['id']) ?>" class="btn btn-sm btn-outline-primary flex-grow-1">
+                        <i class="bi bi-pencil me-1"></i>Edit
+                    </a>
+                    <form method="post" action="<?= base_url('admin/fasilitas/delete/' . $f['id']) ?>"
+                        data-confirm="Hapus?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
+                        <?= csrf_field() ?>
+                        <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                    </form>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <div class="text-center py-5 text-muted">
+            <i class="bi bi-building display-5 d-block mb-2 opacity-25"></i>
+            Belum ada data fasilitas. <a href="<?= base_url('admin/fasilitas/create') ?>">Tambah sekarang</a>
+        </div>
+    <?php endif; ?>
+</div>
+
+<!-- Desktop Table (md+) -->
+<div class="d-none d-md-block">
 <div class="card border-0 shadow-sm">
     <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
@@ -62,7 +117,7 @@
                             <td class="text-end">
                                 <div class="d-flex gap-1 justify-content-end">
                                     <a href="<?= base_url('admin/fasilitas/edit/' . $f['id']) ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
-                                    <form method="post" action="<?= base_url('admin/fasilitas/delete/' . $f['id']) ?>" class="d-inline" onsubmit="return confirm('Hapus?')">
+                                    <form method="post" action="<?= base_url('admin/fasilitas/delete/' . $f['id']) ?>" class="d-inline" data-confirm="Hapus?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                                         <?= csrf_field() ?>
                                         <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
                                     </form>
@@ -79,6 +134,7 @@
             </tbody>
         </table>
     </div>
+</div>
 </div>
 
 <?= $this->endSection() ?>

@@ -27,6 +27,11 @@ class ArtikelController extends BaseController
             ->join('kategori_artikel', 'kategori_artikel.id = artikel.kategori_id', 'left')
             ->orderBy('artikel.created_at', 'DESC');
 
+        // Kontributor can only see their own articles
+        if (session('admin_role') === 'kontributor') {
+            $builder->where('artikel.user_id', session('admin_id'));
+        }
+
         if ($status !== '') {
             $builder->where('artikel.status', $status);
         }
@@ -58,6 +63,72 @@ class ArtikelController extends BaseController
         ]);
     }
 
+    /**
+     * Endpoint AJAX: upload gambar dari Quill editor ke server.
+     * POST /admin/artikel/upload-image
+     * Menerima field 'image' (multipart) atau 'image_base64' (data URI).
+     * Return JSON { success, url } atau { success, error }.
+     */
+    public function uploadKontenImage()
+    {
+        if (! $this->request->isAJAX() && $this->request->getMethod() !== 'post') {
+            return $this->response->setJSON(['success' => false, 'error' => 'Invalid request.'])->setStatusCode(400);
+        }
+
+        $dir = FCPATH . 'uploads/artikel/konten/';
+        if (! is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
+        $filename = 'img_' . bin2hex(random_bytes(8)) . '.jpg';
+        $destPath = $dir . $filename;
+
+        // --- Coba dari file upload biasa ---
+        $file = $this->request->getFile('image');
+        if ($file && $file->isValid() && ! $file->hasMoved()) {
+            $imgData = file_get_contents($file->getTempName());
+        }
+        // --- Fallback: base64 data URI ---
+        elseif ($b64 = $this->request->getPost('image_base64')) {
+            if (str_contains($b64, ',')) [, $b64] = explode(',', $b64, 2);
+            $imgData = base64_decode($b64);
+        }
+        else {
+            return $this->response->setJSON(['success' => false, 'error' => 'Tidak ada file.'])->setStatusCode(400);
+        }
+
+        // --- Resize & compress dengan GD ---
+        $src = @imagecreatefromstring($imgData);
+        if (! $src) {
+            return $this->response->setJSON(['success' => false, 'error' => 'File bukan gambar valid.'])->setStatusCode(422);
+        }
+
+        $origW = imagesx($src);
+        $origH = imagesy($src);
+        $maxPx = 1000;
+
+        if ($origW > $maxPx || $origH > $maxPx) {
+            if ($origW >= $origH) {
+                $newW = $maxPx;
+                $newH = (int) round($origH * $maxPx / $origW);
+            } else {
+                $newH = $maxPx;
+                $newW = (int) round($origW * $maxPx / $origH);
+            }
+            $dst = imagecreatetruecolor($newW, $newH);
+            imagecopyresampled($dst, $src, 0, 0, 0, 0, $newW, $newH, $origW, $origH);
+            imagedestroy($src);
+            $src = $dst;
+        }
+
+        // Simpan sebagai JPEG quality 82
+        imagejpeg($src, $destPath, 82);
+        imagedestroy($src);
+
+        $url = base_url('uploads/artikel/konten/' . $filename);
+        return $this->response->setJSON(['success' => true, 'url' => $url]);
+    }
+
     public function store()
     {
         $rules = [
@@ -74,13 +145,16 @@ class ArtikelController extends BaseController
         $judul  = $this->request->getPost('judul');
         $slug   = $this->_uniqueSlug(slug_generate($judul));
 
-        $thumbnail = null;
-        $file = $this->request->getFile('thumbnail');
-        if ($file && $file->isValid() && ! $file->hasMoved()) {
-            $uploader = new \App\Libraries\ImageUpload();
-            $thumbnail = $uploader->upload('thumbnail', 'artikel');
-            if (! $thumbnail) {
-                return redirect()->back()->withInput()->with('error', 'Gagal upload thumbnail.');
+        // Prioritas: hasil crop (base64) → upload biasa
+        $thumbnail = $this->_saveCroppedThumbnail();
+        if (! $thumbnail) {
+            $file = $this->request->getFile('thumbnail');
+            if ($file && $file->isValid() && ! $file->hasMoved()) {
+                $uploader  = new \App\Libraries\ImageUpload();
+                $thumbnail = $uploader->upload('thumbnail', 'artikel');
+                if (! $thumbnail) {
+                    return redirect()->back()->withInput()->with('error', 'Gagal upload thumbnail.');
+                }
             }
         }
 
@@ -96,7 +170,7 @@ class ArtikelController extends BaseController
             'judul'       => $judul,
             'slug'        => $slug,
             'ringkasan'   => $this->request->getPost('ringkasan'),
-            'konten'      => $this->request->getPost('konten'),
+            'konten'      => html_purify($this->request->getPost('konten')),
             'thumbnail'   => $thumbnail,
             'status'      => $status,
             'is_featured' => (int) ($this->request->getPost('is_featured') === '1'),
@@ -114,6 +188,11 @@ class ArtikelController extends BaseController
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Artikel tidak ditemukan.');
         }
 
+        // Kontributor can only edit their own articles
+        if (session('admin_role') === 'kontributor' && (int)$artikel['user_id'] !== (int)session('admin_id')) {
+            return redirect()->to(base_url('admin/artikel'))->with('error', 'Anda tidak memiliki izin untuk mengedit artikel ini.');
+        }
+
         return view('admin/artikel/edit', [
             'title'    => 'Edit Artikel',
             'artikel'  => $artikel,
@@ -126,6 +205,11 @@ class ArtikelController extends BaseController
         $artikel = $this->model->find($id);
         if (! $artikel) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Artikel tidak ditemukan.');
+        }
+
+        // Kontributor can only update their own articles
+        if (session('admin_role') === 'kontributor' && (int)$artikel['user_id'] !== (int)session('admin_id')) {
+            return redirect()->to(base_url('admin/artikel'))->with('error', 'Anda tidak memiliki izin untuk mengubah artikel ini.');
         }
 
         $rules = [
@@ -147,17 +231,21 @@ class ArtikelController extends BaseController
         }
 
         $thumbnail = $artikel['thumbnail'];
-        $file = $this->request->getFile('thumbnail');
-        if ($file && $file->isValid() && ! $file->hasMoved()) {
-            $uploader = new \App\Libraries\ImageUpload();
-            $newThumb = $uploader->upload('thumbnail', 'artikel');
-            if ($newThumb) {
-                // Hapus thumbnail lama
-                if ($thumbnail) {
-                    $uploader->delete('artikel', $thumbnail);
-                }
-                $thumbnail = $newThumb;
+        $uploader  = new \App\Libraries\ImageUpload();
+
+        // Prioritas: hasil crop (base64) → upload biasa
+        $newThumb = $this->_saveCroppedThumbnail();
+        if (! $newThumb) {
+            $file = $this->request->getFile('thumbnail');
+            if ($file && $file->isValid() && ! $file->hasMoved()) {
+                $newThumb = $uploader->upload('thumbnail', 'artikel');
             }
+        }
+        if ($newThumb) {
+            if ($thumbnail) {
+                $uploader->delete('artikel', $thumbnail);
+            }
+            $thumbnail = $newThumb;
         }
 
         $status = $this->request->getPost('status');
@@ -171,7 +259,7 @@ class ArtikelController extends BaseController
             'judul'       => $judul,
             'slug'        => $slug,
             'ringkasan'   => $this->request->getPost('ringkasan'),
-            'konten'      => $this->request->getPost('konten'),
+            'konten'      => html_purify($this->request->getPost('konten')),
             'thumbnail'   => $thumbnail,
             'status'      => $status,
             'is_featured' => (int) ($this->request->getPost('is_featured') === '1'),
@@ -187,6 +275,11 @@ class ArtikelController extends BaseController
         $artikel = $this->model->find($id);
         if (! $artikel) {
             return redirect()->back()->with('error', 'Artikel tidak ditemukan.');
+        }
+
+        // Kontributor can only delete their own articles
+        if (session('admin_role') === 'kontributor' && (int)$artikel['user_id'] !== (int)session('admin_id')) {
+            return redirect()->to(base_url('admin/artikel'))->with('error', 'Anda tidak memiliki izin untuk menghapus artikel ini.');
         }
 
         if (! empty($artikel['thumbnail'])) {
@@ -235,6 +328,35 @@ class ArtikelController extends BaseController
     // ----------------------------------------------------------------
     // Helper
     // ----------------------------------------------------------------
+
+    /**
+     * Simpan thumbnail hasil crop (base64 data URI) ke disk.
+     * Return nama file, atau null jika tidak ada data.
+     */
+    private function _saveCroppedThumbnail(): ?string
+    {
+        $b64 = $this->request->getPost('thumbnail_cropped');
+        if (empty($b64) || !str_starts_with($b64, 'data:image/')) {
+            return null;
+        }
+
+        // Strip "data:image/jpeg;base64," prefix
+        [, $data] = explode(',', $b64, 2);
+        $imgData  = base64_decode($data);
+        if (! $imgData) {
+            return null;
+        }
+
+        $dir = FCPATH . 'uploads/artikel/';
+        if (! is_dir($dir)) {
+            mkdir($dir, 0775, true);
+        }
+
+        $filename = 'thumb_' . bin2hex(random_bytes(8)) . '.jpg';
+        file_put_contents($dir . $filename, $imgData);
+
+        return $filename;
+    }
 
     private function _uniqueSlug(string $slug, int $excludeId = 0): string
     {

@@ -62,7 +62,86 @@
     </div>
 </div>
 
-<!-- Tabel -->
+<!-- Mobile Cards (xs/sm) -->
+<div class="d-md-none">
+    <?php if (!empty($artikel)): ?>
+        <?php foreach ($artikel as $a): ?>
+            <?php
+            $statusConfig = [
+                'published' => ['success', 'Published'],
+                'draft'     => ['warning', 'Draft'],
+                'archived'  => ['secondary', 'Archived'],
+            ];
+            [$sCls, $sLbl] = $statusConfig[$a['status']] ?? ['secondary', $a['status']];
+            ?>
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body p-3">
+                    <div class="d-flex gap-3 mb-2">
+                        <?php if (!empty($a['thumbnail'])): ?>
+                            <img src="<?= base_url('uploads/artikel/' . esc($a['thumbnail'])) ?>"
+                                class="rounded flex-shrink-0" style="width:60px;height:46px;object-fit:cover" alt="">
+                        <?php else: ?>
+                            <div class="rounded bg-light d-flex align-items-center justify-content-center flex-shrink-0"
+                                style="width:60px;height:46px">
+                                <i class="bi bi-image text-muted"></i>
+                            </div>
+                        <?php endif; ?>
+                        <div style="min-width:0">
+                            <div class="fw-semibold"><?= esc($a['judul']) ?></div>
+                            <small class="text-muted"><i class="bi bi-eye me-1"></i><?= number_format($a['view_count'] ?? 0) ?> dibaca</small>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-wrap gap-1 mb-2">
+                        <span class="badge text-bg-<?= $sCls ?>"><?= $sLbl ?></span>
+                        <span class="badge text-bg-light border"><?= esc($a['nama_kategori'] ?? '—') ?></span>
+                        <?php if ($a['is_featured']): ?>
+                            <span class="badge text-bg-warning"><i class="bi bi-star-fill me-1"></i>Pilihan</span>
+                        <?php endif; ?>
+                    </div>
+                    <small class="text-muted">
+                        <?= !empty($a['published_at']) ? format_tanggal($a['published_at'], 'short') : format_tanggal($a['created_at'], 'short') ?>
+                    </small>
+                </div>
+                <div class="card-footer bg-white border-top p-2 d-flex gap-2">
+                    <form method="post" action="<?= base_url('admin/artikel/toggle-status/' . $a['id']) ?>" class="flex-grow-1">
+                        <?= csrf_field() ?>
+                        <button type="submit" class="btn btn-sm text-bg-<?= $sCls ?> border-0 w-100">
+                            <?= $sLbl ?>
+                        </button>
+                    </form>
+                    <a href="<?= base_url('berita/' . esc($a['slug'])) ?>" target="_blank"
+                        class="btn btn-sm btn-outline-secondary" title="Lihat">
+                        <i class="bi bi-eye"></i>
+                    </a>
+                    <a href="<?= base_url('admin/artikel/edit/' . $a['id']) ?>"
+                        class="btn btn-sm btn-outline-primary" title="Edit">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <form method="post" action="<?= base_url('admin/artikel/delete/' . $a['id']) ?>"
+                        data-confirm="Hapus artikel ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
+                        <?= csrf_field() ?>
+                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <div class="text-center py-5 text-muted">
+            <i class="bi bi-newspaper display-5 d-block mb-2 opacity-25"></i>
+            Belum ada artikel. <a href="<?= base_url('admin/artikel/create') ?>">Tulis sekarang</a>
+        </div>
+    <?php endif; ?>
+    <?php if (isset($pager)): ?>
+        <div class="d-flex justify-content-center py-3">
+            <?= $pager->links('artikel', 'default_full') ?>
+        </div>
+    <?php endif; ?>
+</div>
+
+<!-- Desktop Table (md+) -->
+<div class="d-none d-md-block">
 <div class="card border-0 shadow-sm">
     <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
@@ -145,7 +224,7 @@
                                         <i class="bi bi-pencil"></i>
                                     </a>
                                     <form method="post" action="<?= base_url('admin/artikel/delete/' . $a['id']) ?>" class="d-inline"
-                                        onsubmit="return confirm('Hapus artikel ini?')">
+                                        data-confirm="Hapus artikel ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                                         <?= csrf_field() ?>
                                         <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus">
                                             <i class="bi bi-trash"></i>
@@ -172,6 +251,7 @@
             <?= $pager->links('artikel', 'default_full') ?>
         </div>
     <?php endif; ?>
+</div>
 </div>
 
 <?= $this->endSection() ?>

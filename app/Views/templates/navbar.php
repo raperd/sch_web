@@ -25,7 +25,7 @@
             <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
                 <?php foreach ($menus as $menu): ?>
                     <?php
-                        $isPpdb  = strtolower($menu['nama']) === 'ppdb';
+                        $isPpdb  = in_array(strtolower($menu['nama']), ['ppdb', 'spmb']);
                         $isActive = active_menu($menu['url']);
                     ?>
                     <li class="nav-item <?= $isPpdb ? 'nav-ppdb' : '' ?>">

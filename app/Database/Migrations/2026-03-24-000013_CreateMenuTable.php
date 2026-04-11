@@ -80,12 +80,14 @@ class CreateMenuTable extends Migration
 
         $this->forge->createTable('menu');
 
-        $this->db->query('ALTER TABLE menu ADD CONSTRAINT fk_menu_parent FOREIGN KEY (parent_id) REFERENCES menu(id) ON DELETE SET NULL');
+        $p = $this->db->DBPrefix;
+        $this->db->query("ALTER TABLE {$p}menu ADD CONSTRAINT {$p}fk_menu_parent FOREIGN KEY (parent_id) REFERENCES {$p}menu(id) ON DELETE SET NULL");
     }
 
     public function down(): void
     {
-        $this->db->query('ALTER TABLE menu DROP FOREIGN KEY fk_menu_parent');
+        $this->db->query('SET FOREIGN_KEY_CHECKS=0');
         $this->forge->dropTable('menu', true);
+        $this->db->query('SET FOREIGN_KEY_CHECKS=1');
     }
 }

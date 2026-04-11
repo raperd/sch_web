@@ -80,12 +80,14 @@ class CreateGaleriTable extends Migration
 
         $this->forge->createTable('galeri');
 
-        $this->db->query('ALTER TABLE galeri ADD CONSTRAINT fk_galeri_kategori FOREIGN KEY (kategori_id) REFERENCES kategori_galeri(id) ON DELETE RESTRICT');
+        $p = $this->db->DBPrefix;
+        $this->db->query("ALTER TABLE {$p}galeri ADD CONSTRAINT {$p}fk_galeri_kategori FOREIGN KEY (kategori_id) REFERENCES {$p}kategori_galeri(id) ON DELETE RESTRICT");
     }
 
     public function down(): void
     {
-        $this->db->query('ALTER TABLE galeri DROP FOREIGN KEY fk_galeri_kategori');
+        $this->db->query('SET FOREIGN_KEY_CHECKS=0');
         $this->forge->dropTable('galeri', true);
+        $this->db->query('SET FOREIGN_KEY_CHECKS=1');
     }
 }

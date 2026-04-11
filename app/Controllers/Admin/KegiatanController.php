@@ -66,15 +66,7 @@ class KegiatanController extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        $foto = null;
-        $file = $this->request->getFile('foto');
-        if ($file && $file->isValid() && ! $file->hasMoved()) {
-            $uploader = new \App\Libraries\ImageUpload();
-            $foto = $uploader->upload('foto', 'kegiatan');
-            if (! $foto) {
-                return redirect()->back()->withInput()->with('error', 'Gagal upload foto.');
-            }
-        }
+        $foto = $this->_saveCroppedFoto();
 
         $tanggalSelesai = $this->request->getPost('tanggal_selesai');
 
@@ -124,17 +116,13 @@ class KegiatanController extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        $foto = $kegiatan['foto'];
-        $file = $this->request->getFile('foto');
-        if ($file && $file->isValid() && ! $file->hasMoved()) {
-            $uploader = new \App\Libraries\ImageUpload();
-            $newFoto = $uploader->upload('foto', 'kegiatan');
-            if ($newFoto) {
-                if ($foto) {
-                    $uploader->delete('kegiatan', $foto);
-                }
-                $foto = $newFoto;
+        $foto    = $kegiatan['foto'];
+        $newFoto = $this->_saveCroppedFoto();
+        if ($newFoto) {
+            if ($foto) {
+                (new \App\Libraries\ImageUpload())->delete('kegiatan', $foto);
             }
+            $foto = $newFoto;
         }
 
         $tanggalSelesai = $this->request->getPost('tanggal_selesai');
@@ -152,6 +140,28 @@ class KegiatanController extends BaseController
         ]);
 
         return redirect()->to(base_url('admin/kegiatan'))->with('success', 'Kegiatan berhasil diperbarui.');
+    }
+
+    private function _saveCroppedFoto(): ?string
+    {
+        $b64 = $this->request->getPost('foto_cropped');
+        if (empty($b64) || ! str_starts_with($b64, 'data:image/')) {
+            return null;
+        }
+        [, $data] = explode(',', $b64, 2);
+        $imgData  = base64_decode($data);
+        if (! $imgData) return null;
+
+        $img = @imagecreatefromstring($imgData);
+        if (! $img) return null;
+        imagedestroy($img);
+
+        $dir = FCPATH . 'uploads/kegiatan/';
+        if (! is_dir($dir)) mkdir($dir, 0775, true);
+
+        $filename = 'kegiatan_' . bin2hex(random_bytes(8)) . '.jpg';
+        file_put_contents($dir . $filename, $imgData);
+        return $filename;
     }
 
     public function delete(int $id)

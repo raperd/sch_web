@@ -115,3 +115,46 @@ Gunakan `App\Libraries\ImageUpload` untuk semua upload gambar.
 $uploader = new \App\Libraries\ImageUpload();
 $path = $uploader->upload('thumbnail', 'artikel'); // simpan ke writable/uploads/artikel/
 ```
+
+## Testing
+
+### Menjalankan Test
+```bash
+vendor/bin/phpunit --no-coverage   # Semua test tanpa coverage report
+php spark test                     # Alias spark (sama dengan phpunit)
+vendor/bin/phpunit --filter Nama   # Satu test class saja
+```
+
+### Konfigurasi Database Test
+- Test menggunakan DB yang sama (`sch_web`) dengan prefix tabel `tests_`
+- Konfigurasi ada di `app/Config/Database.php` array `$tests`
+- `ENVIRONMENT=testing` di `phpunit.xml` otomatis switch ke group `tests`
+
+### Konvensi Test Class
+```php
+// Untuk test yang membutuhkan migrasi + seed (FK dependencies):
+protected $migrate      = true;
+protected $migrateOnce  = true;   // WAJIB: migrate sekali per class, bukan per method
+protected $seed         = 'App\Database\Seeds\DatabaseSeeder'; // FQCN, bukan nama pendek
+protected $seedOnce     = true;
+protected $namespace    = 'App';
+
+// Untuk test yang hanya butuh tabel kosong (tanpa seed):
+protected $migrate      = true;
+protected $migrateOnce  = true;
+protected $namespace    = 'App';
+```
+
+**Perhatian penting:**
+- Gunakan `$migrateOnce = true` agar migrate/refresh hanya berjalan sekali per class.
+  `$migrateOnce = false` (default) + `$seedOnce = true` = bug: test method ke-2+ dapat tabel kosong.
+- Selalu gunakan FQCN untuk `$seed` — CI4 mencari seeder pendek di `tests/_support/`, bukan `app/Database/Seeds/`.
+- Raw SQL di model **wajib** gunakan query builder agar DBPrefix otomatis diterapkan:
+  ```php
+  // SALAH — tidak prefix-aware:
+  $this->db->query('UPDATE artikel SET view_count = view_count + 1 WHERE id = ?', [$id]);
+  // BENAR:
+  $this->db->table('artikel')->where('id', $id)->set('view_count', 'view_count + 1', false)->update();
+  ```
+- FK constraint di migration `down()`: gunakan `SET FOREIGN_KEY_CHECKS=0` sebelum `dropTable()`,
+  bukan `ALTER TABLE DROP FOREIGN KEY` (karena nama constraint juga pakai prefix).

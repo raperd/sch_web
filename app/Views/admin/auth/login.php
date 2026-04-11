@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Admin — <?= esc(setting('site_name') ?? 'Admin Panel') ?></title>
+    <?php $faviconPath = setting('favicon_path'); ?>
+    <link rel="icon" type="image/x-icon" href="<?= $faviconPath ? base_url('uploads/pengaturan/' . esc($faviconPath)) : base_url('assets/images/logo-sekolah.png') ?>">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
@@ -19,7 +21,12 @@
 <div class="container d-flex justify-content-center align-items-center py-5">
     <div class="login-card card w-100">
         <div class="login-header">
-            <i class="bi bi-mortarboard-fill text-warning fs-1 d-block mb-2"></i>
+            <?php if (setting('logo_path')): ?>
+                <img src="<?= base_url('uploads/pengaturan/' . esc(setting('logo_path'))) ?>"
+                     alt="Logo" class="d-block mx-auto mb-2" style="height:64px;width:64px;object-fit:contain;">
+            <?php else: ?>
+                <i class="bi bi-mortarboard-fill text-warning fs-1 d-block mb-2"></i>
+            <?php endif; ?>
             <h5 class="text-white mb-0 fw-bold"><?= esc(setting('site_name') ?? 'Admin Panel') ?></h5>
             <small class="text-white-50">Panel Manajemen Konten</small>
         </div>

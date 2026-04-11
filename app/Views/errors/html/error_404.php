@@ -1,84 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-    <meta charset="utf-8">
-    <title><?= lang('Errors.pageNotFound') ?></title>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 — Halaman Tidak Ditemukan</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
-        div.logo {
-            height: 200px;
-            width: 155px;
-            display: inline-block;
-            opacity: 0.08;
-            position: absolute;
-            top: 2rem;
-            left: 50%;
-            margin-left: -73px;
-        }
-        body {
-            height: 100%;
-            background: #fafafa;
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            color: #777;
-            font-weight: 300;
-        }
-        h1 {
-            font-weight: lighter;
-            letter-spacing: normal;
-            font-size: 3rem;
-            margin-top: 0;
-            margin-bottom: 0;
-            color: #222;
-        }
-        .wrap {
-            max-width: 1024px;
-            margin: 5rem auto;
-            padding: 2rem;
-            background: #fff;
-            text-align: center;
-            border: 1px solid #efefef;
-            border-radius: 0.5rem;
-            position: relative;
-        }
-        pre {
-            white-space: normal;
-            margin-top: 1.5rem;
-        }
-        code {
-            background: #fafafa;
-            border: 1px solid #efefef;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            display: block;
-        }
-        p {
-            margin-top: 1.5rem;
-        }
-        .footer {
-            margin-top: 2rem;
-            border-top: 1px solid #efefef;
-            padding: 1em 2em 0 2em;
-            font-size: 85%;
-            color: #999;
-        }
-        a:active,
-        a:link,
-        a:visited {
-            color: #dd4814;
-        }
+        body { background: #f0f4f8; min-height: 100vh; display: flex; align-items: center; }
+        .error-card { max-width: 540px; width: 100%; }
+        .error-number { font-size: 7rem; font-weight: 900; line-height: 1; color: #1a5276; opacity: .12; user-select: none; }
     </style>
 </head>
 <body>
-    <div class="wrap">
-        <h1>404</h1>
-
-        <p>
-            <?php if (ENVIRONMENT !== 'production') : ?>
-                <?= nl2br(esc($message)) ?>
-            <?php else : ?>
-                <?= lang('Errors.sorryCannotFind') ?>
-            <?php endif; ?>
-        </p>
+    <div class="container py-5">
+        <div class="error-card mx-auto text-center">
+            <div class="error-number">404</div>
+            <div class="mb-3 mt-n3">
+                <i class="bi bi-compass text-primary" style="font-size:4rem;opacity:.5"></i>
+            </div>
+            <h1 class="h3 fw-bold mb-2">Halaman Tidak Ditemukan</h1>
+            <p class="text-muted mb-4">
+                Maaf, halaman yang kamu cari tidak ada atau telah dipindahkan.<br>
+                <?php if (ENVIRONMENT !== 'production'): ?>
+                    <small class="text-danger"><?= esc($message) ?></small>
+                <?php endif; ?>
+            </p>
+            <div class="d-flex gap-2 justify-content-center flex-wrap">
+                <a href="/" class="btn btn-primary px-4">
+                    <i class="bi bi-house me-1"></i>Ke Beranda
+                </a>
+                <a href="javascript:history.back()" class="btn btn-outline-secondary px-4">
+                    <i class="bi bi-arrow-left me-1"></i>Kembali
+                </a>
+            </div>
+            <p class="mt-4 text-muted small">
+                Butuh bantuan? Hubungi kami di
+                <a href="/profil" class="text-decoration-none">halaman kontak</a>.
+            </p>
+        </div>
     </div>
 </body>
 </html>

@@ -50,14 +50,25 @@
                 <div class="card-body p-3">
                     <div class="mb-3 text-center d-none" id="fotoWrap">
                         <img id="fotoPreview" src="" class="rounded" style="max-height:120px;max-width:100%" alt="">
+                        <button type="button" class="btn btn-sm btn-outline-secondary d-block mx-auto mt-2" id="reCropBtn">
+                            <i class="bi bi-crop me-1"></i>Ubah Crop
+                        </button>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Foto</label>
-                        <input type="file" class="form-control" name="foto" id="fotoInput" accept="image/*">
+                        <input type="file" id="fotoInput" accept="image/jpeg,image/png,image/webp" style="display:none">
+                        <input type="hidden" name="foto_cropped" id="fotoCropped">
+                        <div class="d-flex gap-2 align-items-center">
+                            <button type="button" class="btn btn-sm btn-outline-primary" id="pickFotoBtn">
+                                <i class="bi bi-upload me-1"></i>Pilih Foto
+                            </button>
+                            <span class="text-muted small" id="fotoFileName">Belum ada foto dipilih</span>
+                        </div>
+                        <div class="form-text">JPEG/PNG. Dipotong otomatis rasio 16:9.</div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Urutan</label>
-                        <input type="number" class="form-control" name="urutan" value="<?= esc(old('urutan', 0)) ?>" min="0">
+                        <input type="number" class="form-control" name="urutan" value="<?= esc(old('urutan', $next_urutan ?? 0)) ?>" min="0">
                     </div>
                     <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox" id="isActive" name="is_active" value="1" checked>
@@ -73,12 +84,109 @@
     </div>
 </form>
 
+<!-- Modal Crop Foto Ekskul -->
+<div class="modal fade" id="ekskulCropModal" tabindex="-1" data-bs-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-crop me-2"></i>Crop Foto (16:9)</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body bg-dark p-2" style="max-height:60vh;overflow:auto;">
+                <img id="ekskulCropImg" src="" alt="Crop" style="max-width:100%;display:block;">
+            </div>
+            <div class="modal-footer justify-content-between">
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="eksZoomOut"><i class="bi bi-zoom-out"></i></button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="eksZoomIn"><i class="bi bi-zoom-in"></i></button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="eksRotL"><i class="bi bi-arrow-counterclockwise"></i></button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="eksRotR"><i class="bi bi-arrow-clockwise"></i></button>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="ekskulCropConfirm">
+                        <i class="bi bi-check-lg me-1"></i>Crop &amp; Gunakan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?= $this->endSection() ?>
+
 <?= $this->section('scripts') ?>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 <script>
-document.getElementById('fotoInput').addEventListener('change', function() {
-    const file = this.files[0];
-    if (file) { const r = new FileReader(); r.onload = e => { document.getElementById('fotoPreview').src = e.target.result; document.getElementById('fotoWrap').classList.remove('d-none'); }; r.readAsDataURL(file); }
-});
+    let eksCropper = null,
+        eksCropApplied = false;
+    const eksModalEl = document.getElementById('ekskulCropModal');
+
+    document.getElementById('pickFotoBtn').addEventListener('click', () => document.getElementById('fotoInput').click());
+    document.getElementById('reCropBtn').addEventListener('click', () => document.getElementById('fotoInput').click());
+
+    document.getElementById('fotoInput').addEventListener('change', function() {
+        const file = this.files[0];
+        if (!file) return;
+        document.getElementById('fotoFileName').textContent = file.name;
+        const reader = new FileReader();
+        reader.onload = e => {
+            document.getElementById('ekskulCropImg').src = e.target.result;
+            bootstrap.Modal.getOrCreateInstance(eksModalEl).show();
+            eksModalEl.addEventListener('shown.bs.modal', () => {
+                if (eksCropper) eksCropper.destroy();
+                eksCropper = new Cropper(document.getElementById('ekskulCropImg'), {
+                    aspectRatio: 16 / 9,
+                    viewMode: 1,
+                    dragMode: 'move',
+                    autoCropArea: 0.9,
+                });
+            }, {
+                once: true
+            });
+        };
+        reader.readAsDataURL(file);
+    });
+
+    document.getElementById('eksZoomIn').addEventListener('click', () => eksCropper?.zoom(0.1));
+    document.getElementById('eksZoomOut').addEventListener('click', () => eksCropper?.zoom(-0.1));
+    document.getElementById('eksRotL').addEventListener('click', () => eksCropper?.rotate(-90));
+    document.getElementById('eksRotR').addEventListener('click', () => eksCropper?.rotate(90));
+
+    document.getElementById('ekskulCropConfirm').addEventListener('click', function() {
+        if (!eksCropper) return;
+        eksCropper.getCroppedCanvas({
+            width: 1200,
+            height: 675,
+            imageSmoothingQuality: 'high'
+        }).toBlob(blob => {
+            const url = URL.createObjectURL(blob);
+            document.getElementById('fotoPreview').src = url;
+            document.getElementById('fotoWrap').classList.remove('d-none');
+            const reader = new FileReader();
+            reader.onload = e => {
+                document.getElementById('fotoCropped').value = e.target.result;
+            };
+            reader.readAsDataURL(blob);
+            eksCropApplied = true;
+            bootstrap.Modal.getInstance(eksModalEl).hide();
+            eksCropper.destroy();
+            eksCropper = null;
+        }, 'image/jpeg', 0.85);
+    });
+
+    eksModalEl.addEventListener('hidden.bs.modal', function() {
+        if (eksCropper) {
+            eksCropper.destroy();
+            eksCropper = null;
+        }
+        if (!eksCropApplied) {
+            document.getElementById('fotoCropped').value = '';
+            document.getElementById('fotoWrap').classList.add('d-none');
+            document.getElementById('fotoFileName').textContent = 'Belum ada foto dipilih';
+            document.getElementById('fotoInput').value = '';
+        }
+        eksCropApplied = false;
+    });
 </script>
 <?= $this->endSection() ?>

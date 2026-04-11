@@ -122,19 +122,24 @@ _modules/*
 # Visual Studio Code
 .vscode/
 
+# Claude Code
+.claude/
+
 /results/
 /phpunit*.xml
 
 #-------------------------
 # Upload directories (keep folder structure, ignore uploaded files)
 #-------------------------
-/writable/uploads/artikel/*
-!/writable/uploads/artikel/index.html
-/writable/uploads/guru/*
-!/writable/uploads/guru/index.html
-/writable/uploads/galeri/*
-!/writable/uploads/galeri/index.html
-/writable/uploads/ppdb/*
-!/writable/uploads/ppdb/index.html
-/writable/uploads/pengaturan/*
-!/writable/uploads/pengaturan/index.html
+/public/uploads/artikel/*
+!/public/uploads/artikel/index.html
+/public/uploads/guru/*
+!/public/uploads/guru/index.html
+/public/uploads/galeri/*
+!/public/uploads/galeri/index.html
+/public/uploads/ppdb/*
+!/public/uploads/ppdb/index.html
+/public/uploads/pengaturan/*
+!/public/uploads/pengaturan/index.html
+/public/uploads/prestasi/*
+!/public/uploads/prestasi/index.html

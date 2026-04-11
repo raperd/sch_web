@@ -16,7 +16,7 @@ class MenuSeeder extends Seeder
             ['nama' => 'Kehidupan Siswa',      'url' => '/kehidupan-siswa', 'icon' => 'bi-people',          'urutan' => 4,  'lokasi' => 'publik'],
             ['nama' => 'Direktori Guru & Staf','url' => '/direktori',       'icon' => 'bi-person-badge',    'urutan' => 5,  'lokasi' => 'publik'],
             ['nama' => 'Berita & Artikel',     'url' => '/berita',          'icon' => 'bi-newspaper',       'urutan' => 6,  'lokasi' => 'publik'],
-            ['nama' => 'PPDB',                 'url' => '/ppdb',            'icon' => 'bi-clipboard-check', 'urutan' => 7,  'lokasi' => 'publik'],
+            ['nama' => 'SPMB',                 'url' => '/ppdb',            'icon' => 'bi-clipboard-check', 'urutan' => 7,  'lokasi' => 'publik'],
         ];
 
         foreach ($menuPublik as $item) {
@@ -37,7 +37,8 @@ class MenuSeeder extends Seeder
             ['nama' => 'Beranda',          'url' => '/',                'urutan' => 1],
             ['nama' => 'Profil Sekolah',   'url' => '/profil',          'urutan' => 2],
             ['nama' => 'Berita & Artikel', 'url' => '/berita',          'urutan' => 3],
-            ['nama' => 'PPDB',             'url' => '/ppdb',            'urutan' => 4],
+            ['nama' => 'SPMB',             'url' => '/ppdb',            'urutan' => 4],
+            ['nama' => 'Link Terkait',     'url' => '/link-terkait',    'urutan' => 5],
         ];
 
         foreach ($menuFooter as $item) {
@@ -55,11 +56,11 @@ class MenuSeeder extends Seeder
 
         // Quick links untuk beranda
         $quickLinks = [
-            ['label' => 'PPDB 2026/2027',   'url' => '/ppdb',            'icon' => 'bi-clipboard-check', 'warna' => 'primary',  'urutan' => 1],
+            ['label' => 'SPMB 2026/2027',   'url' => '/ppdb',            'icon' => 'bi-clipboard-check', 'warna' => 'primary',  'urutan' => 1],
             ['label' => 'Akademik',         'url' => '/akademik',        'icon' => 'bi-book-half',       'warna' => 'success',  'urutan' => 2],
             ['label' => 'Ekstrakurikuler',  'url' => '/kehidupan-siswa', 'icon' => 'bi-trophy',          'warna' => 'warning',  'urutan' => 3],
             ['label' => 'Direktori Guru',   'url' => '/direktori',       'icon' => 'bi-person-badge',    'warna' => 'info',     'urutan' => 4],
-            ['label' => 'Galeri Sekolah',   'url' => '/profil#fasilitas','icon' => 'bi-images',          'warna' => 'secondary','urutan' => 5],
+            ['label' => 'Galeri Sekolah',   'url' => '/profil#tab-galeri','icon' => 'bi-images',          'warna' => 'secondary','urutan' => 5],
             ['label' => 'Berita Terbaru',   'url' => '/berita',          'icon' => 'bi-newspaper',       'warna' => 'danger',   'urutan' => 6],
         ];
 

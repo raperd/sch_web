@@ -54,8 +54,9 @@ class GuruController extends BaseController
     public function create(): string
     {
         return view('admin/guru/create', [
-            'title'  => 'Tambah Guru / Staf',
-            'bidang' => $this->bidangModel->orderBy('nama', 'ASC')->findAll(),
+            'title'       => 'Tambah Guru / Staf',
+            'bidang'      => $this->bidangModel->orderBy('nama', 'ASC')->findAll(),
+            'next_urutan' => ($this->model->selectMax('urutan')->first()['urutan'] ?? 0) + 1,
         ]);
     }
 

@@ -34,7 +34,8 @@ class PpdbController extends BaseController
     public function create(): string
     {
         return view('admin/ppdb/create', [
-            'title' => 'Tambah Konten PPDB',
+            'title'       => 'Tambah Konten PPDB',
+            'next_urutan' => ($this->model->selectMax('urutan')->first()['urutan'] ?? 0) + 1,
         ]);
     }
 

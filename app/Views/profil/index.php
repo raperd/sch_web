@@ -3,7 +3,7 @@
 <?= $this->section('content') ?>
 
 <!-- Page Header -->
-<section class="page-header py-5" style="background: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-secondary) 100%); margin-top: var(--nav-height);">
+<section class="page-header py-5" style="background: linear-gradient(135deg, var(--bs-primary) 0%, var(--site-secondary) 100%);">
     <div class="container text-center text-white">
         <h1 class="fw-bold mb-2">Profil &amp; Fasilitas</h1>
         <nav aria-label="breadcrumb">
@@ -16,9 +16,9 @@
 </section>
 
 <!-- Tab Navigation -->
-<section class="bg-white shadow-sm sticky-top" style="top: var(--nav-height); z-index: 900;">
+<section class="bg-white shadow-sm sticky-top" style="top: var(--nav-height-sticky); z-index: 900; transition: top 0.3s;">
     <div class="container">
-        <ul class="nav nav-pills gap-1 py-2 overflow-auto flex-nowrap" id="profilTab" role="tablist">
+        <ul class="nav nav-pills gap-2 py-2 flex-wrap justify-content-center" id="profilTab" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active fw-semibold text-nowrap" id="sejarah-tab" data-bs-toggle="pill"
                     data-bs-target="#tab-sejarah" type="button" role="tab">
@@ -41,6 +41,12 @@
                 <button class="nav-link fw-semibold text-nowrap" id="fasilitas-tab" data-bs-toggle="pill"
                     data-bs-target="#tab-fasilitas" type="button" role="tab">
                     <i class="bi bi-building me-1"></i>Fasilitas
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link fw-semibold text-nowrap" id="kepsek-tab" data-bs-toggle="pill"
+                    data-bs-target="#tab-kepsek" type="button" role="tab">
+                    <i class="bi bi-person-workspace me-1"></i>Kepala Sekolah
                 </button>
             </li>
             <li class="nav-item" role="presentation">
@@ -68,7 +74,7 @@
 
                         <?php $sejarah = setting('sejarah'); ?>
                         <?php if ($sejarah): ?>
-                            <div class="lh-lg text-secondary fs-5"><?= $sejarah ?></div>
+                            <div class="lh-lg profil-richtext" style="font-size:1.08rem;color:#212529"><?= $sejarah ?></div>
                         <?php else: ?>
                             <div class="text-center py-5 text-muted">
                                 <i class="bi bi-clock-history display-3 mb-3 d-block"></i>
@@ -76,32 +82,25 @@
                             </div>
                         <?php endif; ?>
 
-                        <!-- Statistik Singkat -->
+                        <!-- Statistik dari pengaturan -->
+                        <?php
+                        $stats = [
+                            [setting('stat_tahun_berdiri') ?: '25+',  'Tahun Berdiri',  'bi-calendar2-check', 'primary'],
+                            [setting('stat_siswa')         ?: '1.000+','Siswa Aktif',   'bi-people-fill',     'success'],
+                            [setting('stat_guru')          ?: '60+',  'Tenaga Pendidik','bi-person-badge',    'info'],
+                            [setting('stat_prestasi')      ?: '50+',  'Prestasi Diraih','bi-trophy-fill',     'warning'],
+                        ];
+                        ?>
                         <div class="row g-3 mt-5">
+                            <?php foreach ($stats as [$val, $label, $icon, $color]): ?>
                             <div class="col-6 col-md-3">
                                 <div class="card border-0 shadow-sm text-center p-3 h-100">
-                                    <div class="text-primary fs-1 fw-bold">25+</div>
-                                    <div class="text-muted small">Tahun Berdiri</div>
+                                    <i class="bi <?= $icon ?> text-<?= $color ?> fs-2 mb-2"></i>
+                                    <div class="text-<?= $color ?> fs-2 fw-bold lh-1"><?= esc($val) ?></div>
+                                    <div class="text-muted small mt-1"><?= $label ?></div>
                                 </div>
                             </div>
-                            <div class="col-6 col-md-3">
-                                <div class="card border-0 shadow-sm text-center p-3 h-100">
-                                    <div class="text-primary fs-1 fw-bold">1.200+</div>
-                                    <div class="text-muted small">Siswa Aktif</div>
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-3">
-                                <div class="card border-0 shadow-sm text-center p-3 h-100">
-                                    <div class="text-primary fs-1 fw-bold">80+</div>
-                                    <div class="text-muted small">Tenaga Pendidik</div>
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-3">
-                                <div class="card border-0 shadow-sm text-center p-3 h-100">
-                                    <div class="text-primary fs-1 fw-bold"><?= esc(setting('akreditasi') ?? 'A') ?></div>
-                                    <div class="text-muted small">Akreditasi</div>
-                                </div>
-                            </div>
+                            <?php endforeach; ?>
                         </div>
                     </div>
                 </div>
@@ -131,7 +130,7 @@
                                 </div>
                                 <?php $visi = setting('visi'); ?>
                                 <?php if ($visi): ?>
-                                    <p class="lh-lg text-secondary fs-5 fst-italic">"<?= esc($visi) ?>"</p>
+                                    <div class="lh-lg fs-5 fst-italic profil-richtext" style="color:#212529"><?= $visi ?></div>
                                 <?php else: ?>
                                     <p class="text-muted">Visi belum diisi.</p>
                                 <?php endif; ?>
@@ -151,7 +150,7 @@
                                 </div>
                                 <?php $misi = setting('misi'); ?>
                                 <?php if ($misi): ?>
-                                    <div class="lh-lg text-secondary"><?= $misi ?></div>
+                                    <div class="lh-lg profil-richtext" style="color:#212529"><?= $misi ?></div>
                                 <?php else: ?>
                                     <p class="text-muted">Misi belum diisi.</p>
                                 <?php endif; ?>
@@ -159,30 +158,55 @@
                         </div>
                     </div>
                 </div>
-                <!-- Nilai Sekolah -->
-                <div class="row g-4 mt-2">
-                    <div class="col-md-4">
-                        <div class="card border-0 bg-light text-center p-4 h-100">
-                            <i class="bi bi-award display-4 text-primary mb-3"></i>
-                            <h5 class="fw-bold">Keunggulan</h5>
-                            <p class="text-muted small mb-0">Mendorong setiap siswa mencapai potensi terbaik di bidang akademik dan non-akademik.</p>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card border-0 bg-light text-center p-4 h-100">
-                            <i class="bi bi-heart display-4 text-danger mb-3"></i>
-                            <h5 class="fw-bold">Karakter</h5>
-                            <p class="text-muted small mb-0">Membentuk generasi berkarakter, berakhlak mulia, dan berjiwa Pancasila.</p>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card border-0 bg-light text-center p-4 h-100">
-                            <i class="bi bi-globe display-4 text-success mb-3"></i>
-                            <h5 class="fw-bold">Inovasi</h5>
-                            <p class="text-muted small mb-0">Mempersiapkan siswa menjadi warga global yang kreatif, inovatif, dan adaptif.</p>
+
+                <!-- Tujuan -->
+                <?php 
+                    $tujuan = setting('tujuan'); 
+                    $isTujuanEmpty = empty(trim(str_replace(['<p><br></p>', '<p></p>', '&nbsp;'], '', $tujuan)));
+                ?>
+                <?php if (!$isTujuanEmpty): ?>
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm" style="border-top: 4px solid var(--bs-success) !important;">
+                            <div class="card-body p-4 p-lg-5">
+                                <div class="d-flex align-items-center mb-3 gap-3">
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center text-white flex-shrink-0"
+                                        style="width:52px;height:52px;background:var(--bs-success);">
+                                        <i class="bi bi-bullseye fs-5"></i>
+                                    </div>
+                                    <h3 class="fw-bold mb-0 text-success">TUJUAN</h3>
+                                </div>
+                                <div class="lh-lg profil-richtext" style="color:#212529"><?= $tujuan ?></div>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <?php endif; ?>
+
+                <!-- Nilai Sekolah -->
+                <?php if (!empty($nilai_sekolah)): ?>
+                <div class="row justify-content-center mt-5 mb-4">
+                    <div class="col-12 text-center">
+                        <h3 class="fw-bold mb-0">Nilai-Nilai Sekolah</h3>
+                        <div class="mx-auto mt-2" style="width: 60px; height: 3px; background: var(--accent-gold); border-radius: 2px;"></div>
+                    </div>
+                </div>
+                <div class="row g-4 justify-content-center">
+                    <?php 
+                    $colors = ['text-primary', 'text-danger', 'text-success', 'text-warning', 'text-info'];
+                    foreach ($nilai_sekolah as $idx => $ns):
+                        $iconColor = $colors[$idx % count($colors)];
+                    ?>
+                    <div class="col-md-4">
+                        <div class="card border-0 bg-light text-center p-4 h-100 shadow-sm transition" style="border-bottom: 3px solid transparent;">
+                            <i class="bi <?= esc($ns['icon']) ?> display-4 <?= $iconColor ?> mb-3"></i>
+                            <h5 class="fw-bold"><?= esc($ns['nama']) ?></h5>
+                            <p class="text-muted small mb-0"><?= esc($ns['deskripsi']) ?></p>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+                <?php endif; ?>
             </div>
         </section>
     </div>
@@ -200,7 +224,7 @@
                         <div class="card border-0 shadow-lg overflow-hidden">
                             <div class="row g-0">
                                 <div class="col-md-4 text-center p-4 p-md-5 text-white d-flex flex-column align-items-center justify-content-center"
-                                    style="background: linear-gradient(160deg, var(--bs-primary), var(--bs-secondary));">
+                                    style="background: linear-gradient(160deg, var(--bs-primary), var(--site-secondary));">
                                     <?php $fotoKepsek = setting('foto_kepsek'); ?>
                                     <?php if ($fotoKepsek): ?>
                                         <img src="<?= base_url('uploads/pengaturan/' . esc($fotoKepsek)) ?>"
@@ -224,7 +248,7 @@
                                         <i class="bi bi-quote text-primary display-3 opacity-25 d-block" style="line-height:1;margin-bottom:-1rem;"></i>
                                         <?php $sambutan = setting('sambutan_kepsek'); ?>
                                         <?php if ($sambutan): ?>
-                                            <div class="lh-lg text-secondary"><?= $sambutan ?></div>
+                                            <div class="lh-lg" style="color:#212529"><?= $sambutan ?></div>
                                         <?php else: ?>
                                             <div class="text-center py-5 text-muted">
                                                 <i class="bi bi-chat-quote display-3 mb-3 d-block"></i>
@@ -312,31 +336,192 @@
         </section>
     </div>
 
+    <!-- Tab: Kepala Sekolah dari Masa ke Masa -->
+    <div class="tab-pane fade" id="tab-kepsek" role="tabpanel">
+        <section class="py-5">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <span class="badge text-bg-primary fs-6 px-3 py-2 mb-3">Pemimpin Kami</span>
+                    <h2 class="fw-bold">Kepala Sekolah dari Masa ke Masa</h2>
+                    <p class="text-muted">Tokoh-tokoh yang telah mengabdi dan memimpin sekolah kami</p>
+                </div>
+
+                <?php if (!empty($kepala_sekolah)): ?>
+                    <div class="kepsek-timeline position-relative">
+                        <!-- garis vertikal -->
+                        <div class="kepsek-timeline-line"></div>
+
+                        <?php foreach ($kepala_sekolah as $i => $ks):
+                            $aktif   = empty($ks['periode_selesai']);
+                            $namaLen = trim(
+                                ($ks['gelar_depan'] ? $ks['gelar_depan'] . ' ' : '') .
+                                $ks['nama'] .
+                                ($ks['gelar_belakang'] ? ', ' . $ks['gelar_belakang'] : '')
+                            );
+                        ?>
+                        <div class="kepsek-item <?= ($i % 2 === 0) ? 'kepsek-left' : 'kepsek-right' ?>">
+                            <!-- dot -->
+                            <div class="kepsek-dot <?= $aktif ? 'kepsek-dot-active' : '' ?>"></div>
+                            <div class="card border-0 shadow-sm kepsek-card <?= $aktif ? 'border-start border-3 border-success' : '' ?>">
+                                <div class="card-body p-4">
+                                    <div class="d-flex align-items-center gap-3 mb-3">
+                                        <?php if (!empty($ks['foto'])): ?>
+                                            <img src="<?= base_url('uploads/kepala_sekolah/' . esc($ks['foto'])) ?>"
+                                                class="rounded-circle flex-shrink-0"
+                                                style="width:72px;height:72px;object-fit:cover;border:3px solid <?= $aktif ? '#198754' : 'var(--bs-primary)' ?>"
+                                                alt="<?= esc($ks['nama']) ?>">
+                                        <?php else: ?>
+                                            <div class="rounded-circle flex-shrink-0 d-flex align-items-center justify-content-center"
+                                                style="width:72px;height:72px;background:<?= $aktif ? '#d1e7dd' : '#e8edf5' ?>;border:3px solid <?= $aktif ? '#198754' : 'var(--bs-primary)' ?>">
+                                                <i class="bi bi-person-fill" style="font-size:2rem;color:<?= $aktif ? '#198754' : 'var(--bs-primary)' ?>"></i>
+                                            </div>
+                                        <?php endif; ?>
+                                        <div>
+                                            <h5 class="fw-bold mb-1"><?= esc($namaLen) ?></h5>
+                                            <span class="badge <?= $aktif ? 'text-bg-success' : 'text-bg-light border' ?> fw-normal">
+                                                <?= esc($ks['periode_mulai']) ?> –
+                                                <?= $aktif
+                                                    ? '<span>Sekarang</span>'
+                                                    : esc($ks['periode_selesai'])
+                                                ?>
+                                            </span>
+                                            <?php if ($aktif): ?>
+                                                <span class="badge text-bg-success ms-1"><i class="bi bi-circle-fill me-1" style="font-size:.5rem"></i>Menjabat Saat Ini</span>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                    <?php if (!empty($ks['keterangan'])): ?>
+                                        <p class="text-muted mb-0 small lh-lg"><?= esc($ks['keterangan']) ?></p>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+
+                    <style>
+                    .kepsek-timeline { padding: 1rem 0; }
+                    .kepsek-timeline-line {
+                        position: absolute;
+                        left: 50%; top: 0; bottom: 0;
+                        width: 3px;
+                        background: linear-gradient(to bottom, var(--bs-primary), #adb5bd);
+                        transform: translateX(-50%);
+                        z-index: 0;
+                    }
+                    .kepsek-item {
+                        position: relative;
+                        width: 47%;
+                        margin-bottom: 2rem;
+                        z-index: 1;
+                    }
+                    .kepsek-left  { margin-left: 0; margin-right: auto; text-align: right; }
+                    .kepsek-right { margin-left: auto; margin-right: 0; }
+                    .kepsek-dot {
+                        position: absolute;
+                        top: 28px;
+                        width: 16px; height: 16px;
+                        border-radius: 50%;
+                        background: var(--bs-primary);
+                        border: 3px solid #fff;
+                        box-shadow: 0 0 0 3px var(--bs-primary);
+                        z-index: 2;
+                    }
+                    .kepsek-left  .kepsek-dot { right: -8%; }
+                    .kepsek-right .kepsek-dot { left: -8%; }
+                    .kepsek-dot-active {
+                        background: #198754;
+                        box-shadow: 0 0 0 3px #198754, 0 0 0 6px rgba(25,135,84,.25);
+                        animation: pulse-dot 2s infinite;
+                    }
+                    @keyframes pulse-dot {
+                        0%, 100% { box-shadow: 0 0 0 3px #198754, 0 0 0 6px rgba(25,135,84,.25); }
+                        50%       { box-shadow: 0 0 0 3px #198754, 0 0 0 10px rgba(25,135,84,.08); }
+                    }
+                    .kepsek-card { transition: transform .2s, box-shadow .2s; }
+                    .kepsek-card:hover { transform: translateY(-3px); box-shadow: 0 .5rem 1.5rem rgba(0,0,0,.12) !important; }
+                    /* Mobile: stacked single column */
+                    @media (max-width: 767px) {
+                        .kepsek-timeline-line { left: 20px; }
+                        .kepsek-item { width: 100%; margin-left: 44px !important; margin-right: 0 !important; text-align: left !important; }
+                        .kepsek-left .kepsek-dot,
+                        .kepsek-right .kepsek-dot { left: -32px; right: auto; }
+                    }
+                    </style>
+                <?php else: ?>
+                    <div class="text-center py-5 text-muted">
+                        <i class="bi bi-person-badge display-3 mb-3 d-block"></i>
+                        <p>Data kepala sekolah belum tersedia.</p>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </section>
+    </div>
+
     <!-- Tab: Galeri -->
     <div class="tab-pane fade" id="tab-galeri" role="tabpanel">
         <section class="py-5">
             <div class="container">
-                <div class="text-center mb-5">
+                <div class="text-center mb-4">
                     <span class="badge text-bg-primary fs-6 px-3 py-2 mb-3">Dokumentasi</span>
                     <h2 class="fw-bold">Galeri Sekolah</h2>
                     <p class="text-muted">Momen-momen berkesan di lingkungan sekolah kami</p>
                 </div>
-                <?php $galeriTampil = !empty($galeri_fasilitas) ? $galeri_fasilitas : $galeri_unggulan; ?>
-                <?php if (!empty($galeriTampil)): ?>
-                    <div class="row g-3">
-                        <?php foreach ($galeriTampil as $g): ?>
-                            <div class="col-6 col-md-4 col-lg-3">
-                                <a href="#" class="d-block rounded overflow-hidden shadow-sm galeri-thumb-link"
-                                    data-src="<?= base_url('uploads/galeri/' . esc($g['file_path'])) ?>"
-                                    data-caption="<?= esc($g['judul']) ?>">
-                                    <?php $thumb = !empty($g['thumbnail']) ? $g['thumbnail'] : $g['file_path']; ?>
-                                    <img src="<?= base_url('uploads/galeri/' . esc($thumb)) ?>"
-                                        class="w-100 galeri-thumb-img" style="height:180px;object-fit:cover;transition:.3s;"
-                                        alt="<?= esc($g['judul']) ?>">
-                                </a>
+
+                <?php
+                $galeriSections = [];
+                if (!empty($galeri_fasilitas))  $galeriSections['Fasilitas']          = $galeri_fasilitas;
+                if (!empty($galeri_lingkungan)) $galeriSections['Lingkungan Sekolah'] = $galeri_lingkungan;
+                if (empty($galeriSections) && !empty($galeri_unggulan)) $galeriSections['Unggulan'] = $galeri_unggulan;
+
+                ?>
+
+                <?php if (!empty($galeriSections)): ?>
+                    <?php if (count($galeriSections) > 1): ?>
+                        <!-- Filter tabs antar kategori -->
+                        <ul class="nav nav-pills justify-content-center gap-2 mb-4" id="galeriCatTabs">
+                            <?php $first = true; foreach ($galeriSections as $catName => $items): ?>
+                                <li class="nav-item">
+                                    <button class="nav-link <?= $first ? 'active' : '' ?>"
+                                        data-galeri-cat="<?= esc($catName) ?>">
+                                        <?= esc($catName) ?> <span class="badge bg-white text-primary ms-1"><?= count($items) ?></span>
+                                    </button>
+                                </li>
+                            <?php $first = false; endforeach; ?>
+                        </ul>
+                    <?php endif; ?>
+
+                    <?php $first = true; foreach ($galeriSections as $catName => $items): ?>
+                        <div class="galeri-cat-panel <?= !$first ? 'd-none' : '' ?>" data-cat="<?= esc($catName) ?>">
+                            <div class="row g-3">
+                                <?php foreach ($items as $g): ?>
+                                    <div class="col-6 col-md-4 col-lg-3">
+                                        <a href="#" class="d-block rounded overflow-hidden shadow-sm galeri-thumb-link"
+                                            data-src="<?= base_url('uploads/galeri/' . esc($g['file_path'])) ?>"
+                                            data-caption="<?= esc($g['judul']) ?>">
+                                            <?php $thumb = !empty($g['thumbnail']) ? $g['thumbnail'] : $g['file_path']; ?>
+                                            <img src="<?= base_url('uploads/galeri/' . esc($thumb)) ?>"
+                                                class="w-100 galeri-thumb-img" style="height:180px;object-fit:cover;transition:.3s;"
+                                                alt="<?= esc($g['judul']) ?>">
+                                        </a>
+                                    </div>
+                                <?php endforeach; ?>
                             </div>
-                        <?php endforeach; ?>
-                    </div>
+                        </div>
+                    <?php $first = false; endforeach; ?>
+
+                    <script>
+                    document.querySelectorAll('[data-galeri-cat]').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            document.querySelectorAll('[data-galeri-cat]').forEach(b => b.classList.remove('active'));
+                            this.classList.add('active');
+                            const cat = this.dataset.galeriCat;
+                            document.querySelectorAll('.galeri-cat-panel').forEach(p => {
+                                p.classList.toggle('d-none', p.dataset.cat !== cat);
+                            });
+                        });
+                    });
+                    </script>
                 <?php else: ?>
                     <div class="text-center py-5 text-muted">
                         <i class="bi bi-images display-3 mb-3 d-block"></i>

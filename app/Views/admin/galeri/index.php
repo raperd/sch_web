@@ -100,7 +100,7 @@
                             <i class="bi bi-pencil"></i>
                         </a>
                         <form method="post" action="<?= base_url('admin/galeri/delete/' . $item['id']) ?>"
-                            class="d-inline" onsubmit="return confirm('Hapus foto ini?')">
+                            class="d-inline" data-confirm="Hapus foto ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                             <?= csrf_field() ?>
                             <button type="submit" class="btn btn-sm btn-outline-danger">
                                 <i class="bi bi-trash"></i>

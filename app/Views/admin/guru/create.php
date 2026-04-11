@@ -81,8 +81,9 @@
                         <img id="fotoPreview" src="" class="rounded-circle"
                             style="width:100px;height:100px;object-fit:cover" alt="">
                     </div>
-                    <input type="file" class="form-control" name="foto" id="fotoInput"
-                        accept="image/jpeg,image/png,image/webp">
+                    <input type="file" class="form-control crop-input" name="foto" id="fotoInput"
+                        accept="image/jpeg,image/png,image/webp"
+                        data-aspect-ratio="1">
                     <div class="form-text">JPEG, PNG, WebP. Maks. 2 MB.</div>
                 </div>
             </div>
@@ -115,7 +116,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Urutan</label>
-                        <input type="number" class="form-control" name="urutan" value="<?= esc(old('urutan', 0)) ?>" min="0">
+                        <input type="number" class="form-control" name="urutan" value="<?= esc(old('urutan', $next_urutan ?? 0)) ?>" min="0">
                     </div>
                     <div>
                         <div class="form-check form-switch">
@@ -135,20 +136,91 @@
     </div>
 </form>
 
+<!-- Modal Crop -->
+<div class="modal fade" id="cropModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-crop me-2"></i>Crop Gambar</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center bg-dark p-3">
+                <img id="cropImage" src="" style="max-width:100%;max-height:450px;">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary" id="cropConfirm">
+                    <i class="bi bi-check-lg me-1"></i>Crop &amp; Gunakan
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?= $this->endSection() ?>
+
+<?= $this->section('styles') ?>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 <script>
-document.getElementById('fotoInput').addEventListener('change', function() {
-    const file = this.files[0];
-    if (file) {
+let cropperInstance = null;
+let activeCropInput = null;
+let guruCropApplied = false;
+
+document.querySelectorAll('.crop-input').forEach(input => {
+    input.addEventListener('change', function () {
+        if (!this.files[0]) return;
+        activeCropInput = this;
+        const ratio = parseFloat(this.dataset.aspectRatio || 1);
         const reader = new FileReader();
         reader.onload = e => {
-            document.getElementById('fotoPreview').src = e.target.result;
-            document.getElementById('fotoPreviewWrap').classList.remove('d-none');
+            document.getElementById('cropImage').src = e.target.result;
+            const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('cropModal'));
+            modal.show();
+            document.getElementById('cropModal').addEventListener('shown.bs.modal', () => {
+                if (cropperInstance) cropperInstance.destroy();
+                cropperInstance = new Cropper(document.getElementById('cropImage'), {
+                    aspectRatio: ratio,
+                    viewMode: 1,
+                    autoCropArea: 0.9,
+                });
+            }, { once: true });
         };
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(this.files[0]);
+    });
+});
+
+document.getElementById('cropConfirm')?.addEventListener('click', function () {
+    if (!cropperInstance || !activeCropInput) return;
+    const ratio = parseFloat(activeCropInput.dataset.aspectRatio || 1);
+    const w = ratio >= 1 ? 800 : 600;
+    const h = Math.round(w / ratio);
+    cropperInstance.getCroppedCanvas({ width: w, height: h }).toBlob(blob => {
+        const file = new File([blob], 'foto-crop.jpg', { type: 'image/jpeg' });
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        activeCropInput.files = dt.files;
+        // Update preview
+        const prev = document.getElementById('fotoPreview');
+        if (prev) {
+            prev.src = URL.createObjectURL(blob);
+            document.getElementById('fotoPreviewWrap').classList.remove('d-none');
+        }
+        guruCropApplied = true;
+        bootstrap.Modal.getInstance(document.getElementById('cropModal'))?.hide();
+    }, 'image/jpeg', 0.88);
+});
+
+document.getElementById('cropModal').addEventListener('hidden.bs.modal', function () {
+    if (cropperInstance) { cropperInstance.destroy(); cropperInstance = null; }
+    if (!guruCropApplied && activeCropInput) {
+        activeCropInput.value = '';
+        document.getElementById('fotoPreviewWrap')?.classList.add('d-none');
     }
+    guruCropApplied = false;
 });
 </script>
 <?= $this->endSection() ?>

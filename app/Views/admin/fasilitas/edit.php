@@ -56,17 +56,29 @@
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-header bg-white fw-semibold border-bottom"><i class="bi bi-image me-1 text-primary"></i>Foto & Urutan</div>
                 <div class="card-body p-3">
-                    <?php if (!empty($fasilitas['foto'])): ?>
-                        <div class="mb-2 text-center" id="fotoWrap">
-                            <img id="fotoPreview" src="<?= base_url('uploads/fasilitas/' . esc($fasilitas['foto'])) ?>"
-                                class="rounded" style="max-height:120px;max-width:100%" alt="">
-                        </div>
-                    <?php else: ?>
-                        <div class="mb-2 text-center d-none" id="fotoWrap"><img id="fotoPreview" src="" class="rounded" style="max-height:120px" alt=""></div>
-                    <?php endif; ?>
+                    <div class="mb-2 text-center <?= empty($fasilitas['foto']) ? 'd-none' : '' ?>" id="fotoWrap">
+                        <img id="fotoPreview"
+                            src="<?= !empty($fasilitas['foto']) ? base_url('uploads/fasilitas/' . esc($fasilitas['foto'])) : '' ?>"
+                            class="rounded" style="max-height:120px;max-width:100%" alt="">
+                        <button type="button" class="btn btn-sm btn-outline-secondary d-block mx-auto mt-2" id="reCropFotoBtn">
+                            <i class="bi bi-crop me-1"></i>Ubah Crop
+                        </button>
+                    </div>
                     <div class="mb-3">
                         <label class="form-label">Ganti Foto</label>
-                        <input type="file" class="form-control" name="foto" id="fotoInput" accept="image/*">
+                        <!-- File input tersembunyi, hanya sebagai pemicu kamera/file picker -->
+                        <input type="file" id="fotoInput" accept="image/*" style="display:none">
+                        <!-- Nilai base64 hasil crop yang dikirim ke server (kosong = tidak ganti foto) -->
+                        <input type="hidden" name="foto_cropped" id="fotoCropped">
+                        <div class="d-flex gap-2 align-items-center">
+                            <button type="button" class="btn btn-sm btn-outline-primary" id="pickFotoBtn">
+                                <i class="bi bi-upload me-1"></i>Pilih Foto Baru
+                            </button>
+                            <span class="text-muted small" id="fotoFileName">
+                                <?= !empty($fasilitas['foto']) ? 'Foto terpasang — pilih untuk mengganti' : 'Belum ada foto' ?>
+                            </span>
+                        </div>
+                        <div class="form-text">JPEG/PNG. Foto akan dipotong otomatis rasio 16:9.</div>
                     </div>
                     <div>
                         <label class="form-label">Urutan</label>
@@ -82,13 +94,118 @@
     </div>
 </form>
 
+
+<!-- Modal Crop Foto -->
+<div class="modal fade" id="fasilitasCropModal" tabindex="-1" data-bs-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-crop me-2"></i>Crop Foto (16:9)</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body bg-dark p-2" style="max-height:60vh;overflow:auto;">
+                <img id="fasilitasCropImg" src="" alt="Crop" style="max-width:100%;display:block;">
+            </div>
+            <div class="modal-footer justify-content-between">
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="fasZoomOut" title="Perkecil"><i class="bi bi-zoom-out"></i></button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="fasZoomIn" title="Perbesar"><i class="bi bi-zoom-in"></i></button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="fasRotL" title="Putar Kiri"><i class="bi bi-arrow-counterclockwise"></i></button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="fasRotR" title="Putar Kanan"><i class="bi bi-arrow-clockwise"></i></button>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="fasilitasCropConfirm">
+                        <i class="bi bi-check-lg me-1"></i>Crop &amp; Gunakan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?= $this->endSection() ?>
 <?= $this->section('scripts') ?>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 <script>
-document.getElementById('iconInput').addEventListener('input', function() { document.getElementById('iconPreview').className = 'bi ' + this.value; });
-document.getElementById('fotoInput').addEventListener('change', function() {
-    const file = this.files[0];
-    if (file) { const r = new FileReader(); r.onload = e => { document.getElementById('fotoPreview').src = e.target.result; document.getElementById('fotoWrap').classList.remove('d-none'); }; r.readAsDataURL(file); }
-});
+    document.getElementById('iconInput').addEventListener('input', function() {
+        document.getElementById('iconPreview').className = 'bi ' + this.value;
+    });
+    document.getElementById('pickFotoBtn').addEventListener('click', () => document.getElementById('fotoInput').click());
+    document.getElementById('reCropFotoBtn').addEventListener('click', () => document.getElementById('fotoInput').click());
+
+    let fasCropper = null,
+        fasCropApplied = false;
+    const fasModalEl = document.getElementById('fasilitasCropModal');
+
+    document.getElementById('fotoInput').addEventListener('change', function() {
+        const file = this.files[0];
+        if (!file) return;
+        const prevFileName = document.getElementById('fotoFileName').textContent;
+        const prevSrc = document.getElementById('fotoPreview').src;
+        const wasVisible = !document.getElementById('fotoWrap').classList.contains('d-none');
+        document.getElementById('fotoFileName').textContent = file.name;
+        const reader = new FileReader();
+        reader.onload = e => {
+            document.getElementById('fasilitasCropImg').src = e.target.result;
+            bootstrap.Modal.getOrCreateInstance(fasModalEl).show();
+            fasModalEl.addEventListener('shown.bs.modal', () => {
+                if (fasCropper) fasCropper.destroy();
+                fasCropper = new Cropper(document.getElementById('fasilitasCropImg'), {
+                    aspectRatio: 16 / 9,
+                    viewMode: 1,
+                    dragMode: 'move',
+                    autoCropArea: 0.9,
+                });
+            }, {
+                once: true
+            });
+            fasModalEl.addEventListener('hidden.bs.modal', function() {
+                if (fasCropper) {
+                    fasCropper.destroy();
+                    fasCropper = null;
+                }
+                if (!fasCropApplied) {
+                    document.getElementById('fotoCropped').value = '';
+                    document.getElementById('fotoFileName').textContent = prevFileName;
+                    document.getElementById('fotoInput').value = '';
+                    document.getElementById('fotoPreview').src = prevSrc;
+                    if (!wasVisible) document.getElementById('fotoWrap').classList.add('d-none');
+                }
+                fasCropApplied = false;
+            }, {
+                once: true
+            });
+        };
+        reader.readAsDataURL(file);
+    });
+
+    document.getElementById('fasZoomIn').addEventListener('click', () => fasCropper?.zoom(0.1));
+    document.getElementById('fasZoomOut').addEventListener('click', () => fasCropper?.zoom(-0.1));
+    document.getElementById('fasRotL').addEventListener('click', () => fasCropper?.rotate(-90));
+    document.getElementById('fasRotR').addEventListener('click', () => fasCropper?.rotate(90));
+
+    document.getElementById('fasilitasCropConfirm').addEventListener('click', function() {
+        if (!fasCropper) return;
+        const canvas = fasCropper.getCroppedCanvas({
+            width: 1200,
+            height: 675,
+            imageSmoothingQuality: 'high'
+        });
+        canvas.toBlob(blob => {
+            const url = URL.createObjectURL(blob);
+            document.getElementById('fotoPreview').src = url;
+            document.getElementById('fotoWrap').classList.remove('d-none');
+            const reader = new FileReader();
+            reader.onload = e => {
+                document.getElementById('fotoCropped').value = e.target.result;
+            };
+            reader.readAsDataURL(blob);
+            fasCropApplied = true;
+            bootstrap.Modal.getInstance(fasModalEl).hide();
+            fasCropper.destroy();
+            fasCropper = null;
+        }, 'image/jpeg', 0.85);
+    });
 </script>
 <?= $this->endSection() ?>
