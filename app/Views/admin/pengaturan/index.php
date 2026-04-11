@@ -22,7 +22,7 @@
     </div>
 <?php endif; ?>
 
-<form method="post" action="<?= base_url('admin/pengaturan/update') ?>" enctype="multipart/form-data" id="settingsForm">
+<form method="post" action="<?= base_url('admin/pengaturan/update') ?>" enctype="multipart/form-data" id="settingsForm" data-no-progress>
     <?= csrf_field() ?>
 
     <!-- Tabs -->

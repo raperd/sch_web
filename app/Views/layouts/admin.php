@@ -155,10 +155,23 @@
             .page-content { padding: 1rem; }
             .btn-action { display: block; width: 100%; margin-bottom: .5rem; }
         }
+
+        /* ---- UPLOAD PROGRESS ---- */
+        @keyframes uploadIndeterminate {
+            0%   { left: -40%; width: 40%; }
+            100% { left: 110%; width: 40%; }
+        }
     </style>
     <?= $this->renderSection('styles') ?>
 </head>
 <body>
+
+<!-- UPLOAD PROGRESS BAR -->
+<div id="uploadProgressBar" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+     style="position:fixed;top:0;left:0;right:0;height:4px;z-index:9999;display:none;background:#d6e4f0;overflow:hidden;">
+    <div id="uploadProgressFill"
+         style="height:100%;width:0%;background:linear-gradient(90deg,#1a5276,#2e86c1,#5dade2);transition:width .15s ease;"></div>
+</div>
 
 <!-- ===================== SIDEBAR ===================== -->
 <nav id="sidebar">
@@ -417,6 +430,29 @@ document.querySelectorAll('.flash-container .alert').forEach(el => {
     }, 4000);
 });
 
+// Tampilkan flash yang disimpan XHR progress handler (sessionStorage)
+(function () {
+    var raw = sessionStorage.getItem('_xhrFlash');
+    if (!raw) return;
+    sessionStorage.removeItem('_xhrFlash');
+    try {
+        var d   = JSON.parse(raw);
+        var cls = d.type === 'success' ? 'alert-success' : 'alert-danger';
+        var ico = d.type === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill';
+        var wrap = document.createElement('div');
+        wrap.className = 'flash-container';
+        wrap.innerHTML = '<div class="alert ' + cls + ' alert-dismissible fade show shadow-sm" role="alert">'
+            + '<i class="bi ' + ico + ' me-2"></i>' + d.msg
+            + '<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>';
+        var mc = document.getElementById('main-content');
+        if (mc) mc.insertBefore(wrap, mc.firstChild);
+        setTimeout(function () {
+            var a = bootstrap.Alert.getOrCreateInstance(wrap.querySelector('.alert'));
+            if (a) a.close();
+        }, 4000);
+    } catch (e) {}
+}());
+
 /* =====================================================================
    APP DIALOG — Custom themed confirm / alert (admin)
    Menggantikan native confirm() / alert() dengan dialog Bootstrap bertemakan admin.
@@ -528,5 +564,91 @@ const AppDialog = (() => {
 </script>
 
 <?= $this->renderSection('scripts') ?>
+
+<!-- UPLOAD PROGRESS XHR — setelah renderSection('scripts') agar Quill sync terdaftar duluan -->
+<script>
+(function () {
+    var BAR  = document.getElementById('uploadProgressBar');
+    var FILL = document.getElementById('uploadProgressFill');
+
+    function setBar(pct, indeterminate) {
+        if (!BAR) return;
+        BAR.style.display = 'block';
+        if (indeterminate) {
+            FILL.style.transition = 'none';
+            FILL.style.position   = 'absolute';
+            FILL.style.width      = '40%';
+            FILL.style.animation  = 'uploadIndeterminate 1s linear infinite';
+        } else {
+            FILL.style.animation = '';
+            FILL.style.position  = '';
+            FILL.style.width     = pct + '%';
+        }
+    }
+    function hideBar() { if (BAR) BAR.style.display = 'none'; }
+
+    function disableSubmit(form) {
+        form.querySelectorAll('[type="submit"]').forEach(function (btn) {
+            btn.disabled  = true;
+            btn._origHTML = btn.innerHTML;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Menyimpan\u2026';
+        });
+    }
+    function enableSubmit(form) {
+        form.querySelectorAll('[type="submit"]').forEach(function (btn) {
+            btn.disabled = false;
+            if (btn._origHTML) btn.innerHTML = btn._origHTML;
+        });
+    }
+
+    document.addEventListener('submit', function (e) {
+        var form = e.target;
+        if (form.enctype !== 'multipart/form-data') return;
+        if ('noProgress' in form.dataset) return;
+        if (form.dataset.confirm && !form._dlgOk) return;  // tunggu AppDialog confirm dulu
+
+        e.preventDefault();                                 // cegah browser POST
+
+        var fd  = new FormData(form);                       // Quill sudah sync karena terdaftar lebih dulu
+        var xhr = new XMLHttpRequest();
+
+        setBar(0);
+        disableSubmit(form);
+
+        xhr.upload.addEventListener('progress', function (ev) {
+            if (ev.lengthComputable) setBar(Math.min(99, Math.round(ev.loaded / ev.total * 100)));
+        });
+
+        xhr.addEventListener('load', function () {
+            setBar(0, true);  // indeterminate saat server memproses
+
+            // Ambil flash dari HTML response, simpan ke sessionStorage
+            try {
+                var parser = new DOMParser();
+                var doc    = parser.parseFromString(xhr.responseText, 'text/html');
+                var flashEl = doc.querySelector('.flash-container .alert');
+                if (flashEl) {
+                    var type  = flashEl.classList.contains('alert-success') ? 'success' : 'error';
+                    var clone = flashEl.cloneNode(true);
+                    var closeBtn = clone.querySelector('.btn-close');
+                    if (closeBtn) closeBtn.remove();
+                    sessionStorage.setItem('_xhrFlash', JSON.stringify({ type: type, msg: clone.textContent.trim() }));
+                }
+            } catch (ex) {}
+
+            window.location.href = xhr.responseURL || form.action;
+        });
+
+        xhr.addEventListener('error', function () {
+            hideBar();
+            enableSubmit(form);
+            AppDialog.alert('Gagal mengirim data. Periksa koneksi dan coba lagi.', { type: 'danger', title: 'Error Upload' });
+        });
+
+        xhr.open('POST', form.action);
+        xhr.send(fd);
+    }); // bubble phase — Quill sync (view script) sudah terdaftar lebih dulu
+}());
+</script>
 </body>
 </html>
