@@ -28,7 +28,7 @@ class PrestasiController extends BaseController
         if ($tahun    !== '') $builder->where('tahun', $tahun);
         if ($search   !== '') $builder->like('judul', $search);
 
-        $tahunList = $this->model->select('tahun')->distinct()->orderBy('tahun', 'DESC')->findAll();
+        $tahunList = (new PrestasiModel())->select('tahun')->distinct()->orderBy('tahun', 'DESC')->findAll();
 
         return view('admin/prestasi/index', [
             'title'              => 'Manajemen Prestasi',
