@@ -86,7 +86,12 @@ class AlbumFotoController extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        $cover = $this->_saveCroppedCover() ?? $this->_uploadCover() ?? $album['cover_foto'];
+        $newCover = $this->_saveCroppedCover() ?? $this->_uploadCover();
+        if ($newCover && $album['cover_foto']) {
+            $old = FCPATH . 'uploads/album_foto/' . $album['cover_foto'];
+            if (file_exists($old)) @unlink($old);
+        }
+        $cover = $newCover ?? $album['cover_foto'];
 
         $this->model->update($id, [
             'judul'            => $this->request->getPost('judul'),

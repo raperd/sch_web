@@ -75,6 +75,14 @@ class PengaturanController extends BaseController
             }
             $newName = $file->getRandomName();
             $file->move($dest, $newName);
+
+            // Hapus file lama jika ada
+            $oldValue = $this->model->getByKey($key);
+            if ($oldValue) {
+                $oldPath = $dest . $oldValue;
+                if (file_exists($oldPath)) @unlink($oldPath);
+            }
+
             $this->model->setByKey($key, $newName);
         }
 
