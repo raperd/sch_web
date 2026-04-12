@@ -8,7 +8,7 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        $data = [
+        $users = [
             [
                 'username'  => 'superadmin',
                 'password'  => password_hash('Admin@123!', PASSWORD_BCRYPT),
@@ -25,6 +25,13 @@ class UserSeeder extends Seeder
             ],
         ];
 
-        $this->db->table('users')->insertBatch($data);
+        foreach ($users as $user) {
+            $exists = $this->db->table('users')
+                               ->getWhere(['username' => $user['username']])
+                               ->getRow();
+            if (! $exists) {
+                $this->db->table('users')->insert($user);
+            }
+        }
     }
 }

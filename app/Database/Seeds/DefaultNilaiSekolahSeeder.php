@@ -6,33 +6,28 @@ use CodeIgniter\Database\Seeder;
 
 class DefaultNilaiSekolahSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
-        $this->db->table('nilai_sekolah')->insertBatch([
-            [
-                'nama' => 'Keunggulan',
-                'deskripsi' => 'Mendorong setiap siswa mencapai potensi terbaik di bidang akademik dan non-akademik.',
-                'icon' => 'bi-award',
-                'urutan' => 1,
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
-            ],
-            [
-                'nama' => 'Karakter',
-                'deskripsi' => 'Membentuk generasi berkarakter, berakhlak mulia, dan berjiwa Pancasila.',
-                'icon' => 'bi-heart',
-                'urutan' => 2,
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
-            ],
-            [
-                'nama' => 'Inovasi',
-                'deskripsi' => 'Mempersiapkan siswa menjadi warga global yang kreatif, inovatif, dan adaptif.',
-                'icon' => 'bi-globe',
-                'urutan' => 3,
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
-            ],
-        ]);
+        $items = [
+            ['Keunggulan', 'Mendorong setiap siswa mencapai potensi terbaik di bidang akademik dan non-akademik.', 'bi-award',      1],
+            ['Karakter',   'Membentuk generasi berkarakter, berakhlak mulia, dan berjiwa Pancasila.',              'bi-heart',      2],
+            ['Inovasi',    'Mempersiapkan siswa menjadi warga global yang kreatif, inovatif, dan adaptif.',        'bi-globe',      3],
+        ];
+
+        foreach ($items as [$nama, $deskripsi, $icon, $urutan]) {
+            $exists = $this->db->table('nilai_sekolah')
+                               ->getWhere(['nama' => $nama])
+                               ->getRow();
+            if (! $exists) {
+                $this->db->table('nilai_sekolah')->insert([
+                    'nama'       => $nama,
+                    'deskripsi'  => $deskripsi,
+                    'icon'       => $icon,
+                    'urutan'     => $urutan,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
+                ]);
+            }
+        }
     }
 }

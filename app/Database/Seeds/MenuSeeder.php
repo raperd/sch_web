@@ -8,94 +8,174 @@ class MenuSeeder extends Seeder
 {
     public function run(): void
     {
-        // 7 menu utama publik
-        $menuPublik = [
-            ['nama' => 'Beranda',              'url' => '/',                'icon' => 'bi-house',           'urutan' => 1,  'lokasi' => 'publik'],
-            ['nama' => 'Profil & Fasilitas',   'url' => '/profil',          'icon' => 'bi-building',        'urutan' => 2,  'lokasi' => 'publik'],
-            ['nama' => 'Akademik',             'url' => '/akademik',        'icon' => 'bi-book',            'urutan' => 3,  'lokasi' => 'publik'],
-            ['nama' => 'Kehidupan Siswa',      'url' => '/kehidupan-siswa', 'icon' => 'bi-people',          'urutan' => 4,  'lokasi' => 'publik'],
-            ['nama' => 'Direktori Guru & Staf','url' => '/direktori',       'icon' => 'bi-person-badge',    'urutan' => 5,  'lokasi' => 'publik'],
-            ['nama' => 'Berita & Artikel',     'url' => '/berita',          'icon' => 'bi-newspaper',       'urutan' => 6,  'lokasi' => 'publik'],
-            ['nama' => 'SPMB',                 'url' => '/ppdb',            'icon' => 'bi-clipboard-check', 'urutan' => 7,  'lokasi' => 'publik'],
+        $this->seedMenuPublik();
+        $this->seedMenuFooter();
+        $this->seedQuickLinks();
+        $this->seedKategoriArtikel();
+        $this->seedKategoriGaleri();
+        $this->seedBidangGuru();
+    }
+
+    // ────────────────────────────────────────────────────────────────
+    private function seedMenuPublik(): void
+    {
+        $items = [
+            ['Beranda',               '/',                'bi-house',           1],
+            ['Profil & Fasilitas',    '/profil',          'bi-building',        2],
+            ['Akademik',              '/akademik',        'bi-book',            3],
+            ['Kehidupan Siswa',       '/kehidupan-siswa', 'bi-people',          4],
+            ['Direktori Guru & Staf', '/direktori',       'bi-person-badge',    5],
+            ['Berita & Artikel',      '/berita',          'bi-newspaper',       6],
+            ['SPMB',                  '/ppdb',            'bi-clipboard-check', 7],
         ];
 
-        foreach ($menuPublik as $item) {
-            $this->db->table('menu')->insert([
-                'parent_id' => null,
-                'nama'      => $item['nama'],
-                'url'       => $item['url'],
-                'icon'      => $item['icon'],
-                'target'    => '_self',
-                'urutan'    => $item['urutan'],
-                'is_active' => 1,
-                'lokasi'    => $item['lokasi'],
-            ]);
+        foreach ($items as [$nama, $url, $icon, $urutan]) {
+            $exists = $this->db->table('menu')
+                               ->getWhere(['url' => $url, 'lokasi' => 'publik'])
+                               ->getRow();
+            if (! $exists) {
+                $this->db->table('menu')->insert([
+                    'parent_id' => null,
+                    'nama'      => $nama,
+                    'url'       => $url,
+                    'icon'      => $icon,
+                    'target'    => '_self',
+                    'urutan'    => $urutan,
+                    'is_active' => 1,
+                    'lokasi'    => 'publik',
+                ]);
+            }
         }
+    }
 
-        // Menu footer
-        $menuFooter = [
-            ['nama' => 'Beranda',          'url' => '/',                'urutan' => 1],
-            ['nama' => 'Profil Sekolah',   'url' => '/profil',          'urutan' => 2],
-            ['nama' => 'Berita & Artikel', 'url' => '/berita',          'urutan' => 3],
-            ['nama' => 'SPMB',             'url' => '/ppdb',            'urutan' => 4],
-            ['nama' => 'Link Terkait',     'url' => '/link-terkait',    'urutan' => 5],
+    // ────────────────────────────────────────────────────────────────
+    private function seedMenuFooter(): void
+    {
+        $items = [
+            ['Beranda',          '/',             1],
+            ['Profil Sekolah',   '/profil',       2],
+            ['Berita & Artikel', '/berita',       3],
+            ['SPMB',             '/ppdb',         4],
+            ['Link Terkait',     '/link-terkait', 5],
         ];
 
-        foreach ($menuFooter as $item) {
-            $this->db->table('menu')->insert([
-                'parent_id' => null,
-                'nama'      => $item['nama'],
-                'url'       => $item['url'],
-                'icon'      => null,
-                'target'    => '_self',
-                'urutan'    => $item['urutan'],
-                'is_active' => 1,
-                'lokasi'    => 'footer',
-            ]);
+        foreach ($items as [$nama, $url, $urutan]) {
+            $exists = $this->db->table('menu')
+                               ->getWhere(['url' => $url, 'lokasi' => 'footer'])
+                               ->getRow();
+            if (! $exists) {
+                $this->db->table('menu')->insert([
+                    'parent_id' => null,
+                    'nama'      => $nama,
+                    'url'       => $url,
+                    'icon'      => null,
+                    'target'    => '_self',
+                    'urutan'    => $urutan,
+                    'is_active' => 1,
+                    'lokasi'    => 'footer',
+                ]);
+            }
         }
+    }
 
-        // Quick links untuk beranda
-        $quickLinks = [
-            ['label' => 'SPMB 2026/2027',   'url' => '/ppdb',            'icon' => 'bi-clipboard-check', 'warna' => 'primary',  'urutan' => 1],
-            ['label' => 'Akademik',         'url' => '/akademik',        'icon' => 'bi-book-half',       'warna' => 'success',  'urutan' => 2],
-            ['label' => 'Ekstrakurikuler',  'url' => '/kehidupan-siswa', 'icon' => 'bi-trophy',          'warna' => 'warning',  'urutan' => 3],
-            ['label' => 'Direktori Guru',   'url' => '/direktori',       'icon' => 'bi-person-badge',    'warna' => 'info',     'urutan' => 4],
-            ['label' => 'Galeri Sekolah',   'url' => '/profil#tab-galeri','icon' => 'bi-images',          'warna' => 'secondary','urutan' => 5],
-            ['label' => 'Berita Terbaru',   'url' => '/berita',          'icon' => 'bi-newspaper',       'warna' => 'danger',   'urutan' => 6],
+    // ────────────────────────────────────────────────────────────────
+    private function seedQuickLinks(): void
+    {
+        $items = [
+            ['SPMB 2026/2027',  '/ppdb',             'bi-clipboard-check', 'primary',   1],
+            ['Akademik',        '/akademik',          'bi-book-half',       'success',   2],
+            ['Ekstrakurikuler', '/kehidupan-siswa',   'bi-trophy',          'warning',   3],
+            ['Direktori Guru',  '/direktori',         'bi-person-badge',    'info',      4],
+            ['Galeri Sekolah',  '/profil#tab-galeri', 'bi-images',          'secondary', 5],
+            ['Berita Terbaru',  '/berita',            'bi-newspaper',       'danger',    6],
         ];
 
-        $this->db->table('quick_links')->insertBatch(
-            array_map(fn ($ql) => array_merge($ql, ['target' => '_self', 'is_active' => 1]), $quickLinks)
-        );
+        foreach ($items as [$label, $url, $icon, $warna, $urutan]) {
+            $exists = $this->db->table('quick_links')
+                               ->getWhere(['url' => $url])
+                               ->getRow();
+            if (! $exists) {
+                $this->db->table('quick_links')->insert([
+                    'label'     => $label,
+                    'url'       => $url,
+                    'icon'      => $icon,
+                    'warna'     => $warna,
+                    'target'    => '_self',
+                    'urutan'    => $urutan,
+                    'is_active' => 1,
+                ]);
+            }
+        }
+    }
 
-        // Kategori artikel default
-        $kategoriArtikel = [
-            ['nama' => 'Berita',       'slug' => 'berita',       'urutan' => 1],
-            ['nama' => 'Pengumuman',   'slug' => 'pengumuman',   'urutan' => 2],
-            ['nama' => 'Prestasi',     'slug' => 'prestasi',     'urutan' => 3],
-            ['nama' => 'Kegiatan',     'slug' => 'kegiatan',     'urutan' => 4],
+    // ────────────────────────────────────────────────────────────────
+    private function seedKategoriArtikel(): void
+    {
+        $items = [
+            ['Berita',       'berita',       1],
+            ['Pengumuman',   'pengumuman',   2],
+            ['Prestasi',     'prestasi',     3],
+            ['Kegiatan',     'kegiatan',     4],
         ];
-        $this->db->table('kategori_artikel')->insertBatch($kategoriArtikel);
 
-        // Kategori galeri default
-        $kategoriGaleri = [
-            ['nama' => 'Fasilitas',         'slug' => 'fasilitas',          'urutan' => 1],
-            ['nama' => 'Kegiatan Siswa',    'slug' => 'kegiatan-siswa',     'urutan' => 2],
-            ['nama' => 'Prestasi',          'slug' => 'prestasi',           'urutan' => 3],
-            ['nama' => 'Lingkungan Sekolah','slug' => 'lingkungan-sekolah', 'urutan' => 4],
-        ];
-        $this->db->table('kategori_galeri')->insertBatch($kategoriGaleri);
+        foreach ($items as [$nama, $slug, $urutan]) {
+            $exists = $this->db->table('kategori_artikel')
+                               ->getWhere(['slug' => $slug])
+                               ->getRow();
+            if (! $exists) {
+                $this->db->table('kategori_artikel')->insert([
+                    'nama'   => $nama,
+                    'slug'   => $slug,
+                    'urutan' => $urutan,
+                ]);
+            }
+        }
+    }
 
-        // Bidang guru default
-        $bidangGuru = [
-            ['nama' => 'Matematika & IPA'],
-            ['nama' => 'Bahasa & Sastra'],
-            ['nama' => 'IPS & Humaniora'],
-            ['nama' => 'Seni & Olahraga'],
-            ['nama' => 'Teknologi & Informatika'],
-            ['nama' => 'Bimbingan & Konseling'],
-            ['nama' => 'Tata Usaha & Administrasi'],
+    // ────────────────────────────────────────────────────────────────
+    private function seedKategoriGaleri(): void
+    {
+        $items = [
+            ['Fasilitas',          'fasilitas',          1],
+            ['Kegiatan Siswa',     'kegiatan-siswa',     2],
+            ['Prestasi',           'prestasi',           3],
+            ['Lingkungan Sekolah', 'lingkungan-sekolah', 4],
         ];
-        $this->db->table('bidang_guru')->insertBatch($bidangGuru);
+
+        foreach ($items as [$nama, $slug, $urutan]) {
+            $exists = $this->db->table('kategori_galeri')
+                               ->getWhere(['slug' => $slug])
+                               ->getRow();
+            if (! $exists) {
+                $this->db->table('kategori_galeri')->insert([
+                    'nama'   => $nama,
+                    'slug'   => $slug,
+                    'urutan' => $urutan,
+                ]);
+            }
+        }
+    }
+
+    // ────────────────────────────────────────────────────────────────
+    private function seedBidangGuru(): void
+    {
+        $items = [
+            'Matematika & IPA',
+            'Bahasa & Sastra',
+            'IPS & Humaniora',
+            'Seni & Olahraga',
+            'Teknologi & Informatika',
+            'Bimbingan & Konseling',
+            'Tata Usaha & Administrasi',
+        ];
+
+        foreach ($items as $nama) {
+            $exists = $this->db->table('bidang_guru')
+                               ->getWhere(['nama' => $nama])
+                               ->getRow();
+            if (! $exists) {
+                $this->db->table('bidang_guru')->insert(['nama' => $nama]);
+            }
+        }
     }
 }

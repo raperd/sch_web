@@ -8,61 +8,75 @@ class PengaturanSeeder extends Seeder
 {
     public function run(): void
     {
-        $data = [
-            // Grup: umum
-            ['setting_key' => 'site_name',        'setting_value' => 'SMA Negeri 1 Contoh',                'label' => 'Nama Sekolah',            'tipe' => 'text',     'grup' => 'umum',   'urutan' => 1],
-            ['setting_key' => 'site_tagline',      'setting_value' => 'Unggul, Berkarakter, dan Berprestasi','label' => 'Tagline Sekolah',          'tipe' => 'text',     'grup' => 'umum',   'urutan' => 2],
-            ['setting_key' => 'tahun_ajaran_aktif','setting_value' => '2025/2026',                          'label' => 'Tahun Ajaran Aktif',       'tipe' => 'text',     'grup' => 'umum',   'urutan' => 3],
-            ['setting_key' => 'akreditasi',        'setting_value' => 'A',                                  'label' => 'Akreditasi',               'tipe' => 'text',     'grup' => 'umum',   'urutan' => 4],
-            ['setting_key' => 'alamat',            'setting_value' => 'Jl. Contoh No. 1, Kota, Provinsi',  'label' => 'Alamat Sekolah',           'tipe' => 'textarea', 'grup' => 'umum',   'urutan' => 5],
-            ['setting_key' => 'telepon',           'setting_value' => '(021) 1234-5678',                    'label' => 'Nomor Telepon',            'tipe' => 'text',     'grup' => 'umum',   'urutan' => 6],
-            ['setting_key' => 'email',             'setting_value' => 'info@sman1contoh.sch.id',            'label' => 'Email Sekolah',            'tipe' => 'text',     'grup' => 'umum',   'urutan' => 7],
-            ['setting_key' => 'logo_path',         'setting_value' => null,                                 'label' => 'Logo Sekolah',             'tipe' => 'image',    'grup' => 'umum',   'urutan' => 8],
-            ['setting_key' => 'favicon_path',      'setting_value' => null,                                 'label' => 'Favicon Website',          'tipe' => 'image',    'grup' => 'umum',   'urutan' => 9],
+        $rows = [
+            // ── Grup: umum ───────────────────────────────────────────────
+            ['site_name',           'SMA Negeri 1 Contoh',                                    'Nama Sekolah',                  'text',     'umum',      1],
+            ['site_tagline',        'Unggul, Berkarakter, dan Berprestasi',                    'Tagline Sekolah',               'text',     'umum',      2],
+            ['tahun_ajaran_aktif',  '2025/2026',                                               'Tahun Ajaran Aktif',            'text',     'umum',      3],
+            ['akreditasi',          'A',                                                        'Akreditasi',                    'text',     'umum',      4],
+            ['alamat',              'Jl. Contoh No. 1, Kota, Provinsi',                        'Alamat Sekolah',                'textarea', 'umum',      5],
+            ['telepon',             '(021) 1234-5678',                                          'Nomor Telepon',                 'text',     'umum',      6],
+            ['email',               'info@sman1contoh.sch.id',                                 'Email Sekolah',                 'text',     'umum',      7],
+            ['logo_path',           null,                                                       'Logo Sekolah',                  'image',    'umum',      8],
+            ['favicon_path',        null,                                                       'Favicon Website',               'image',    'umum',      9],
 
-            // Grup: hero
-            ['setting_key' => 'hero_image_path',   'setting_value' => null,                                 'label' => 'Foto Hero Beranda',        'tipe' => 'image',    'grup' => 'hero',   'urutan' => 1],
-            ['setting_key' => 'hero_video_url',    'setting_value' => null,                                 'label' => 'URL Video Hero (YouTube)', 'tipe' => 'text',     'grup' => 'hero',   'urutan' => 2],
-            ['setting_key' => 'hero_judul',        'setting_value' => 'Selamat Datang di SMAN 1 Contoh',   'label' => 'Judul Hero',               'tipe' => 'text',     'grup' => 'hero',   'urutan' => 3],
-            ['setting_key' => 'hero_subjudul',     'setting_value' => 'Membentuk Generasi Unggul dan Berkarakter','label' => 'Sub-judul Hero',    'tipe' => 'text',     'grup' => 'hero',   'urutan' => 4],
+            // ── Grup: hero ───────────────────────────────────────────────
+            ['hero_image_path',     null,                                                       'Foto Hero Beranda',             'image',    'hero',      1],
+            ['hero_video_url',      null,                                                       'URL Video Hero (YouTube)',      'text',     'hero',      2],
+            ['hero_judul',          'Selamat Datang di SMAN 1 Contoh',                         'Judul Hero',                    'text',     'hero',      3],
+            ['hero_subjudul',       'Membentuk Generasi Unggul dan Berkarakter',               'Sub-judul Hero',                'text',     'hero',      4],
 
-            // Grup: profil
-            ['setting_key' => 'nama_kepsek',       'setting_value' => 'Drs. Nama Kepala Sekolah, M.Pd.',   'label' => 'Nama Kepala Sekolah',      'tipe' => 'text',     'grup' => 'profil', 'urutan' => 1],
-            ['setting_key' => 'nip_kepsek',        'setting_value' => '19700101 199901 1 001',              'label' => 'NIP Kepala Sekolah',       'tipe' => 'text',     'grup' => 'profil', 'urutan' => 2],
-            ['setting_key' => 'foto_kepsek',       'setting_value' => null,                                 'label' => 'Foto Kepala Sekolah',      'tipe' => 'image',    'grup' => 'profil', 'urutan' => 3],
-            ['setting_key' => 'sambutan_kepsek',   'setting_value' => 'Selamat datang di website resmi sekolah kami. Kami berkomitmen untuk memberikan pendidikan terbaik bagi seluruh peserta didik.', 'label' => 'Sambutan Kepala Sekolah', 'tipe' => 'textarea', 'grup' => 'profil', 'urutan' => 4],
-            ['setting_key' => 'sejarah',           'setting_value' => 'Sekolah ini didirikan pada tahun ...',                                      'label' => 'Sejarah Sekolah',          'tipe' => 'textarea', 'grup' => 'profil', 'urutan' => 5],
-            ['setting_key' => 'visi',              'setting_value' => 'Menjadi sekolah unggulan yang menghasilkan lulusan berakhlak mulia, berprestasi, dan berwawasan global.',              'label' => 'Visi Sekolah',             'tipe' => 'textarea', 'grup' => 'profil', 'urutan' => 6],
-            ['setting_key' => 'misi',              'setting_value' => "1. Menyelenggarakan pembelajaran berkualitas\n2. Membina karakter peserta didik\n3. Mendorong prestasi akademik dan non-akademik", 'label' => 'Misi Sekolah', 'tipe' => 'textarea', 'grup' => 'profil', 'urutan' => 7],
+            // ── Grup: profil ─────────────────────────────────────────────
+            ['nama_kepsek',         'Drs. Nama Kepala Sekolah, M.Pd.',                         'Nama Kepala Sekolah',           'text',     'profil',    1],
+            ['nip_kepsek',          '19700101 199901 1 001',                                    'NIP Kepala Sekolah',            'text',     'profil',    2],
+            ['foto_kepsek',         null,                                                       'Foto Kepala Sekolah',           'image',    'profil',    3],
+            ['sambutan_kepsek',     'Selamat datang di website resmi sekolah kami. Kami berkomitmen untuk memberikan pendidikan terbaik bagi seluruh peserta didik.', 'Sambutan Kepala Sekolah', 'textarea', 'profil', 4],
+            ['sejarah',             'Sekolah ini didirikan pada tahun ...',                    'Sejarah Sekolah',               'textarea', 'profil',    5],
+            ['visi',                'Menjadi sekolah unggulan yang menghasilkan lulusan berakhlak mulia, berprestasi, dan berwawasan global.', 'Visi Sekolah', 'textarea', 'profil', 6],
+            ['misi',                "1. Menyelenggarakan pembelajaran berkualitas\n2. Membina karakter peserta didik\n3. Mendorong prestasi akademik dan non-akademik", 'Misi Sekolah', 'textarea', 'profil', 7],
 
-            // Grup: sosial
-            ['setting_key' => 'facebook_url',      'setting_value' => null,                                 'label' => 'URL Facebook',             'tipe' => 'text',     'grup' => 'sosial', 'urutan' => 1],
-            ['setting_key' => 'instagram_url',     'setting_value' => null,                                 'label' => 'URL Instagram',            'tipe' => 'text',     'grup' => 'sosial', 'urutan' => 2],
-            ['setting_key' => 'youtube_url',       'setting_value' => null,                                 'label' => 'URL YouTube',              'tipe' => 'text',     'grup' => 'sosial', 'urutan' => 3],
-            ['setting_key' => 'tiktok_url',        'setting_value' => null,                                 'label' => 'URL TikTok',               'tipe' => 'text',     'grup' => 'sosial', 'urutan' => 4],
-            ['setting_key' => 'osis_instagram_embed', 'setting_value' => null,                              'label' => 'Embed Instagram OSIS (URL)','tipe' => 'text',    'grup' => 'sosial', 'urutan' => 5],
-            ['setting_key' => 'twitter_url',       'setting_value' => null,                                 'label' => 'URL Twitter / X',          'tipe' => 'text',     'grup' => 'sosial', 'urutan' => 6],
-            ['setting_key' => 'whatsapp_url',       'setting_value' => null,                                 'label' => 'Nomor WhatsApp',           'tipe' => 'text',     'grup' => 'sosial', 'urutan' => 7],
+            // ── Grup: sosial ─────────────────────────────────────────────
+            ['facebook_url',        null, 'URL Facebook',              'text',  'sosial', 1],
+            ['instagram_url',       null, 'URL Instagram',             'text',  'sosial', 2],
+            ['youtube_url',         null, 'URL YouTube',               'text',  'sosial', 3],
+            ['tiktok_url',          null, 'URL TikTok',                'text',  'sosial', 4],
+            ['osis_instagram_embed',null, 'Embed Instagram OSIS (URL)','text',  'sosial', 5],
+            ['twitter_url',         null, 'URL Twitter / X',           'text',  'sosial', 6],
+            ['whatsapp_url',        null, 'Nomor WhatsApp',            'text',  'sosial', 7],
 
-            // Grup: statistik
-            ['setting_key' => 'stat_tahun_berdiri','setting_value' => '25+',                                'label' => 'Tahun Berdiri',            'tipe' => 'text',     'grup' => 'statistik', 'urutan' => 1],
-            ['setting_key' => 'stat_siswa',        'setting_value' => '1.000+',                             'label' => 'Jumlah Siswa',             'tipe' => 'text',     'grup' => 'statistik', 'urutan' => 2],
-            ['setting_key' => 'stat_guru',         'setting_value' => '60+',                                'label' => 'Tenaga Pendidik',          'tipe' => 'text',     'grup' => 'statistik', 'urutan' => 3],
-            ['setting_key' => 'stat_ekskul',       'setting_value' => '20+',                                'label' => 'Ekstrakurikuler',          'tipe' => 'text',     'grup' => 'statistik', 'urutan' => 4],
-            ['setting_key' => 'stat_prestasi',     'setting_value' => '50+',                                'label' => 'Prestasi Diraih',          'tipe' => 'text',     'grup' => 'statistik', 'urutan' => 5],
+            // ── Grup: statistik ──────────────────────────────────────────
+            ['stat_tahun_berdiri',  '25+',    'Tahun Berdiri',       'text', 'statistik', 1],
+            ['stat_siswa',          '1.000+', 'Jumlah Siswa',        'text', 'statistik', 2],
+            ['stat_guru',           '60+',    'Tenaga Pendidik',     'text', 'statistik', 3],
+            ['stat_ekskul',         '20+',    'Ekstrakurikuler',     'text', 'statistik', 4],
+            ['stat_prestasi',       '50+',    'Prestasi Diraih',     'text', 'statistik', 5],
 
-            // Grup: ppdb
-            ['setting_key' => 'ppdb_link_external','setting_value' => '#',                                  'label' => 'Link Portal PPDB (Pemda)',  'tipe' => 'text',     'grup' => 'ppdb',   'urutan' => 1],
-            ['setting_key' => 'ppdb_tahun',        'setting_value' => '2026/2027',                          'label' => 'Tahun PPDB',               'tipe' => 'text',     'grup' => 'ppdb',   'urutan' => 2],
-            ['setting_key' => 'ppdb_status',       'setting_value' => '0',                                  'label' => 'PPDB Sedang Buka',         'tipe' => 'boolean',  'grup' => 'ppdb',   'urutan' => 3],
-            ['setting_key' => 'ppdb_deskripsi_footer','setting_value' => 'Informasi Penerimaan Peserta Didik Baru. Daftar melalui portal resmi Dinas Pendidikan.', 'label' => 'Deskripsi SPMB di Footer', 'tipe' => 'textarea', 'grup' => 'ppdb', 'urutan' => 4],
+            // ── Grup: ppdb ───────────────────────────────────────────────
+            ['ppdb_link_external',      '#',           'Link Portal PPDB (Pemda)',     'text',     'ppdb', 1],
+            ['ppdb_tahun',              '2026/2027',   'Tahun PPDB',                  'text',     'ppdb', 2],
+            ['ppdb_status',             '0',           'PPDB Sedang Buka',            'boolean',  'ppdb', 3],
+            ['ppdb_deskripsi_footer',   'Informasi Penerimaan Peserta Didik Baru. Daftar melalui portal resmi Dinas Pendidikan.', 'Deskripsi SPMB di Footer', 'textarea', 'ppdb', 4],
 
-            // Grup: tema
-            ['setting_key' => 'tema_primary',      'setting_value' => '#1a5276',                            'label' => 'Warna Primer (Biru Utama)', 'tipe' => 'color',    'grup' => 'tema',   'urutan' => 1],
-            ['setting_key' => 'tema_secondary',    'setting_value' => '#2e86c1',                            'label' => 'Warna Sekunder (Biru Sedang)','tipe' => 'color',   'grup' => 'tema',   'urutan' => 2],
-            ['setting_key' => 'tema_accent',       'setting_value' => '#d4ac0d',                            'label' => 'Warna Aksen (Gold)',        'tipe' => 'color',    'grup' => 'tema',   'urutan' => 3],
+            // ── Grup: tema ───────────────────────────────────────────────
+            ['tema_primary',   '#1a5276', 'Warna Primer (Biru Utama)',    'color', 'tema', 1],
+            ['tema_secondary', '#2e86c1', 'Warna Sekunder (Biru Sedang)', 'color', 'tema', 2],
+            ['tema_accent',    '#d4ac0d', 'Warna Aksen (Gold)',           'color', 'tema', 3],
         ];
 
-        $this->db->table('pengaturan')->insertBatch($data);
+        foreach ($rows as [$key, $value, $label, $tipe, $grup, $urutan]) {
+            $exists = $this->db->table('pengaturan')
+                               ->getWhere(['setting_key' => $key])
+                               ->getRow();
+            if (! $exists) {
+                $this->db->table('pengaturan')->insert([
+                    'setting_key'   => $key,
+                    'setting_value' => $value,
+                    'label'         => $label,
+                    'tipe'          => $tipe,
+                    'grup'          => $grup,
+                    'urutan'        => $urutan,
+                ]);
+            }
+        }
     }
 }
