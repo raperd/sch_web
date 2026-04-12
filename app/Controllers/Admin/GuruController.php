@@ -97,6 +97,7 @@ class GuruController extends BaseController
             'urutan'             => (int) ($this->request->getPost('urutan') ?: 0),
             'tahun_masuk'        => $this->request->getPost('tahun_masuk')  ?: null,
             'tahun_keluar'       => $this->request->getPost('tahun_keluar') ?: null,
+            'status_keluar'      => $this->request->getPost('status_keluar') ?: null,
         ]);
 
         return redirect()->to(base_url('admin/guru'))->with('success', 'Data guru/staf berhasil disimpan.');
@@ -161,6 +162,7 @@ class GuruController extends BaseController
             'urutan'            => (int) ($this->request->getPost('urutan') ?: 0),
             'tahun_masuk'       => $this->request->getPost('tahun_masuk')  ?: null,
             'tahun_keluar'      => $this->request->getPost('tahun_keluar') ?: null,
+            'status_keluar'     => $this->request->getPost('status_keluar') ?: null,
         ]);
 
         return redirect()->to(base_url('admin/guru'))->with('success', 'Data berhasil diperbarui.');

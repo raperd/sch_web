@@ -125,7 +125,16 @@
                         </div>
                     </div>
                     <div id="periodeWrapper" class="mt-2" style="display:none">
-                        <label class="form-label fw-semibold small mb-1">Periode Bertugas</label>
+                        <hr class="my-2">
+                        <p class="form-label fw-semibold small mb-2">Riwayat Pengabdian</p>
+                        <div class="mb-2">
+                            <label class="form-label small mb-1">Alasan Tidak Aktif</label>
+                            <select name="status_keluar" class="form-select form-select-sm">
+                                <option value="">— Pilih —</option>
+                                <option value="purna_tugas" <?= old('status_keluar') === 'purna_tugas' ? 'selected' : '' ?>>Purna Tugas / Pensiun</option>
+                                <option value="mutasi"      <?= old('status_keluar') === 'mutasi'      ? 'selected' : '' ?>>Mutasi ke Sekolah Lain</option>
+                            </select>
+                        </div>
                         <div class="row g-2">
                             <div class="col-6">
                                 <input type="number" name="tahun_masuk"

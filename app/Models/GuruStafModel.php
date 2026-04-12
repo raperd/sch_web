@@ -12,7 +12,7 @@ class GuruStafModel extends Model
     protected $allowedFields = [
         'bidang_id', 'nip', 'nama', 'jabatan', 'tipe', 'mata_pelajaran',
         'pendidikan', 'foto', 'filosofi_mengajar', 'email_publik',
-        'is_active', 'urutan', 'tahun_masuk', 'tahun_keluar',
+        'is_active', 'urutan', 'tahun_masuk', 'tahun_keluar', 'status_keluar',
     ];
 
     protected $useTimestamps  = true;
@@ -38,6 +38,7 @@ class GuruStafModel extends Model
     {
         return $this->withBidang()
                     ->where('guru_staf.is_active', 0)
+                    ->orderBy('FIELD(guru_staf.status_keluar, "purna_tugas", "mutasi", NULL)', '', false)
                     ->orderBy('guru_staf.tahun_keluar', 'DESC')
                     ->orderBy('guru_staf.nama', 'ASC')
                     ->findAll();

@@ -235,17 +235,42 @@
             <section class="py-5 bg-light">
                 <div class="container">
                     <div class="text-center mb-5">
-                        <span class="badge text-bg-secondary fs-6 px-3 py-2 mb-3">Purna Tugas</span>
+                        <span class="badge text-bg-secondary fs-6 px-3 py-2 mb-3">
+                            <i class="bi bi-clock-history me-1"></i>Masa ke Masa
+                        </span>
                         <h2 class="fw-bold">Guru &amp; Staf dari Masa ke Masa</h2>
                         <p class="text-muted">Para pendidik dan staf yang telah mengabdi dan membangun sekolah ini</p>
                     </div>
-                    <div class="row g-3 justify-content-center">
-                        <?php foreach ($alumni as $a):
-                            $tipeLabel = ['guru' => 'Guru', 'staf' => 'Staf', 'tendik' => 'Tendik'];
-                            $tipeCls   = ['guru' => 'text-bg-primary', 'staf' => 'text-bg-secondary', 'tendik' => 'text-bg-info'];
-                        ?>
+
+                    <?php
+                    // Pisahkan per status_keluar
+                    $kelompok = [
+                        'purna_tugas' => ['label' => 'Purna Tugas / Pensiun', 'icon' => 'bi-award',         'cls' => 'text-bg-secondary', 'items' => []],
+                        'mutasi'      => ['label' => 'Mutasi ke Sekolah Lain', 'icon' => 'bi-arrow-right-circle', 'cls' => 'text-bg-warning text-dark', 'items' => []],
+                        ''            => ['label' => 'Tidak Aktif',             'icon' => 'bi-person-x',        'cls' => 'text-bg-light border text-muted', 'items' => []],
+                    ];
+                    foreach ($alumni as $a) {
+                        $key = $a['status_keluar'] ?? '';
+                        if (! array_key_exists($key, $kelompok)) $key = '';
+                        $kelompok[$key]['items'][] = $a;
+                    }
+                    $tipeLabel = ['guru' => 'Guru', 'staf' => 'Staf', 'tendik' => 'Tendik'];
+                    $tipeCls   = ['guru' => 'text-bg-primary', 'staf' => 'text-bg-secondary', 'tendik' => 'text-bg-info'];
+                    ?>
+
+                    <?php foreach ($kelompok as $statusKey => $grp): ?>
+                    <?php if (empty($grp['items'])): continue; endif; ?>
+
+                    <h5 class="fw-semibold mb-3 mt-4 d-flex align-items-center gap-2">
+                        <i class="bi <?= $grp['icon'] ?> text-secondary"></i>
+                        <?= $grp['label'] ?>
+                        <span class="badge text-bg-secondary ms-1"><?= count($grp['items']) ?></span>
+                    </h5>
+
+                    <div class="row g-3 mb-4">
+                        <?php foreach ($grp['items'] as $a): ?>
                         <div class="col-sm-6 col-md-4 col-lg-3">
-                            <div class="card border-0 shadow-sm h-100 text-center p-3" style="filter:grayscale(30%)">
+                            <div class="card border-0 shadow-sm h-100 text-center p-3" style="filter:grayscale(25%)">
                                 <div class="card-body p-2">
                                     <?php if (!empty($a['foto'])): ?>
                                         <img src="<?= base_url('uploads/guru/' . esc($a['foto'])) ?>"
@@ -266,6 +291,11 @@
                                         <span class="badge <?= $tipeCls[$a['tipe']] ?? 'text-bg-secondary' ?> small">
                                             <?= $tipeLabel[$a['tipe']] ?? esc($a['tipe']) ?>
                                         </span>
+                                        <?php if ($a['status_keluar']): ?>
+                                            <span class="badge <?= $grp['cls'] ?> small">
+                                                <?= $grp['label'] ?>
+                                            </span>
+                                        <?php endif; ?>
                                         <?php if (!empty($a['tahun_masuk']) || !empty($a['tahun_keluar'])): ?>
                                             <span class="badge text-bg-light border text-muted small">
                                                 <i class="bi bi-calendar3 me-1"></i><?= esc($a['tahun_masuk'] ?? '?') ?> &ndash; <?= esc($a['tahun_keluar'] ?? '?') ?>
@@ -277,6 +307,8 @@
                         </div>
                         <?php endforeach; ?>
                     </div>
+
+                    <?php endforeach; ?>
                 </div>
             </section>
         </div>
