@@ -81,6 +81,7 @@ $routes->group('admin', ['filter' => 'admin_auth'], static function (RouteCollec
     $routes->get('guru/edit/(:num)', 'Admin\GuruController::edit/$1');
     $routes->post('guru/update/(:num)', 'Admin\GuruController::update/$1');
     $routes->post('guru/delete/(:num)', 'Admin\GuruController::delete/$1');
+    $routes->post('guru/toggle/(:num)', 'Admin\GuruController::toggleActive/$1');
     $routes->post('guru/urutan', 'Admin\GuruController::updateUrutan');
 
     // -----------------------------------------------------------------

@@ -177,6 +177,19 @@ class GuruController extends BaseController
         return redirect()->to(base_url('admin/guru'))->with('success', 'Data berhasil dihapus.');
     }
 
+    public function toggleActive(int $id)
+    {
+        $guru = $this->model->find($id);
+        if (! $guru) {
+            return redirect()->back()->with('error', 'Data tidak ditemukan.');
+        }
+
+        $this->model->update($id, ['is_active' => $guru['is_active'] == 1 ? 0 : 1]);
+
+        $status = $guru['is_active'] == 1 ? 'dinonaktifkan' : 'diaktifkan';
+        return redirect()->to(base_url('admin/guru'))->with('success', "Guru/staf berhasil {$status}.");
+    }
+
     /**
      * Terima JSON [{id, urutan}, ...] — update urutan via AJAX drag-drop.
      * Response: JSON {success: bool}

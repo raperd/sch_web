@@ -104,6 +104,13 @@ $tipeLabel = ['guru' => 'Guru', 'staf' => 'Staf', 'tendik' => 'Tendik'];
                         class="btn btn-sm btn-outline-primary flex-grow-1">
                         <i class="bi bi-pencil me-1"></i>Edit
                     </a>
+                    <form method="post" action="<?= base_url('admin/guru/toggle/' . $g['id']) ?>">
+                        <?= csrf_field() ?>
+                        <button type="submit" title="<?= $g['is_active'] ? 'Nonaktifkan' : 'Aktifkan' ?>"
+                            class="btn btn-sm <?= $g['is_active'] ? 'btn-success' : 'btn-outline-secondary' ?>">
+                            <i class="bi bi-<?= $g['is_active'] ? 'toggle-on' : 'toggle-off' ?>"></i>
+                        </button>
+                    </form>
                     <form method="post" action="<?= base_url('admin/guru/delete/' . $g['id']) ?>"
                         data-confirm="Hapus data ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                         <?= csrf_field() ?>
@@ -183,9 +190,14 @@ $tipeLabel = ['guru' => 'Guru', 'staf' => 'Staf', 'tendik' => 'Tendik'];
                                 <span class="badge text-bg-<?= $cls ?>"><?= $lbl ?></span>
                             </td>
                             <td class="text-center">
-                                <span class="badge <?= $g['is_active'] ? 'text-bg-success' : 'text-bg-danger' ?>">
-                                    <?= $g['is_active'] ? 'Aktif' : 'Nonaktif' ?>
-                                </span>
+                                <form method="post" action="<?= base_url('admin/guru/toggle/' . $g['id']) ?>" class="d-inline">
+                                    <?= csrf_field() ?>
+                                    <button type="submit" title="<?= $g['is_active'] ? 'Klik untuk nonaktifkan' : 'Klik untuk aktifkan' ?>"
+                                        class="btn btn-sm <?= $g['is_active'] ? 'btn-success' : 'btn-outline-secondary' ?>">
+                                        <i class="bi bi-<?= $g['is_active'] ? 'toggle-on' : 'toggle-off' ?> me-1"></i>
+                                        <?= $g['is_active'] ? 'Aktif' : 'Nonaktif' ?>
+                                    </button>
+                                </form>
                             </td>
                             <td class="text-end">
                                 <div class="d-flex gap-1 justify-content-end">
