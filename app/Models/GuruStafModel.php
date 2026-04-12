@@ -11,7 +11,8 @@ class GuruStafModel extends Model
     protected $returnType    = 'array';
     protected $allowedFields = [
         'bidang_id', 'nip', 'nama', 'jabatan', 'tipe', 'mata_pelajaran',
-        'pendidikan', 'foto', 'filosofi_mengajar', 'email_publik', 'is_active', 'urutan',
+        'pendidikan', 'foto', 'filosofi_mengajar', 'email_publik',
+        'is_active', 'urutan', 'tahun_masuk', 'tahun_keluar',
     ];
 
     protected $useTimestamps  = true;
@@ -30,6 +31,15 @@ class GuruStafModel extends Model
         return $this->withBidang()->aktif()
                     ->where('guru_staf.tipe', $tipe)
                     ->orderBy('guru_staf.urutan', 'ASC')
+                    ->findAll();
+    }
+
+    public function getAlumni(): array
+    {
+        return $this->withBidang()
+                    ->where('guru_staf.is_active', 0)
+                    ->orderBy('guru_staf.tahun_keluar', 'DESC')
+                    ->orderBy('guru_staf.nama', 'ASC')
                     ->findAll();
     }
 

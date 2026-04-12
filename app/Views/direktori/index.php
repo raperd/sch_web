@@ -39,6 +39,14 @@
                     </button>
                 </li>
             <?php endif; ?>
+            <?php if (!empty($alumni)): ?>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link fw-semibold text-nowrap" data-bs-toggle="pill" data-bs-target="#tab-alumni" type="button">
+                        <i class="bi bi-clock-history me-1"></i>Masa ke Masa
+                        <span class="badge bg-white text-primary ms-1"><?= count($alumni) ?></span>
+                    </button>
+                </li>
+            <?php endif; ?>
         </ul>
     </div>
 </section>
@@ -214,6 +222,59 @@
                                     </div>
                                 </div>
                             </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </section>
+        </div>
+    <?php endif; ?>
+
+    <!-- Alumni / Masa ke Masa -->
+    <?php if (!empty($alumni)): ?>
+        <div class="tab-pane fade" id="tab-alumni" role="tabpanel">
+            <section class="py-5 bg-light">
+                <div class="container">
+                    <div class="text-center mb-5">
+                        <span class="badge text-bg-secondary fs-6 px-3 py-2 mb-3">Purna Tugas</span>
+                        <h2 class="fw-bold">Guru &amp; Staf dari Masa ke Masa</h2>
+                        <p class="text-muted">Para pendidik dan staf yang telah mengabdi dan membangun sekolah ini</p>
+                    </div>
+                    <div class="row g-3 justify-content-center">
+                        <?php foreach ($alumni as $a):
+                            $tipeLabel = ['guru' => 'Guru', 'staf' => 'Staf', 'tendik' => 'Tendik'];
+                            $tipeCls   = ['guru' => 'text-bg-primary', 'staf' => 'text-bg-secondary', 'tendik' => 'text-bg-info'];
+                        ?>
+                        <div class="col-sm-6 col-md-4 col-lg-3">
+                            <div class="card border-0 shadow-sm h-100 text-center p-3" style="filter:grayscale(30%)">
+                                <div class="card-body p-2">
+                                    <?php if (!empty($a['foto'])): ?>
+                                        <img src="<?= base_url('uploads/guru/' . esc($a['foto'])) ?>"
+                                            class="rounded-circle mb-3 border border-2 border-secondary"
+                                            style="width:90px;height:90px;object-fit:cover;"
+                                            alt="<?= esc($a['nama']) ?>">
+                                    <?php else: ?>
+                                        <div class="rounded-circle bg-secondary bg-opacity-10 mx-auto mb-3 d-flex align-items-center justify-content-center"
+                                            style="width:90px;height:90px;">
+                                            <i class="bi bi-person-fill text-secondary" style="font-size:2.2rem;"></i>
+                                        </div>
+                                    <?php endif; ?>
+                                    <h6 class="fw-bold mb-1"><?= esc($a['nama']) ?></h6>
+                                    <?php if (!empty($a['jabatan'])): ?>
+                                        <p class="text-muted small mb-2"><?= esc($a['jabatan']) ?></p>
+                                    <?php endif; ?>
+                                    <div class="d-flex flex-wrap gap-1 justify-content-center">
+                                        <span class="badge <?= $tipeCls[$a['tipe']] ?? 'text-bg-secondary' ?> small">
+                                            <?= $tipeLabel[$a['tipe']] ?? esc($a['tipe']) ?>
+                                        </span>
+                                        <?php if (!empty($a['tahun_masuk']) || !empty($a['tahun_keluar'])): ?>
+                                            <span class="badge text-bg-light border text-muted small">
+                                                <i class="bi bi-calendar3 me-1"></i><?= esc($a['tahun_masuk'] ?? '?') ?> &ndash; <?= esc($a['tahun_keluar'] ?? '?') ?>
+                                            </span>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <?php endforeach; ?>
                     </div>
                 </div>

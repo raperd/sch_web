@@ -17,6 +17,7 @@ class Direktori extends BaseController
             'guru'    => $guruModel->getByTipe('guru'),
             'staf'    => $guruModel->getByTipe('staf'),
             'tendik'  => $guruModel->getByTipe('tendik'),
+            'alumni'  => (new GuruStafModel())->getAlumni(),
             'bidang'  => $bidangModel->findAll(),
         ]);
     }

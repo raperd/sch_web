@@ -133,6 +133,25 @@
                             <label class="form-check-label" for="isActive">Aktif / Tampilkan</label>
                         </div>
                     </div>
+                    <div id="periodeWrapper" class="mt-2"
+                         style="<?= old('is_active', $guru['is_active']) ? 'display:none' : '' ?>">
+                        <label class="form-label fw-semibold small mb-1">Periode Bertugas</label>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <input type="number" name="tahun_masuk"
+                                       class="form-control form-control-sm"
+                                       min="1945" max="2099" placeholder="Tahun masuk"
+                                       value="<?= esc(old('tahun_masuk', $guru['tahun_masuk'] ?? '')) ?>">
+                            </div>
+                            <div class="col-6">
+                                <input type="number" name="tahun_keluar"
+                                       class="form-control form-control-sm"
+                                       min="1945" max="2099" placeholder="Tahun keluar"
+                                       value="<?= esc(old('tahun_keluar', $guru['tahun_keluar'] ?? '')) ?>">
+                            </div>
+                        </div>
+                        <div class="form-text">Tampil di tab "Masa ke Masa" halaman Direktori.</div>
+                    </div>
                 </div>
                 <div class="card-footer bg-white border-top d-grid gap-2">
                     <button type="submit" class="btn btn-primary btn-lg fw-semibold">
@@ -245,5 +264,14 @@ document.getElementById('cropConfirm')?.addEventListener('click', function () {
         bootstrap.Modal.getInstance(document.getElementById('cropModal'))?.hide();
     }, 'image/jpeg', 0.88);
 });
+
+// Toggle periode bertugas berdasarkan status aktif
+(function () {
+    const chk  = document.getElementById('isActive');
+    const wrap = document.getElementById('periodeWrapper');
+    const sync = () => { wrap.style.display = chk.checked ? 'none' : ''; };
+    chk.addEventListener('change', sync);
+    sync();
+}());
 </script>
 <?= $this->endSection() ?>
