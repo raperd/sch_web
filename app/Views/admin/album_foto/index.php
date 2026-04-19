@@ -7,7 +7,7 @@
         <h4 class="fw-bold mb-0">Album Foto</h4>
         <p class="text-muted small mb-0">Kelola album foto sekolah yang ditautkan ke Google Foto</p>
     </div>
-    <a href="<?= base_url('admin/album-foto/create') ?>" class="btn btn-primary">
+    <a href="<?= admin_url('album-foto/create') ?>" class="btn btn-primary">
         <i class="bi bi-plus-lg me-1"></i>Tambah Album
     </a>
 </div>
@@ -60,7 +60,7 @@
                     </div>
 
                     <div class="card-footer bg-white border-top-0 p-2 d-flex gap-1">
-                        <a href="<?= base_url('admin/album-foto/edit/' . $a['id']) ?>"
+                        <a href="<?= admin_url('album-foto/edit/' . $a['id']) ?>"
                             class="btn btn-sm btn-outline-primary flex-grow-1">
                             <i class="bi bi-pencil me-1"></i>Edit
                         </a>
@@ -68,7 +68,7 @@
                             class="btn btn-sm btn-outline-secondary" title="Buka Google Foto">
                             <i class="bi bi-google"></i>
                         </a>
-                        <form method="post" action="<?= base_url('admin/album-foto/delete/' . $a['id']) ?>"
+                        <form method="post" action="<?= admin_url('album-foto/delete/' . $a['id']) ?>"
                             class="d-inline" data-confirm="Hapus album ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                             <?= csrf_field() ?>
                             <button type="submit" class="btn btn-sm btn-outline-danger">
@@ -85,7 +85,7 @@
         <div class="card-body text-center py-5 text-muted">
             <i class="bi bi-images display-5 d-block mb-3 opacity-25"></i>
             <p class="mb-1">Belum ada album foto.</p>
-            <a href="<?= base_url('admin/album-foto/create') ?>" class="btn btn-primary btn-sm mt-2">
+            <a href="<?= admin_url('album-foto/create') ?>" class="btn btn-primary btn-sm mt-2">
                 <i class="bi bi-plus-lg me-1"></i>Tambah Album Pertama
             </a>
         </div>

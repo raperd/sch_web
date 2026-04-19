@@ -2,7 +2,7 @@
 
 <?= $this->section('content') ?>
 <div class="d-flex align-items-center gap-2 mb-4">
-    <a href="<?= base_url('admin/kategori-artikel') ?>" class="btn btn-sm btn-outline-secondary">
+    <a href="<?= admin_url('kategori-artikel') ?>" class="btn btn-sm btn-outline-secondary">
         <i class="bi bi-arrow-left"></i>
     </a>
     <div>
@@ -24,8 +24,8 @@
 
 <?php
 $action = $kategori
-    ? base_url('admin/kategori-artikel/update/' . $kategori['id'])
-    : base_url('admin/kategori-artikel/store');
+    ? admin_url('kategori-artikel/update/' . $kategori['id'])
+    : admin_url('kategori-artikel/store');
 ?>
 
 <div class="row justify-content-center">
@@ -72,7 +72,7 @@ $action = $kategori
                         <button type="submit" class="btn btn-primary">
                             <i class="bi bi-save me-1"></i><?= $kategori ? 'Simpan Perubahan' : 'Tambah Kategori' ?>
                         </button>
-                        <a href="<?= base_url('admin/kategori-artikel') ?>" class="btn btn-outline-secondary">Batal</a>
+                        <a href="<?= admin_url('kategori-artikel') ?>" class="btn btn-outline-secondary">Batal</a>
                     </div>
                 </form>
             </div>

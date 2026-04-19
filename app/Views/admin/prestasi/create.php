@@ -6,7 +6,7 @@
         <h4 class="fw-bold mb-0">Tambah Prestasi</h4>
         <p class="text-muted small mb-0">Input data pencapaian baru</p>
     </div>
-    <a href="<?= base_url('admin/prestasi') ?>" class="btn btn-outline-secondary btn-sm">
+    <a href="<?= admin_url('prestasi') ?>" class="btn btn-outline-secondary btn-sm">
         <i class="bi bi-arrow-left me-1"></i>Kembali
     </a>
 </div>
@@ -21,7 +21,7 @@
     </div>
 <?php endif; ?>
 
-<form method="post" action="<?= base_url('admin/prestasi/store') ?>" enctype="multipart/form-data">
+<form method="post" action="<?= admin_url('prestasi/store') ?>" enctype="multipart/form-data">
     <?= csrf_field() ?>
     <div class="row g-4">
         <!-- Kolom Kiri: Data Utama -->

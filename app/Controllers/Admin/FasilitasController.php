@@ -50,7 +50,7 @@ class FasilitasController extends BaseController
             'urutan'    => (int) ($this->request->getPost('urutan') ?: 0),
         ]);
 
-        return redirect()->to(base_url('admin/fasilitas'))->with('success', 'Fasilitas berhasil disimpan.');
+        return redirect()->to(admin_url('fasilitas'))->with('success', 'Fasilitas berhasil disimpan.');
     }
 
     public function edit(int $id): string
@@ -94,7 +94,7 @@ class FasilitasController extends BaseController
             'urutan'    => (int) ($this->request->getPost('urutan') ?: 0),
         ]);
 
-        return redirect()->to(base_url('admin/fasilitas'))->with('success', 'Data berhasil diperbarui.');
+        return redirect()->to(admin_url('fasilitas'))->with('success', 'Data berhasil diperbarui.');
     }
 
     private function _saveCroppedFoto(): ?string
@@ -127,6 +127,6 @@ class FasilitasController extends BaseController
         }
 
         $this->model->delete($id);
-        return redirect()->to(base_url('admin/fasilitas'))->with('success', 'Data berhasil dihapus.');
+        return redirect()->to(admin_url('fasilitas'))->with('success', 'Data berhasil dihapus.');
     }
 }

@@ -24,17 +24,19 @@ $routes->get('link-terkait', 'LinkController::index');
 // =====================================================================
 // ADMIN AUTH (tidak perlu filter)
 // =====================================================================
-$routes->get('admin/login', 'Admin\AuthController::login');
-$routes->post('admin/login', 'Admin\AuthController::attemptLogin');
-$routes->get('admin/logout', 'Admin\AuthController::logout');
+$adminPfx = env('ADMIN_PREFIX', 'klwshub');
 
-// Redirect /admin ke dashboard
-$routes->get('admin', 'Admin\DashboardController::index', ['filter' => 'admin_auth']);
+$routes->get($adminPfx . '/login',  'Admin\AuthController::login');
+$routes->post($adminPfx . '/login', 'Admin\AuthController::attemptLogin');
+$routes->get($adminPfx . '/logout', 'Admin\AuthController::logout');
+
+// Redirect /{prefix} ke dashboard
+$routes->get($adminPfx, 'Admin\DashboardController::index', ['filter' => 'admin_auth']);
 
 // =====================================================================
 // ADMIN PANEL (dilindungi filter admin_auth)
 // =====================================================================
-$routes->group('admin', ['filter' => 'admin_auth'], static function (RouteCollection $routes): void {
+$routes->group($adminPfx, ['filter' => 'admin_auth'], static function (RouteCollection $routes): void {
 
     // Dashboard
     $routes->get('dashboard', 'Admin\DashboardController::index');

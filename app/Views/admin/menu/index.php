@@ -18,7 +18,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         <?php endif; ?>
-        <form method="post" action="<?= base_url('admin/menu/store') ?>">
+        <form method="post" action="<?= admin_url('menu/store') ?>">
             <?= csrf_field() ?>
             <div class="row g-2">
                 <div class="col-6 col-md-2">
@@ -79,7 +79,7 @@
                             onclick="openEditModal(<?= htmlspecialchars(json_encode($m), ENT_QUOTES) ?>)">
                             <i class="bi bi-pencil"></i>
                         </button>
-                        <form method="post" action="<?= base_url('admin/menu/delete/' . $m['id']) ?>"
+                        <form method="post" action="<?= admin_url('menu/delete/' . $m['id']) ?>"
                             data-confirm="Hapus menu ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                             <?= csrf_field() ?>
                             <button type="submit" class="btn btn-sm btn-outline-danger flex-shrink-0"><i class="bi bi-trash"></i></button>
@@ -132,7 +132,7 @@
                                     onclick="openEditModal(<?= htmlspecialchars(json_encode($m), ENT_QUOTES) ?>)">
                                     <i class="bi bi-pencil"></i>
                                 </button>
-                                <form method="post" action="<?= base_url('admin/menu/delete/' . $m['id']) ?>"
+                                <form method="post" action="<?= admin_url('menu/delete/' . $m['id']) ?>"
                                     class="d-inline" data-confirm="Hapus menu ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                                     <?= csrf_field() ?>
                                     <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
@@ -171,7 +171,7 @@
                             onclick="openEditModal(<?= htmlspecialchars(json_encode($m), ENT_QUOTES) ?>)">
                             <i class="bi bi-pencil"></i>
                         </button>
-                        <form method="post" action="<?= base_url('admin/menu/delete/' . $m['id']) ?>"
+                        <form method="post" action="<?= admin_url('menu/delete/' . $m['id']) ?>"
                             data-confirm="Hapus menu ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                             <?= csrf_field() ?>
                             <button type="submit" class="btn btn-sm btn-outline-danger flex-shrink-0"><i class="bi bi-trash"></i></button>
@@ -224,7 +224,7 @@
                                     onclick="openEditModal(<?= htmlspecialchars(json_encode($m), ENT_QUOTES) ?>)">
                                     <i class="bi bi-pencil"></i>
                                 </button>
-                                <form method="post" action="<?= base_url('admin/menu/delete/' . $m['id']) ?>"
+                                <form method="post" action="<?= admin_url('menu/delete/' . $m['id']) ?>"
                                     class="d-inline" data-confirm="Hapus menu ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                                     <?= csrf_field() ?>
                                     <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
@@ -342,7 +342,7 @@
 <?= $this->section('scripts') ?>
 <script>
 function openEditModal(menu) {
-    document.getElementById('editMenuForm').action = '<?= base_url('admin/menu/update/') ?>' + menu.id;
+    document.getElementById('editMenuForm').action = '<?= admin_url('menu/update/') ?>' + menu.id;
     document.getElementById('editNama').value      = menu.nama;
     document.getElementById('editUrl').value       = menu.url;
     document.getElementById('editIcon').value      = menu.icon || '';
@@ -374,7 +374,7 @@ function openEditModal(menu) {
 function saveOrder(tbody) {
     const rows = [...tbody.querySelectorAll('tr[data-id]')];
     const payload = rows.map((r, i) => ({ id: parseInt(r.dataset.id), urutan: i + 1 }));
-    fetch('<?= base_url('admin/menu/urutan') ?>', {
+    fetch('<?= admin_url('menu/urutan') ?>', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
         body: JSON.stringify(payload)

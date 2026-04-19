@@ -74,7 +74,7 @@ class KepalaSekolahController extends BaseController
             'urutan'          => (int) ($this->request->getPost('urutan') ?: 0),
         ]);
 
-        return redirect()->to(base_url('admin/kepala-sekolah'))->with('success', 'Data kepala sekolah berhasil disimpan.');
+        return redirect()->to(admin_url('kepala-sekolah'))->with('success', 'Data kepala sekolah berhasil disimpan.');
     }
 
     public function edit(int $id): string
@@ -144,7 +144,7 @@ class KepalaSekolahController extends BaseController
             'urutan'          => (int) ($this->request->getPost('urutan') ?: 0),
         ]);
 
-        return redirect()->to(base_url('admin/kepala-sekolah'))->with('success', 'Data berhasil diperbarui.');
+        return redirect()->to(admin_url('kepala-sekolah'))->with('success', 'Data berhasil diperbarui.');
     }
 
     public function delete(int $id)
@@ -159,7 +159,7 @@ class KepalaSekolahController extends BaseController
         }
 
         $this->model->delete($id);
-        return redirect()->to(base_url('admin/kepala-sekolah'))->with('success', 'Data berhasil dihapus.');
+        return redirect()->to(admin_url('kepala-sekolah'))->with('success', 'Data berhasil dihapus.');
     }
 
     private function _saveCroppedFoto(string $b64): ?string

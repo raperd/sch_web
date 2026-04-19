@@ -2,7 +2,7 @@
 <?= $this->section('content') ?>
 
 <div class="mb-4">
-    <a href="<?= base_url('admin/akademik/kurikulum') ?>" class="text-decoration-none text-muted small">
+    <a href="<?= admin_url('akademik/kurikulum') ?>" class="text-decoration-none text-muted small">
         <i class="bi bi-arrow-left me-1"></i>Kembali ke Kurikulum
     </a>
     <h4 class="fw-bold mt-1 mb-0"><?= esc($title) ?></h4>
@@ -21,8 +21,8 @@
 <?php
 $isEdit = !empty($blok);
 $action = $isEdit
-    ? base_url('admin/akademik/kurikulum/' . $blok['id'] . '/update')
-    : base_url('admin/akademik/kurikulum/store');
+    ? admin_url('akademik/kurikulum/' . $blok['id'] . '/update')
+    : admin_url('akademik/kurikulum/store');
 $val    = fn(string $k, $d = '') => old($k, $isEdit ? ($blok[$k] ?? $d) : $d);
 ?>
 
@@ -67,7 +67,7 @@ $val    = fn(string $k, $d = '') => old($k, $isEdit ? ($blok[$k] ?? $d) : $d);
                         <button type="submit" class="btn btn-primary fw-semibold px-4" id="submitBtn">
                             <i class="bi bi-save me-1"></i><?= $isEdit ? 'Perbarui' : 'Simpan' ?>
                         </button>
-                        <a href="<?= base_url('admin/akademik/kurikulum') ?>" class="btn btn-outline-secondary">Batal</a>
+                        <a href="<?= admin_url('akademik/kurikulum') ?>" class="btn btn-outline-secondary">Batal</a>
                     </div>
                 </form>
             </div>

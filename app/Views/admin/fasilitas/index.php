@@ -6,7 +6,7 @@
         <h4 class="fw-bold mb-0">Fasilitas Sekolah</h4>
         <p class="text-muted small mb-0">Kelola data sarana dan prasarana</p>
     </div>
-    <a href="<?= base_url('admin/fasilitas/create') ?>" class="btn btn-primary btn-lg">
+    <a href="<?= admin_url('fasilitas/create') ?>" class="btn btn-primary btn-lg">
         <i class="bi bi-plus-circle me-1"></i>Tambah
     </a>
 </div>
@@ -50,10 +50,10 @@
                     </div>
                 </div>
                 <div class="card-footer bg-white border-top p-2 d-flex gap-2 justify-content-end">
-                    <a href="<?= base_url('admin/fasilitas/edit/' . $f['id']) ?>" class="btn btn-sm btn-outline-primary flex-grow-1">
+                    <a href="<?= admin_url('fasilitas/edit/' . $f['id']) ?>" class="btn btn-sm btn-outline-primary flex-grow-1">
                         <i class="bi bi-pencil me-1"></i>Edit
                     </a>
-                    <form method="post" action="<?= base_url('admin/fasilitas/delete/' . $f['id']) ?>"
+                    <form method="post" action="<?= admin_url('fasilitas/delete/' . $f['id']) ?>"
                         data-confirm="Hapus?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                         <?= csrf_field() ?>
                         <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
@@ -64,7 +64,7 @@
     <?php else: ?>
         <div class="text-center py-5 text-muted">
             <i class="bi bi-building display-5 d-block mb-2 opacity-25"></i>
-            Belum ada data fasilitas. <a href="<?= base_url('admin/fasilitas/create') ?>">Tambah sekarang</a>
+            Belum ada data fasilitas. <a href="<?= admin_url('fasilitas/create') ?>">Tambah sekarang</a>
         </div>
     <?php endif; ?>
 </div>
@@ -116,8 +116,8 @@
                             </td>
                             <td class="text-end">
                                 <div class="d-flex gap-1 justify-content-end">
-                                    <a href="<?= base_url('admin/fasilitas/edit/' . $f['id']) ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
-                                    <form method="post" action="<?= base_url('admin/fasilitas/delete/' . $f['id']) ?>" class="d-inline" data-confirm="Hapus?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
+                                    <a href="<?= admin_url('fasilitas/edit/' . $f['id']) ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                                    <form method="post" action="<?= admin_url('fasilitas/delete/' . $f['id']) ?>" class="d-inline" data-confirm="Hapus?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                                         <?= csrf_field() ?>
                                         <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
                                     </form>
@@ -128,7 +128,7 @@
                 <?php else: ?>
                     <tr><td colspan="5" class="text-center py-5 text-muted">
                         <i class="bi bi-building display-5 d-block mb-2 opacity-25"></i>
-                        Belum ada data fasilitas. <a href="<?= base_url('admin/fasilitas/create') ?>">Tambah sekarang</a>
+                        Belum ada data fasilitas. <a href="<?= admin_url('fasilitas/create') ?>">Tambah sekarang</a>
                     </td></tr>
                 <?php endif; ?>
             </tbody>

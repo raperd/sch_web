@@ -6,7 +6,7 @@
         <h4 class="fw-bold mb-0">Konten PPDB</h4>
         <p class="text-muted small mb-0">Kelola informasi penerimaan peserta didik baru</p>
     </div>
-    <a href="<?= base_url('admin/ppdb/create') ?>" class="btn btn-primary btn-lg">
+    <a href="<?= admin_url('ppdb/create') ?>" class="btn btn-primary btn-lg">
         <i class="bi bi-plus-circle me-1"></i>Tambah Konten
     </a>
 </div>
@@ -17,7 +17,7 @@
     $tipes = ['' => 'Semua', 'persyaratan' => 'Persyaratan', 'jadwal' => 'Jadwal', 'alur' => 'Alur', 'faq' => 'FAQ', 'info' => 'Info'];
     foreach ($tipes as $val => $lbl):
     ?>
-        <a href="<?= base_url('admin/ppdb' . ($val ? '?tipe=' . $val : '')) ?>"
+        <a href="<?= admin_url('ppdb' . ($val ? '?tipe=' . $val : '')) ?>"
             class="btn btn-sm <?= $tipe_filter === $val ? 'btn-primary' : 'btn-outline-secondary' ?>">
             <?= $lbl ?>
         </a>
@@ -54,11 +54,11 @@ $tipeColors = ['persyaratan' => 'primary', 'jadwal' => 'info', 'alur' => 'succes
                         <span class="badge <?= $item['is_active'] ? 'text-bg-success' : 'text-bg-secondary' ?> flex-shrink-0">
                             <?= $item['is_active'] ? 'Aktif' : 'Nonaktif' ?>
                         </span>
-                        <a href="<?= base_url('admin/ppdb/edit/' . $item['id']) ?>"
+                        <a href="<?= admin_url('ppdb/edit/' . $item['id']) ?>"
                             class="btn btn-sm btn-outline-primary flex-shrink-0">
                             <i class="bi bi-pencil"></i>
                         </a>
-                        <form method="post" action="<?= base_url('admin/ppdb/delete/' . $item['id']) ?>"
+                        <form method="post" action="<?= admin_url('ppdb/delete/' . $item['id']) ?>"
                             data-confirm="Hapus blok ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                             <?= csrf_field() ?>
                             <button type="submit" class="btn btn-sm btn-outline-danger flex-shrink-0">
@@ -95,11 +95,11 @@ $tipeColors = ['persyaratan' => 'primary', 'jadwal' => 'info', 'alur' => 'succes
                                 </td>
                                 <td class="text-end">
                                     <div class="d-flex gap-1 justify-content-end">
-                                        <a href="<?= base_url('admin/ppdb/edit/' . $item['id']) ?>"
+                                        <a href="<?= admin_url('ppdb/edit/' . $item['id']) ?>"
                                             class="btn btn-sm btn-outline-primary">
                                             <i class="bi bi-pencil"></i>
                                         </a>
-                                        <form method="post" action="<?= base_url('admin/ppdb/delete/' . $item['id']) ?>"
+                                        <form method="post" action="<?= admin_url('ppdb/delete/' . $item['id']) ?>"
                                             class="d-inline" data-confirm="Hapus blok ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                                             <?= csrf_field() ?>
                                             <button type="submit" class="btn btn-sm btn-outline-danger">
@@ -121,7 +121,7 @@ $tipeColors = ['persyaratan' => 'primary', 'jadwal' => 'info', 'alur' => 'succes
         <div class="card-body text-center py-5 text-muted">
             <i class="bi bi-clipboard2-check display-5 d-block mb-2 opacity-25"></i>
             Belum ada konten PPDB.
-            <a href="<?= base_url('admin/ppdb/create') ?>">Tambah sekarang</a>
+            <a href="<?= admin_url('ppdb/create') ?>">Tambah sekarang</a>
         </div>
     </div>
 <?php endif; ?>

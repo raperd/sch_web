@@ -82,7 +82,7 @@ class PrestasiController extends BaseController
             'urutan'      => (int) ($this->request->getPost('urutan') ?: 0),
         ]);
 
-        return redirect()->to(base_url('admin/prestasi'))->with('success', 'Prestasi berhasil disimpan.');
+        return redirect()->to(admin_url('prestasi'))->with('success', 'Prestasi berhasil disimpan.');
     }
 
     public function edit(int $id): string
@@ -138,7 +138,7 @@ class PrestasiController extends BaseController
             'urutan'      => (int) ($this->request->getPost('urutan') ?: 0),
         ]);
 
-        return redirect()->to(base_url('admin/prestasi'))->with('success', 'Prestasi berhasil diperbarui.');
+        return redirect()->to(admin_url('prestasi'))->with('success', 'Prestasi berhasil diperbarui.');
     }
 
     public function delete(int $id)
@@ -153,7 +153,7 @@ class PrestasiController extends BaseController
         }
 
         $this->model->delete($id);
-        return redirect()->to(base_url('admin/prestasi'))->with('success', 'Prestasi berhasil dihapus.');
+        return redirect()->to(admin_url('prestasi'))->with('success', 'Prestasi berhasil dihapus.');
     }
 
     private function _saveCroppedFoto(): ?string

@@ -98,7 +98,7 @@ class GaleriController extends BaseController
             'urutan'      => (int) ($this->request->getPost('urutan') ?: 0),
         ]);
 
-        return redirect()->to(base_url('admin/galeri'))->with('success', 'Foto berhasil diupload.');
+        return redirect()->to(admin_url('galeri'))->with('success', 'Foto berhasil diupload.');
     }
 
     public function edit(int $id): string
@@ -169,7 +169,7 @@ class GaleriController extends BaseController
             'urutan'      => (int) ($this->request->getPost('urutan') ?: 0),
         ]);
 
-        return redirect()->to(base_url('admin/galeri'))->with('success', 'Galeri berhasil diperbarui.');
+        return redirect()->to(admin_url('galeri'))->with('success', 'Galeri berhasil diperbarui.');
     }
 
     public function delete(int $id)
@@ -188,6 +188,6 @@ class GaleriController extends BaseController
         }
 
         $this->model->delete($id);
-        return redirect()->to(base_url('admin/galeri'))->with('success', 'Item galeri berhasil dihapus.');
+        return redirect()->to(admin_url('galeri'))->with('success', 'Item galeri berhasil dihapus.');
     }
 }

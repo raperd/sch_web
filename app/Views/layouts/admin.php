@@ -175,7 +175,7 @@
 
 <!-- ===================== SIDEBAR ===================== -->
 <nav id="sidebar">
-    <a href="<?= site_url('admin/dashboard') ?>" class="sidebar-brand">
+    <a href="<?= admin_url('dashboard') ?>" class="sidebar-brand">
         <?php if (setting('logo_path')): ?>
             <img src="<?= base_url('uploads/pengaturan/' . setting('logo_path')) ?>" alt="Logo">
         <?php else: ?>
@@ -185,21 +185,22 @@
     </a>
 
     <?php
-    $cu = current_url();
+    $cu        = current_url();
+    $adminPfx  = '/' . env('ADMIN_PREFIX', 'klwshub');
     // Helper: apakah grup ini aktif (ada link aktif di dalamnya)?
-    $inKonten    = str_contains($cu, '/admin/artikel') || str_contains($cu, '/admin/galeri') || str_contains($cu, '/admin/kategori-artikel') || str_contains($cu, '/admin/album-foto') || str_contains($cu, '/admin/quick-links');
-    $inAkademik  = str_contains($cu, '/admin/akademik');
-    $inKesiswaan = str_contains($cu, '/admin/kegiatan') || str_contains($cu, '/admin/ekskul')
-                || str_contains($cu, '/admin/prestasi') || str_contains($cu, '/admin/ppdb');
-    $inSdm       = str_contains($cu, '/admin/guru') || str_contains($cu, '/admin/fasilitas') || str_contains($cu, '/admin/kepala-sekolah');
-    $inSistem    = str_contains($cu, '/admin/menu') || str_contains($cu, '/admin/users')
-                || str_contains($cu, '/admin/pengaturan') || str_contains($cu, '/admin/nilai-sekolah')
-                || str_contains($cu, '/admin/aplikasi');
+    $inKonten    = str_contains($cu, $adminPfx . '/artikel') || str_contains($cu, $adminPfx . '/galeri') || str_contains($cu, $adminPfx . '/kategori-artikel') || str_contains($cu, $adminPfx . '/album-foto') || str_contains($cu, $adminPfx . '/quick-links');
+    $inAkademik  = str_contains($cu, $adminPfx . '/akademik');
+    $inKesiswaan = str_contains($cu, $adminPfx . '/kegiatan') || str_contains($cu, $adminPfx . '/ekskul')
+                || str_contains($cu, $adminPfx . '/prestasi') || str_contains($cu, $adminPfx . '/ppdb');
+    $inSdm       = str_contains($cu, $adminPfx . '/guru') || str_contains($cu, $adminPfx . '/fasilitas') || str_contains($cu, $adminPfx . '/kepala-sekolah');
+    $inSistem    = str_contains($cu, $adminPfx . '/menu') || str_contains($cu, $adminPfx . '/users')
+                || str_contains($cu, $adminPfx . '/pengaturan') || str_contains($cu, $adminPfx . '/nilai-sekolah')
+                || str_contains($cu, $adminPfx . '/aplikasi');
     ?>
     <div class="overflow-y-auto flex-grow-1 py-2" style="overflow-x:hidden!important">
 
         <!-- Dashboard -->
-        <a href="<?= site_url('admin/dashboard') ?>" class="nav-link <?= str_ends_with($cu, 'dashboard') ? 'active' : '' ?>">
+        <a href="<?= admin_url('dashboard') ?>" class="nav-link <?= str_ends_with($cu, 'dashboard') ? 'active' : '' ?>">
             <i class="bi bi-speedometer2"></i> Dashboard
         </a>
 
@@ -210,19 +211,19 @@
             <i class="bi bi-chevron-down ms-auto sidebar-chevron"></i>
         </button>
         <div class="collapse sidebar-group <?= $inKonten ? 'show' : '' ?>" id="grpKonten">
-            <a href="<?= site_url('admin/artikel') ?>" class="nav-link ps-4 <?= str_contains($cu, '/admin/artikel') && !str_contains($cu, '/admin/kategori') ? 'active' : '' ?>">
+            <a href="<?= admin_url('artikel') ?>" class="nav-link ps-4 <?= str_contains($cu, $adminPfx . '/artikel') && !str_contains($cu, $adminPfx . '/kategori') ? 'active' : '' ?>">
                 <i class="bi bi-file-earmark-text"></i> Berita & Artikel
             </a>
-            <a href="<?= site_url('admin/kategori-artikel') ?>" class="nav-link ps-4 <?= str_contains($cu, '/admin/kategori-artikel') ? 'active' : '' ?>">
+            <a href="<?= admin_url('kategori-artikel') ?>" class="nav-link ps-4 <?= str_contains($cu, $adminPfx . '/kategori-artikel') ? 'active' : '' ?>">
                 <i class="bi bi-tags"></i> Kategori Artikel
             </a>
-            <a href="<?= site_url('admin/galeri') ?>" class="nav-link ps-4 <?= str_contains($cu, '/admin/galeri') ? 'active' : '' ?>">
+            <a href="<?= admin_url('galeri') ?>" class="nav-link ps-4 <?= str_contains($cu, $adminPfx . '/galeri') ? 'active' : '' ?>">
                 <i class="bi bi-images"></i> Galeri
             </a>
-            <a href="<?= site_url('admin/album-foto') ?>" class="nav-link ps-4 <?= str_contains($cu, '/admin/album-foto') ? 'active' : '' ?>">
+            <a href="<?= admin_url('album-foto') ?>" class="nav-link ps-4 <?= str_contains($cu, $adminPfx . '/album-foto') ? 'active' : '' ?>">
                 <i class="bi bi-images"></i> Album Foto
             </a>
-            <a href="<?= site_url('admin/quick-links') ?>" class="nav-link ps-4 <?= str_contains($cu, '/admin/quick-links') ? 'active' : '' ?>">
+            <a href="<?= admin_url('quick-links') ?>" class="nav-link ps-4 <?= str_contains($cu, $adminPfx . '/quick-links') ? 'active' : '' ?>">
                 <i class="bi bi-grid-3x2-gap"></i> Quick Links
             </a>
         </div>
@@ -234,10 +235,10 @@
             <i class="bi bi-chevron-down ms-auto sidebar-chevron"></i>
         </button>
         <div class="collapse sidebar-group <?= $inAkademik ? 'show' : '' ?>" id="grpAkademik">
-            <a href="<?= site_url('admin/akademik/program') ?>" class="nav-link ps-4 <?= str_contains($cu, '/admin/akademik/program') ? 'active' : '' ?>">
+            <a href="<?= admin_url('akademik/program') ?>" class="nav-link ps-4 <?= str_contains($cu, $adminPfx . '/akademik/program') ? 'active' : '' ?>">
                 <i class="bi bi-star"></i> Program Unggulan
             </a>
-            <a href="<?= site_url('admin/akademik/kurikulum') ?>" class="nav-link ps-4 <?= str_contains($cu, '/admin/akademik/kurikulum') ? 'active' : '' ?>">
+            <a href="<?= admin_url('akademik/kurikulum') ?>" class="nav-link ps-4 <?= str_contains($cu, $adminPfx . '/akademik/kurikulum') ? 'active' : '' ?>">
                 <i class="bi bi-journal-text"></i> Kurikulum
             </a>
         </div>
@@ -249,16 +250,16 @@
             <i class="bi bi-chevron-down ms-auto sidebar-chevron"></i>
         </button>
         <div class="collapse sidebar-group <?= $inKesiswaan ? 'show' : '' ?>" id="grpKesiswaan">
-            <a href="<?= site_url('admin/kegiatan') ?>" class="nav-link ps-4 <?= str_contains($cu, '/admin/kegiatan') ? 'active' : '' ?>">
+            <a href="<?= admin_url('kegiatan') ?>" class="nav-link ps-4 <?= str_contains($cu, $adminPfx . '/kegiatan') ? 'active' : '' ?>">
                 <i class="bi bi-calendar-event"></i> Kegiatan & Acara
             </a>
-            <a href="<?= site_url('admin/ekskul') ?>" class="nav-link ps-4 <?= str_contains($cu, '/admin/ekskul') ? 'active' : '' ?>">
+            <a href="<?= admin_url('ekskul') ?>" class="nav-link ps-4 <?= str_contains($cu, $adminPfx . '/ekskul') ? 'active' : '' ?>">
                 <i class="bi bi-trophy"></i> Ekstrakurikuler
             </a>
-            <a href="<?= site_url('admin/prestasi') ?>" class="nav-link ps-4 <?= str_contains($cu, '/admin/prestasi') ? 'active' : '' ?>">
+            <a href="<?= admin_url('prestasi') ?>" class="nav-link ps-4 <?= str_contains($cu, $adminPfx . '/prestasi') ? 'active' : '' ?>">
                 <i class="bi bi-award"></i> Prestasi
             </a>
-            <a href="<?= site_url('admin/ppdb') ?>" class="nav-link ps-4 <?= str_contains($cu, '/admin/ppdb') ? 'active' : '' ?>">
+            <a href="<?= admin_url('ppdb') ?>" class="nav-link ps-4 <?= str_contains($cu, $adminPfx . '/ppdb') ? 'active' : '' ?>">
                 <i class="bi bi-clipboard-check"></i> SPMB
             </a>
         </div>
@@ -270,13 +271,13 @@
             <i class="bi bi-chevron-down ms-auto sidebar-chevron"></i>
         </button>
         <div class="collapse sidebar-group <?= $inSdm ? 'show' : '' ?>" id="grpSdm">
-            <a href="<?= site_url('admin/guru') ?>" class="nav-link ps-4 <?= str_contains($cu, '/admin/guru') ? 'active' : '' ?>">
+            <a href="<?= admin_url('guru') ?>" class="nav-link ps-4 <?= str_contains($cu, $adminPfx . '/guru') ? 'active' : '' ?>">
                 <i class="bi bi-person-badge"></i> Guru & Staf
             </a>
-            <a href="<?= site_url('admin/fasilitas') ?>" class="nav-link ps-4 <?= str_contains($cu, '/admin/fasilitas') ? 'active' : '' ?>">
+            <a href="<?= admin_url('fasilitas') ?>" class="nav-link ps-4 <?= str_contains($cu, $adminPfx . '/fasilitas') ? 'active' : '' ?>">
                 <i class="bi bi-building"></i> Fasilitas
             </a>
-            <a href="<?= site_url('admin/kepala-sekolah') ?>" class="nav-link ps-4 <?= str_contains($cu, '/admin/kepala-sekolah') ? 'active' : '' ?>">
+            <a href="<?= admin_url('kepala-sekolah') ?>" class="nav-link ps-4 <?= str_contains($cu, $adminPfx . '/kepala-sekolah') ? 'active' : '' ?>">
                 <i class="bi bi-person-workspace"></i> Kepala Sekolah
             </a>
         </div>
@@ -288,19 +289,19 @@
             <i class="bi bi-chevron-down ms-auto sidebar-chevron"></i>
         </button>
         <div class="collapse sidebar-group <?= $inSistem ? 'show' : '' ?>" id="grpSistem">
-            <a href="<?= site_url('admin/menu') ?>" class="nav-link ps-4 <?= str_contains($cu, '/admin/menu') ? 'active' : '' ?>">
+            <a href="<?= admin_url('menu') ?>" class="nav-link ps-4 <?= str_contains($cu, $adminPfx . '/menu') ? 'active' : '' ?>">
                 <i class="bi bi-list-nested"></i> Manajemen Menu
             </a>
-            <a href="<?= site_url('admin/users') ?>" class="nav-link ps-4 <?= str_contains($cu, '/admin/users') ? 'active' : '' ?>">
+            <a href="<?= admin_url('users') ?>" class="nav-link ps-4 <?= str_contains($cu, $adminPfx . '/users') ? 'active' : '' ?>">
                 <i class="bi bi-people"></i> Pengguna
             </a>
-            <a href="<?= site_url('admin/pengaturan') ?>" class="nav-link ps-4 <?= str_contains($cu, '/admin/pengaturan') ? 'active' : '' ?>">
+            <a href="<?= admin_url('pengaturan') ?>" class="nav-link ps-4 <?= str_contains($cu, $adminPfx . '/pengaturan') ? 'active' : '' ?>">
                 <i class="bi bi-gear"></i> Pengaturan Situs
             </a>
-            <a href="<?= site_url('admin/nilai-sekolah') ?>" class="nav-link ps-4 <?= str_contains($cu, '/admin/nilai-sekolah') ? 'active' : '' ?>">
+            <a href="<?= admin_url('nilai-sekolah') ?>" class="nav-link ps-4 <?= str_contains($cu, $adminPfx . '/nilai-sekolah') ? 'active' : '' ?>">
                 <i class="bi bi-award"></i> Nilai Sekolah
             </a>
-            <a href="<?= site_url('admin/aplikasi') ?>" class="nav-link ps-4 <?= str_contains($cu, '/admin/aplikasi') ? 'active' : '' ?>">
+            <a href="<?= admin_url('aplikasi') ?>" class="nav-link ps-4 <?= str_contains($cu, $adminPfx . '/aplikasi') ? 'active' : '' ?>">
                 <i class="bi bi-link-45deg"></i> Link Terkait
             </a>
         </div>
@@ -308,7 +309,7 @@
     </div>
 
     <div class="sidebar-footer">
-        <a href="<?= site_url('admin/profile') ?>" class="nav-link d-flex align-items-center gap-2">
+        <a href="<?= admin_url('profile') ?>" class="nav-link d-flex align-items-center gap-2">
             <?php $sidebarAvatar = session('admin_avatar'); ?>
             <?php if ($sidebarAvatar): ?>
                 <img src="<?= base_url('uploads/users/' . esc($sidebarAvatar)) ?>"
@@ -326,7 +327,7 @@
         <a href="<?= site_url('/') ?>" class="nav-link" target="_blank">
             <i class="bi bi-box-arrow-up-right"></i> Lihat Website
         </a>
-        <a href="<?= site_url('admin/logout') ?>" class="nav-link text-danger"
+        <a href="<?= admin_url('logout') ?>" class="nav-link text-danger"
             data-confirm="Yakin ingin logout?" data-confirm-ok="Ya, Logout" data-confirm-class="btn-danger" data-confirm-type="danger">
             <i class="bi bi-box-arrow-right"></i> Logout
         </a>
@@ -345,7 +346,7 @@
     <!-- Breadcrumb -->
     <nav aria-label="breadcrumb" class="flex-grow-1 d-none d-md-block">
         <ol class="breadcrumb mb-0 small">
-            <li class="breadcrumb-item"><a href="<?= site_url('admin/dashboard') ?>">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="<?= admin_url('dashboard') ?>">Dashboard</a></li>
             <?php if (isset($breadcrumb)): ?>
                 <li class="breadcrumb-item active"><?= esc($breadcrumb) ?></li>
             <?php endif; ?>
@@ -373,9 +374,9 @@
                 <li><h6 class="dropdown-header"><?= esc(session('admin_nama')) ?></h6></li>
                 <li><span class="dropdown-item-text text-muted small"><?= esc(session('admin_role')) ?></span></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="<?= site_url('admin/profile') ?>"><i class="bi bi-person-gear me-2"></i>Profil &amp; Password</a></li>
+                <li><a class="dropdown-item" href="<?= admin_url('profile') ?>"><i class="bi bi-person-gear me-2"></i>Profil &amp; Password</a></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item text-danger" href="<?= site_url('admin/logout') ?>"
+                <li><a class="dropdown-item text-danger" href="<?= admin_url('logout') ?>"
                     data-confirm="Yakin ingin logout?" data-confirm-ok="Ya, Logout" data-confirm-class="btn-danger" data-confirm-type="danger">
                     <i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
             </ul>

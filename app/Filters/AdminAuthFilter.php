@@ -11,7 +11,7 @@ class AdminAuthFilter implements FilterInterface
     public function before(RequestInterface $request, $arguments = null): mixed
     {
         if (! session()->get('admin_logged_in')) {
-            return redirect()->to('/admin/login')->with('error', 'Silakan login terlebih dahulu.');
+            return redirect()->to(admin_url('login'))->with('error', 'Silakan login terlebih dahulu.');
         }
 
         return null;

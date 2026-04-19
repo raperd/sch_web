@@ -100,7 +100,7 @@ class GuruController extends BaseController
             'status_keluar'      => $this->request->getPost('status_keluar') ?: null,
         ]);
 
-        return redirect()->to(base_url('admin/guru'))->with('success', 'Data guru/staf berhasil disimpan.');
+        return redirect()->to(admin_url('guru'))->with('success', 'Data guru/staf berhasil disimpan.');
     }
 
     public function edit(int $id): string
@@ -165,7 +165,7 @@ class GuruController extends BaseController
             'status_keluar'     => $this->request->getPost('status_keluar') ?: null,
         ]);
 
-        return redirect()->to(base_url('admin/guru'))->with('success', 'Data berhasil diperbarui.');
+        return redirect()->to(admin_url('guru'))->with('success', 'Data berhasil diperbarui.');
     }
 
     public function delete(int $id)
@@ -180,7 +180,7 @@ class GuruController extends BaseController
         }
 
         $this->model->delete($id);
-        return redirect()->to(base_url('admin/guru'))->with('success', 'Data berhasil dihapus.');
+        return redirect()->to(admin_url('guru'))->with('success', 'Data berhasil dihapus.');
     }
 
     public function toggleActive(int $id)
@@ -193,7 +193,7 @@ class GuruController extends BaseController
         $this->model->update($id, ['is_active' => $guru['is_active'] == 1 ? 0 : 1]);
 
         $status = $guru['is_active'] == 1 ? 'dinonaktifkan' : 'diaktifkan';
-        return redirect()->to(base_url('admin/guru'))->with('success', "Guru/staf berhasil {$status}.");
+        return redirect()->to(admin_url('guru'))->with('success', "Guru/staf berhasil {$status}.");
     }
 
     /**

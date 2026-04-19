@@ -6,7 +6,7 @@
         <h4 class="fw-bold mb-0">Kepala Sekolah</h4>
         <small class="text-muted">Data kepala sekolah dari masa ke masa</small>
     </div>
-    <a href="<?= base_url('admin/kepala-sekolah/create') ?>" class="btn btn-primary">
+    <a href="<?= admin_url('kepala-sekolah/create') ?>" class="btn btn-primary">
         <i class="bi bi-plus-lg me-1"></i>Tambah Data
     </a>
 </div>
@@ -28,7 +28,7 @@
     <div class="card border-0 shadow-sm">
         <div class="card-body text-center py-5 text-muted">
             <i class="bi bi-person-badge display-3 mb-3 d-block"></i>
-            <p>Belum ada data. <a href="<?= base_url('admin/kepala-sekolah/create') ?>">Tambah sekarang</a>.</p>
+            <p>Belum ada data. <a href="<?= admin_url('kepala-sekolah/create') ?>">Tambah sekarang</a>.</p>
         </div>
     </div>
 <?php else: ?>
@@ -73,11 +73,11 @@
                     <?php endif; ?>
                 </div>
                 <div class="card-footer bg-white border-top p-2 d-flex gap-2 justify-content-end">
-                    <a href="<?= base_url('admin/kepala-sekolah/edit/' . $item['id']) ?>"
+                    <a href="<?= admin_url('kepala-sekolah/edit/' . $item['id']) ?>"
                         class="btn btn-sm btn-outline-primary flex-grow-1">
                         <i class="bi bi-pencil me-1"></i>Edit
                     </a>
-                    <form method="POST" action="<?= base_url('admin/kepala-sekolah/delete/' . $item['id']) ?>"
+                    <form method="POST" action="<?= admin_url('kepala-sekolah/delete/' . $item['id']) ?>"
                         data-confirm="Hapus data &quot;<?= esc($item['nama']) ?>&quot;?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                         <?= csrf_field() ?>
                         <button class="btn btn-sm btn-outline-danger">
@@ -145,11 +145,11 @@
                                 <td class="text-muted small text-center"><?= $item['urutan'] ?></td>
                                 <td>
                                     <div class="d-flex gap-1">
-                                        <a href="<?= base_url('admin/kepala-sekolah/edit/' . $item['id']) ?>"
+                                        <a href="<?= admin_url('kepala-sekolah/edit/' . $item['id']) ?>"
                                             class="btn btn-sm btn-outline-primary" title="Edit">
                                             <i class="bi bi-pencil"></i>
                                         </a>
-                                        <form method="POST" action="<?= base_url('admin/kepala-sekolah/delete/' . $item['id']) ?>"
+                                        <form method="POST" action="<?= admin_url('kepala-sekolah/delete/' . $item['id']) ?>"
                                             data-confirm="Hapus data &quot;<?= esc($item['nama']) ?>&quot;?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                                             <?= csrf_field() ?>
                                             <button class="btn btn-sm btn-outline-danger" title="Hapus">

@@ -6,7 +6,7 @@
         <h4 class="fw-bold mb-0">Kategori Artikel</h4>
         <small class="text-muted">Kelola kategori untuk pengelompokan berita & artikel</small>
     </div>
-    <a href="<?= base_url('admin/kategori-artikel/create') ?>" class="btn btn-primary">
+    <a href="<?= admin_url('kategori-artikel/create') ?>" class="btn btn-primary">
         <i class="bi bi-plus-lg me-1"></i>Tambah Kategori
     </a>
 </div>
@@ -29,7 +29,7 @@
     <?php if (empty($kategori)): ?>
         <div class="text-center py-5 text-muted">
             <i class="bi bi-tags display-4 mb-3 d-block"></i>
-            <p>Belum ada kategori. <a href="<?= base_url('admin/kategori-artikel/create') ?>">Tambah sekarang</a>.</p>
+            <p>Belum ada kategori. <a href="<?= admin_url('kategori-artikel/create') ?>">Tambah sekarang</a>.</p>
         </div>
     <?php else: ?>
         <?php foreach ($kategori as $kat): ?>
@@ -47,12 +47,12 @@
                     <small class="text-muted">Urutan: <?= $kat['urutan'] ?></small>
                 </div>
                 <div class="card-footer bg-white border-top p-2 d-flex gap-2 justify-content-end">
-                    <a href="<?= base_url('admin/kategori-artikel/edit/' . $kat['id']) ?>"
+                    <a href="<?= admin_url('kategori-artikel/edit/' . $kat['id']) ?>"
                         class="btn btn-sm btn-outline-primary flex-grow-1">
                         <i class="bi bi-pencil me-1"></i>Edit
                     </a>
                     <?php if ($count === 0): ?>
-                        <form method="POST" action="<?= base_url('admin/kategori-artikel/delete/' . $kat['id']) ?>"
+                        <form method="POST" action="<?= admin_url('kategori-artikel/delete/' . $kat['id']) ?>"
                             data-confirm="Hapus kategori &quot;<?= esc($kat['nama']) ?>&quot;?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                             <?= csrf_field() ?>
                             <button type="submit" class="btn btn-sm btn-outline-danger">
@@ -78,7 +78,7 @@
         <?php if (empty($kategori)): ?>
             <div class="text-center py-5 text-muted">
                 <i class="bi bi-tags display-4 mb-3 d-block"></i>
-                <p>Belum ada kategori. <a href="<?= base_url('admin/kategori-artikel/create') ?>">Tambah sekarang</a>.</p>
+                <p>Belum ada kategori. <a href="<?= admin_url('kategori-artikel/create') ?>">Tambah sekarang</a>.</p>
             </div>
         <?php else: ?>
             <div class="table-responsive">
@@ -113,12 +113,12 @@
                                 <td class="text-muted small"><?= $kat['urutan'] ?></td>
                                 <td>
                                     <div class="d-flex gap-1">
-                                        <a href="<?= base_url('admin/kategori-artikel/edit/' . $kat['id']) ?>"
+                                        <a href="<?= admin_url('kategori-artikel/edit/' . $kat['id']) ?>"
                                             class="btn btn-sm btn-outline-primary" title="Edit">
                                             <i class="bi bi-pencil"></i>
                                         </a>
                                         <?php if (($counts[$kat['id']] ?? 0) === 0): ?>
-                                            <form method="POST" action="<?= base_url('admin/kategori-artikel/delete/' . $kat['id']) ?>"
+                                            <form method="POST" action="<?= admin_url('kategori-artikel/delete/' . $kat['id']) ?>"
                                                 data-confirm="Hapus kategori &quot;<?= esc($kat['nama']) ?>&quot;?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                                                 <?= csrf_field() ?>
                                                 <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus">

@@ -2,7 +2,7 @@
 <?= $this->section('content') ?>
 
 <div class="d-flex align-items-center gap-2 mb-4">
-    <a href="<?= base_url('admin/ekskul') ?>" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-left"></i></a>
+    <a href="<?= admin_url('ekskul') ?>" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-left"></i></a>
     <h4 class="fw-bold mb-0">Tambah Ekstrakurikuler</h4>
 </div>
 
@@ -13,7 +13,7 @@
     </div>
 <?php endif; ?>
 
-<form method="post" action="<?= base_url('admin/ekskul/store') ?>" enctype="multipart/form-data">
+<form method="post" action="<?= admin_url('ekskul/store') ?>" enctype="multipart/form-data">
     <?= csrf_field() ?>
     <div class="row g-4">
         <div class="col-lg-8">
@@ -77,7 +77,7 @@
                 </div>
                 <div class="card-footer bg-white border-top d-grid gap-2">
                     <button type="submit" class="btn btn-primary btn-lg fw-semibold"><i class="bi bi-save me-1"></i>Simpan</button>
-                    <a href="<?= base_url('admin/ekskul') ?>" class="btn btn-outline-secondary">Batal</a>
+                    <a href="<?= admin_url('ekskul') ?>" class="btn btn-outline-secondary">Batal</a>
                 </div>
             </div>
         </div>

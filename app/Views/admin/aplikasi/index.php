@@ -6,7 +6,7 @@
         <h4 class="fw-bold mb-0">Link Terkait</h4>
         <small class="text-muted">Kelola link bermanfaat atau link aplikasi terintegrasi sekolah</small>
     </div>
-    <a href="<?= base_url('admin/aplikasi/create') ?>" class="btn btn-primary">
+    <a href="<?= admin_url('aplikasi/create') ?>" class="btn btn-primary">
         <i class="bi bi-plus-lg me-1"></i>Tambah Link
     </a>
 </div>
@@ -64,7 +64,7 @@
                                 <?= $a['deskripsi'] ? esc(truncate_text($a['deskripsi'], 60)) : '<em>Tidak ada deskripsi</em>' ?>
                             </td>
                             <td>
-                                <form method="post" action="<?= base_url('admin/aplikasi/toggle/' . $a['id']) ?>" class="d-inline">
+                                <form method="post" action="<?= admin_url('aplikasi/toggle/' . $a['id']) ?>" class="d-inline">
                                     <?= csrf_field() ?>
                                     <button type="submit" class="btn btn-sm border-0 p-0" title="Klik untuk ubah status">
                                         <i class="bi <?= $a['is_active'] ? 'bi-toggle-on text-success' : 'bi-toggle-off text-muted' ?>" style="font-size:1.5rem;"></i>
@@ -72,10 +72,10 @@
                                 </form>
                             </td>
                             <td class="text-end pe-3">
-                                <a href="<?= base_url('admin/aplikasi/edit/' . $a['id']) ?>" class="btn btn-sm btn-outline-primary me-1">
+                                <a href="<?= admin_url('aplikasi/edit/' . $a['id']) ?>" class="btn btn-sm btn-outline-primary me-1">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <form method="post" action="<?= base_url('admin/aplikasi/delete/' . $a['id']) ?>" class="d-inline"
+                                <form method="post" action="<?= admin_url('aplikasi/delete/' . $a['id']) ?>" class="d-inline"
                                       data-confirm="Hapus link &quot;<?= esc($a['nama']) ?>&quot;?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                                     <?= csrf_field() ?>
                                     <button type="submit" class="btn btn-sm btn-outline-danger">
@@ -91,7 +91,7 @@
         <?php else: ?>
             <div class="text-center py-5 text-muted">
                 <i class="bi bi-grid-3x3-gap-fill display-3 mb-3 d-block"></i>
-                <p>Belum ada link yang ditambahkan. <a href="<?= base_url('admin/aplikasi/create') ?>">Tambah sekarang</a></p>
+                <p>Belum ada link yang ditambahkan. <a href="<?= admin_url('aplikasi/create') ?>">Tambah sekarang</a></p>
             </div>
         <?php endif; ?>
     </div>

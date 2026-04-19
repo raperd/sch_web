@@ -53,7 +53,7 @@ class EkstrakurikulerController extends BaseController
             'urutan'    => (int) ($this->request->getPost('urutan') ?: 0),
         ]);
 
-        return redirect()->to(base_url('admin/ekskul'))->with('success', 'Ekstrakurikuler berhasil disimpan.');
+        return redirect()->to(admin_url('ekskul'))->with('success', 'Ekstrakurikuler berhasil disimpan.');
     }
 
     public function edit(int $id): string
@@ -98,7 +98,7 @@ class EkstrakurikulerController extends BaseController
             'urutan'    => (int) ($this->request->getPost('urutan') ?: 0),
         ]);
 
-        return redirect()->to(base_url('admin/ekskul'))->with('success', 'Data berhasil diperbarui.');
+        return redirect()->to(admin_url('ekskul'))->with('success', 'Data berhasil diperbarui.');
     }
 
     public function delete(int $id)
@@ -113,7 +113,7 @@ class EkstrakurikulerController extends BaseController
         }
 
         $this->model->delete($id);
-        return redirect()->to(base_url('admin/ekskul'))->with('success', 'Data berhasil dihapus.');
+        return redirect()->to(admin_url('ekskul'))->with('success', 'Data berhasil dihapus.');
     }
 
     private function _saveCroppedFoto(): ?string

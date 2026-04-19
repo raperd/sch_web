@@ -53,7 +53,7 @@ class QuickLinkController extends BaseController
             'is_active' => $this->request->getPost('is_active') === '1' ? 1 : 0,
         ]);
 
-        return redirect()->to(base_url('admin/quick-links'))->with('success', 'Quick link berhasil ditambahkan.');
+        return redirect()->to(admin_url('quick-links'))->with('success', 'Quick link berhasil ditambahkan.');
     }
 
     public function edit(int $id): string
@@ -94,7 +94,7 @@ class QuickLinkController extends BaseController
             'is_active' => $this->request->getPost('is_active') === '1' ? 1 : 0,
         ]);
 
-        return redirect()->to(base_url('admin/quick-links'))->with('success', 'Quick link berhasil diperbarui.');
+        return redirect()->to(admin_url('quick-links'))->with('success', 'Quick link berhasil diperbarui.');
     }
 
     public function toggleActive(int $id)
@@ -114,6 +114,6 @@ class QuickLinkController extends BaseController
             return redirect()->back()->with('error', 'Quick link tidak ditemukan.');
         }
         $this->model->delete($id);
-        return redirect()->to(base_url('admin/quick-links'))->with('success', 'Quick link berhasil dihapus.');
+        return redirect()->to(admin_url('quick-links'))->with('success', 'Quick link berhasil dihapus.');
     }
 }

@@ -11,7 +11,7 @@
 
 <?= $this->section('content') ?>
 <div class="d-flex align-items-center gap-2 mb-4">
-    <a href="<?= base_url('admin/kepala-sekolah') ?>" class="btn btn-sm btn-outline-secondary">
+    <a href="<?= admin_url('kepala-sekolah') ?>" class="btn btn-sm btn-outline-secondary">
         <i class="bi bi-arrow-left"></i>
     </a>
     <div>
@@ -32,8 +32,8 @@
 <?php endif; ?>
 
 <?php $action = $item
-    ? base_url('admin/kepala-sekolah/update/' . $item['id'])
-    : base_url('admin/kepala-sekolah/store'); ?>
+    ? admin_url('kepala-sekolah/update/' . $item['id'])
+    : admin_url('kepala-sekolah/store'); ?>
 
 <form method="POST" action="<?= $action ?>" enctype="multipart/form-data" id="kepsekForm">
     <?= csrf_field() ?>
@@ -134,7 +134,7 @@
                     </div>
                 </div>
                 <div class="card-footer bg-white border-top d-flex gap-2 justify-content-end">
-                    <a href="<?= base_url('admin/kepala-sekolah') ?>" class="btn btn-outline-secondary">Batal</a>
+                    <a href="<?= admin_url('kepala-sekolah') ?>" class="btn btn-outline-secondary">Batal</a>
                     <button type="submit" class="btn btn-primary px-4">
                         <i class="bi bi-save me-1"></i>
                         <?= $item ? 'Simpan Perubahan' : 'Tambah Data' ?>

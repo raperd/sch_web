@@ -82,7 +82,7 @@ class KegiatanController extends BaseController
             'is_featured'    => (int) ($this->request->getPost('is_featured') === '1'),
         ]);
 
-        return redirect()->to(base_url('admin/kegiatan'))->with('success', 'Kegiatan berhasil disimpan.');
+        return redirect()->to(admin_url('kegiatan'))->with('success', 'Kegiatan berhasil disimpan.');
     }
 
     public function edit(int $id): string
@@ -139,7 +139,7 @@ class KegiatanController extends BaseController
             'is_featured'    => (int) ($this->request->getPost('is_featured') === '1'),
         ]);
 
-        return redirect()->to(base_url('admin/kegiatan'))->with('success', 'Kegiatan berhasil diperbarui.');
+        return redirect()->to(admin_url('kegiatan'))->with('success', 'Kegiatan berhasil diperbarui.');
     }
 
     private function _saveCroppedFoto(): ?string
@@ -176,6 +176,6 @@ class KegiatanController extends BaseController
         }
 
         $this->model->delete($id);
-        return redirect()->to(base_url('admin/kegiatan'))->with('success', 'Kegiatan berhasil dihapus.');
+        return redirect()->to(admin_url('kegiatan'))->with('success', 'Kegiatan berhasil dihapus.');
     }
 }

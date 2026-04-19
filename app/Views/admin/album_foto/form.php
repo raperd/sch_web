@@ -12,7 +12,7 @@
 <?= $this->section('content') ?>
 
 <div class="d-flex align-items-center gap-2 mb-4">
-    <a href="<?= base_url('admin/album-foto') ?>" class="btn btn-sm btn-outline-secondary">
+    <a href="<?= admin_url('album-foto') ?>" class="btn btn-sm btn-outline-secondary">
         <i class="bi bi-arrow-left"></i>
     </a>
     <div>
@@ -33,8 +33,8 @@
 <?php endif; ?>
 
 <?php $action = $album
-    ? base_url('admin/album-foto/update/' . $album['id'])
-    : base_url('admin/album-foto/store'); ?>
+    ? admin_url('album-foto/update/' . $album['id'])
+    : admin_url('album-foto/store'); ?>
 
 <form method="POST" action="<?= $action ?>" enctype="multipart/form-data" id="albumFotoForm">
     <?= csrf_field() ?>
@@ -134,7 +134,7 @@
                     </div>
                 </div>
                 <div class="card-footer bg-white border-top d-flex gap-2 justify-content-end">
-                    <a href="<?= base_url('admin/album-foto') ?>" class="btn btn-outline-secondary">Batal</a>
+                    <a href="<?= admin_url('album-foto') ?>" class="btn btn-outline-secondary">Batal</a>
                     <button type="submit" class="btn btn-primary px-4">
                         <i class="bi bi-save me-1"></i>
                         <?= $album ? 'Simpan Perubahan' : 'Tambah Album' ?>

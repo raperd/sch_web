@@ -7,7 +7,7 @@
         <small class="text-muted">Selamat datang, <?= esc(session('admin_nama')) ?>!</small>
     </div>
     <div class="d-flex gap-2">
-        <a href="<?= site_url('admin/artikel/create') ?>" class="btn btn-primary btn-lg">
+        <a href="<?= admin_url('artikel/create') ?>" class="btn btn-primary btn-lg">
             <i class="bi bi-plus-lg me-1"></i><span class="d-none d-sm-inline">Tulis Artikel</span>
         </a>
     </div>
@@ -77,37 +77,37 @@
             <div class="card-body">
                 <div class="row g-2">
                     <div class="col-6 col-md-4 col-lg-2">
-                        <a href="<?= site_url('admin/artikel/create') ?>" class="btn btn-outline-primary w-100 btn-action d-flex flex-column align-items-center py-3">
+                        <a href="<?= admin_url('artikel/create') ?>" class="btn btn-outline-primary w-100 btn-action d-flex flex-column align-items-center py-3">
                             <i class="bi bi-pencil-square fs-4 mb-1"></i>
                             <small>Artikel Baru</small>
                         </a>
                     </div>
                     <div class="col-6 col-md-4 col-lg-2">
-                        <a href="<?= site_url('admin/galeri/upload') ?>" class="btn btn-outline-success w-100 btn-action d-flex flex-column align-items-center py-3">
+                        <a href="<?= admin_url('galeri/upload') ?>" class="btn btn-outline-success w-100 btn-action d-flex flex-column align-items-center py-3">
                             <i class="bi bi-upload fs-4 mb-1"></i>
                             <small>Upload Galeri</small>
                         </a>
                     </div>
                     <div class="col-6 col-md-4 col-lg-2">
-                        <a href="<?= site_url('admin/guru/create') ?>" class="btn btn-outline-info w-100 btn-action d-flex flex-column align-items-center py-3">
+                        <a href="<?= admin_url('guru/create') ?>" class="btn btn-outline-info w-100 btn-action d-flex flex-column align-items-center py-3">
                             <i class="bi bi-person-plus fs-4 mb-1"></i>
                             <small>Tambah Guru</small>
                         </a>
                     </div>
                     <div class="col-6 col-md-4 col-lg-2">
-                        <a href="<?= site_url('admin/kegiatan/create') ?>" class="btn btn-outline-warning w-100 btn-action d-flex flex-column align-items-center py-3">
+                        <a href="<?= admin_url('kegiatan/create') ?>" class="btn btn-outline-warning w-100 btn-action d-flex flex-column align-items-center py-3">
                             <i class="bi bi-calendar-plus fs-4 mb-1"></i>
                             <small>Kegiatan Baru</small>
                         </a>
                     </div>
                     <div class="col-6 col-md-4 col-lg-2">
-                        <a href="<?= site_url('admin/ppdb') ?>" class="btn btn-outline-danger w-100 btn-action d-flex flex-column align-items-center py-3">
+                        <a href="<?= admin_url('ppdb') ?>" class="btn btn-outline-danger w-100 btn-action d-flex flex-column align-items-center py-3">
                             <i class="bi bi-clipboard-check fs-4 mb-1"></i>
                             <small>Kelola SPMB</small>
                         </a>
                     </div>
                     <div class="col-6 col-md-4 col-lg-2">
-                        <a href="<?= site_url('admin/pengaturan') ?>" class="btn btn-outline-secondary w-100 btn-action d-flex flex-column align-items-center py-3">
+                        <a href="<?= admin_url('pengaturan') ?>" class="btn btn-outline-secondary w-100 btn-action d-flex flex-column align-items-center py-3">
                             <i class="bi bi-gear fs-4 mb-1"></i>
                             <small>Pengaturan</small>
                         </a>
@@ -124,7 +124,7 @@
         <div class="card table-card h-100">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <span class="fw-semibold"><i class="bi bi-newspaper me-2 text-primary"></i>Artikel Terbaru</span>
-                <a href="<?= site_url('admin/artikel') ?>" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
+                <a href="<?= admin_url('artikel') ?>" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
             </div>
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
@@ -143,7 +143,7 @@
                         <?php foreach ($artikel_terbaru as $art): ?>
                         <tr>
                             <td>
-                                <a href="<?= site_url('admin/artikel/edit/' . $art['id']) ?>" class="text-decoration-none fw-semibold">
+                                <a href="<?= admin_url('artikel/edit/' . $art['id']) ?>" class="text-decoration-none fw-semibold">
                                     <?= esc(truncate_text($art['judul'], 50)) ?>
                                 </a>
                             </td>
@@ -174,14 +174,14 @@
         <div class="card table-card h-100">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <span class="fw-semibold"><i class="bi bi-calendar-event me-2 text-info"></i>Kegiatan Mendatang</span>
-                <a href="<?= site_url('admin/kegiatan') ?>" class="btn btn-sm btn-outline-info">Lihat Semua</a>
+                <a href="<?= admin_url('kegiatan') ?>" class="btn btn-sm btn-outline-info">Lihat Semua</a>
             </div>
             <div class="list-group list-group-flush">
                 <?php if (empty($kegiatan_upcoming)): ?>
                     <div class="list-group-item text-center text-muted py-4">Tidak ada kegiatan mendatang</div>
                 <?php else: ?>
                 <?php foreach ($kegiatan_upcoming as $kg): ?>
-                <a href="<?= site_url('admin/kegiatan/edit/' . $kg['id']) ?>" class="list-group-item list-group-item-action">
+                <a href="<?= admin_url('kegiatan/edit/' . $kg['id']) ?>" class="list-group-item list-group-item-action">
                     <div class="d-flex align-items-start gap-3">
                         <div class="text-center bg-primary bg-opacity-10 rounded p-2" style="min-width:48px">
                             <div class="text-primary fw-bold"><?= date('d', strtotime($kg['tanggal'])) ?></div>

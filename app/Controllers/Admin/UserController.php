@@ -55,7 +55,7 @@ class UserController extends BaseController
             'is_active' => (int) ($this->request->getPost('is_active') === '1'),
         ]);
 
-        return redirect()->to(base_url('admin/users'))->with('success', 'Pengguna berhasil ditambahkan.');
+        return redirect()->to(admin_url('users'))->with('success', 'Pengguna berhasil ditambahkan.');
     }
 
     public function edit(int $id): string
@@ -112,7 +112,7 @@ class UserController extends BaseController
 
         $this->model->update($id, $data);
 
-        return redirect()->to(base_url('admin/users'))->with('success', 'Pengguna berhasil diperbarui.');
+        return redirect()->to(admin_url('users'))->with('success', 'Pengguna berhasil diperbarui.');
     }
 
     public function delete(int $id)
@@ -134,7 +134,7 @@ class UserController extends BaseController
 
         $this->model->delete($id);
 
-        return redirect()->to(base_url('admin/users'))->with('success', 'Pengguna berhasil dihapus.');
+        return redirect()->to(admin_url('users'))->with('success', 'Pengguna berhasil dihapus.');
     }
 
     public function toggleActive(int $id)

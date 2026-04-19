@@ -7,7 +7,7 @@
         <h4 class="fw-bold mb-0">Manajemen Kegiatan</h4>
         <p class="text-muted small mb-0">Agenda dan kegiatan sekolah</p>
     </div>
-    <a href="<?= base_url('admin/kegiatan/create') ?>" class="btn btn-primary btn-lg">
+    <a href="<?= admin_url('kegiatan/create') ?>" class="btn btn-primary btn-lg">
         <i class="bi bi-plus-circle me-1"></i>Tambah
     </a>
 </div>
@@ -35,7 +35,7 @@
 <!-- Filter -->
 <div class="card border-0 shadow-sm mb-4">
     <div class="card-body p-3">
-        <form method="get" action="<?= base_url('admin/kegiatan') ?>" class="row g-2 align-items-end">
+        <form method="get" action="<?= admin_url('kegiatan') ?>" class="row g-2 align-items-end">
             <div class="col-sm-4 col-md-5">
                 <label class="form-label form-label-sm">Cari</label>
                 <div class="input-group input-group-sm">
@@ -63,7 +63,7 @@
             </div>
             <div class="col-sm-4 col-md-3 d-flex gap-2">
                 <button type="submit" class="btn btn-primary btn-sm flex-grow-1">Filter</button>
-                <a href="<?= base_url('admin/kegiatan') ?>" class="btn btn-outline-secondary btn-sm">Reset</a>
+                <a href="<?= admin_url('kegiatan') ?>" class="btn btn-outline-secondary btn-sm">Reset</a>
             </div>
         </form>
     </div>
@@ -107,11 +107,11 @@
                     </div>
                 </div>
                 <div class="card-footer bg-white border-top p-2 d-flex gap-2 justify-content-end">
-                    <a href="<?= base_url('admin/kegiatan/edit/' . $k['id']) ?>"
+                    <a href="<?= admin_url('kegiatan/edit/' . $k['id']) ?>"
                         class="btn btn-sm btn-outline-primary flex-grow-1">
                         <i class="bi bi-pencil me-1"></i>Edit
                     </a>
-                    <form method="post" action="<?= base_url('admin/kegiatan/delete/' . $k['id']) ?>"
+                    <form method="post" action="<?= admin_url('kegiatan/delete/' . $k['id']) ?>"
                         data-confirm="Hapus kegiatan ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                         <?= csrf_field() ?>
                         <button type="submit" class="btn btn-sm btn-outline-danger">
@@ -124,7 +124,7 @@
     <?php else: ?>
         <div class="text-center py-5 text-muted">
             <i class="bi bi-calendar3 display-5 d-block mb-2 opacity-25"></i>
-            Belum ada kegiatan. <a href="<?= base_url('admin/kegiatan/create') ?>">Tambah sekarang</a>
+            Belum ada kegiatan. <a href="<?= admin_url('kegiatan/create') ?>">Tambah sekarang</a>
         </div>
     <?php endif; ?>
     <?php if (isset($pager)): ?>
@@ -183,7 +183,7 @@
                                 ];
                                 [$cls, $lbl] = $statusMap[$k['status']] ?? ['secondary', $k['status']];
                                 ?>
-                                <a href="<?= base_url('admin/kegiatan/edit/' . $k['id']) ?>"
+                                <a href="<?= admin_url('kegiatan/edit/' . $k['id']) ?>"
                                     class="badge text-bg-<?= $cls ?> text-decoration-none"
                                     title="Klik edit untuk ubah status">
                                     <?= $lbl ?>
@@ -198,11 +198,11 @@
                             </td>
                             <td class="text-end">
                                 <div class="d-flex gap-1 justify-content-end">
-                                    <a href="<?= base_url('admin/kegiatan/edit/' . $k['id']) ?>"
+                                    <a href="<?= admin_url('kegiatan/edit/' . $k['id']) ?>"
                                         class="btn btn-sm btn-outline-primary">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <form method="post" action="<?= base_url('admin/kegiatan/delete/' . $k['id']) ?>"
+                                    <form method="post" action="<?= admin_url('kegiatan/delete/' . $k['id']) ?>"
                                         class="d-inline" data-confirm="Hapus kegiatan ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                                         <?= csrf_field() ?>
                                         <button type="submit" class="btn btn-sm btn-outline-danger">
@@ -218,7 +218,7 @@
                         <td colspan="7" class="text-center py-5 text-muted">
                             <i class="bi bi-calendar3 display-5 d-block mb-2 opacity-25"></i>
                             Belum ada kegiatan.
-                            <a href="<?= base_url('admin/kegiatan/create') ?>">Tambah sekarang</a>
+                            <a href="<?= admin_url('kegiatan/create') ?>">Tambah sekarang</a>
                         </td>
                     </tr>
                 <?php endif; ?>

@@ -7,7 +7,7 @@
         <h4 class="fw-bold mb-0">Manajemen Guru & Staf</h4>
         <p class="text-muted small mb-0">Kelola data tenaga pendidik dan kependidikan</p>
     </div>
-    <a href="<?= base_url('admin/guru/create') ?>" class="btn btn-primary btn-lg">
+    <a href="<?= admin_url('guru/create') ?>" class="btn btn-primary btn-lg">
         <i class="bi bi-plus-circle me-1"></i>Tambah
     </a>
 </div>
@@ -27,7 +27,7 @@
 <!-- Filter -->
 <div class="card border-0 shadow-sm mb-4">
     <div class="card-body p-3">
-        <form method="get" action="<?= base_url('admin/guru') ?>" class="row g-2 align-items-end">
+        <form method="get" action="<?= admin_url('guru') ?>" class="row g-2 align-items-end">
             <div class="col-sm-5 col-md-6">
                 <label class="form-label form-label-sm">Cari</label>
                 <div class="input-group input-group-sm">
@@ -46,7 +46,7 @@
             </div>
             <div class="col-sm-4 col-md-3 d-flex gap-2">
                 <button type="submit" class="btn btn-primary btn-sm flex-grow-1">Filter</button>
-                <a href="<?= base_url('admin/guru') ?>" class="btn btn-outline-secondary btn-sm">Reset</a>
+                <a href="<?= admin_url('guru') ?>" class="btn btn-outline-secondary btn-sm">Reset</a>
             </div>
         </form>
     </div>
@@ -100,18 +100,18 @@ $tipeLabel = ['guru' => 'Guru', 'staf' => 'Staf', 'tendik' => 'Tendik'];
                     </div>
                 </div>
                 <div class="card-footer bg-white border-top p-2 d-flex gap-2 justify-content-end">
-                    <a href="<?= base_url('admin/guru/edit/' . $g['id']) ?>"
+                    <a href="<?= admin_url('guru/edit/' . $g['id']) ?>"
                         class="btn btn-sm btn-outline-primary flex-grow-1">
                         <i class="bi bi-pencil me-1"></i>Edit
                     </a>
-                    <form method="post" action="<?= base_url('admin/guru/toggle/' . $g['id']) ?>">
+                    <form method="post" action="<?= admin_url('guru/toggle/' . $g['id']) ?>">
                         <?= csrf_field() ?>
                         <button type="submit" title="<?= $g['is_active'] ? 'Nonaktifkan' : 'Aktifkan' ?>"
                             class="btn btn-sm <?= $g['is_active'] ? 'btn-success' : 'btn-outline-secondary' ?>">
                             <i class="bi bi-<?= $g['is_active'] ? 'toggle-on' : 'toggle-off' ?>"></i>
                         </button>
                     </form>
-                    <form method="post" action="<?= base_url('admin/guru/delete/' . $g['id']) ?>"
+                    <form method="post" action="<?= admin_url('guru/delete/' . $g['id']) ?>"
                         data-confirm="Hapus data ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                         <?= csrf_field() ?>
                         <button type="submit" class="btn btn-sm btn-outline-danger">
@@ -124,7 +124,7 @@ $tipeLabel = ['guru' => 'Guru', 'staf' => 'Staf', 'tendik' => 'Tendik'];
     <?php else: ?>
         <div class="text-center py-5 text-muted">
             <i class="bi bi-people display-5 d-block mb-2 opacity-25"></i>
-            Belum ada data. <a href="<?= base_url('admin/guru/create') ?>">Tambah sekarang</a>
+            Belum ada data. <a href="<?= admin_url('guru/create') ?>">Tambah sekarang</a>
         </div>
     <?php endif; ?>
     <?php if (isset($pager)): ?>
@@ -190,7 +190,7 @@ $tipeLabel = ['guru' => 'Guru', 'staf' => 'Staf', 'tendik' => 'Tendik'];
                                 <span class="badge text-bg-<?= $cls ?>"><?= $lbl ?></span>
                             </td>
                             <td class="text-center">
-                                <form method="post" action="<?= base_url('admin/guru/toggle/' . $g['id']) ?>" class="d-inline">
+                                <form method="post" action="<?= admin_url('guru/toggle/' . $g['id']) ?>" class="d-inline">
                                     <?= csrf_field() ?>
                                     <button type="submit" title="<?= $g['is_active'] ? 'Klik untuk nonaktifkan' : 'Klik untuk aktifkan' ?>"
                                         class="btn btn-sm <?= $g['is_active'] ? 'btn-success' : 'btn-outline-secondary' ?>">
@@ -201,11 +201,11 @@ $tipeLabel = ['guru' => 'Guru', 'staf' => 'Staf', 'tendik' => 'Tendik'];
                             </td>
                             <td class="text-end">
                                 <div class="d-flex gap-1 justify-content-end">
-                                    <a href="<?= base_url('admin/guru/edit/' . $g['id']) ?>"
+                                    <a href="<?= admin_url('guru/edit/' . $g['id']) ?>"
                                         class="btn btn-sm btn-outline-primary" title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <form method="post" action="<?= base_url('admin/guru/delete/' . $g['id']) ?>"
+                                    <form method="post" action="<?= admin_url('guru/delete/' . $g['id']) ?>"
                                         class="d-inline" data-confirm="Hapus data ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                                         <?= csrf_field() ?>
                                         <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus">
@@ -221,7 +221,7 @@ $tipeLabel = ['guru' => 'Guru', 'staf' => 'Staf', 'tendik' => 'Tendik'];
                         <td colspan="6" class="text-center py-5 text-muted">
                             <i class="bi bi-people display-5 d-block mb-2 opacity-25"></i>
                             Belum ada data.
-                            <a href="<?= base_url('admin/guru/create') ?>">Tambah sekarang</a>
+                            <a href="<?= admin_url('guru/create') ?>">Tambah sekarang</a>
                         </td>
                     </tr>
                 <?php endif; ?>
@@ -264,7 +264,7 @@ if (tbody) {
     function saveOrder() {
         const rows = [...tbody.querySelectorAll('tr[data-id]')];
         const payload = rows.map((row, i) => ({ id: parseInt(row.dataset.id), urutan: i + 1 }));
-        fetch('<?= base_url('admin/guru/urutan') ?>', {
+        fetch('<?= admin_url('guru/urutan') ?>', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
             body: JSON.stringify(payload)

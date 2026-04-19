@@ -6,7 +6,7 @@
         <h4 class="mb-0 fw-bold">Manajemen Pengguna</h4>
         <small class="text-muted">Kelola akun admin dan kontributor</small>
     </div>
-    <a href="<?= site_url('admin/users/create') ?>" class="btn btn-primary btn-action">
+    <a href="<?= admin_url('users/create') ?>" class="btn btn-primary btn-action">
         <i class="bi bi-person-plus me-1"></i><span class="d-none d-sm-inline">Tambah Pengguna</span>
     </a>
 </div>
@@ -48,11 +48,11 @@
                 </div>
                 <?php if ($u['role'] !== 'superadmin'): ?>
                     <div class="card-footer bg-white border-top p-2 d-flex gap-2">
-                        <a href="<?= site_url('admin/users/edit/' . $u['id']) ?>"
+                        <a href="<?= admin_url('users/edit/' . $u['id']) ?>"
                             class="btn btn-sm btn-outline-primary flex-grow-1">
                             <i class="bi bi-pencil me-1"></i>Edit
                         </a>
-                        <form method="post" action="<?= site_url('admin/users/toggle/' . $u['id']) ?>"
+                        <form method="post" action="<?= admin_url('users/toggle/' . $u['id']) ?>"
                             data-confirm="<?= $u['is_active'] ? 'Nonaktifkan' : 'Aktifkan' ?> pengguna ini?" data-confirm-ok="Lanjutkan" data-confirm-class="btn-warning" data-confirm-type="warning">
                             <?= csrf_field() ?>
                             <button type="submit" class="btn btn-sm <?= $u['is_active'] ? 'btn-outline-warning' : 'btn-outline-success' ?>">
@@ -60,7 +60,7 @@
                             </button>
                         </form>
                         <?php if ((int)$u['id'] !== (int)session('admin_id')): ?>
-                            <form method="post" action="<?= site_url('admin/users/delete/' . $u['id']) ?>"
+                            <form method="post" action="<?= admin_url('users/delete/' . $u['id']) ?>"
                                 data-confirm="Hapus pengguna &quot;<?= esc($u['nama']) ?>&quot;? Tindakan ini tidak dapat dibatalkan." data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                                 <?= csrf_field() ?>
                                 <button type="submit" class="btn btn-sm btn-outline-danger">
@@ -129,11 +129,11 @@
                             <td class="text-end">
                                 <div class="d-flex gap-1 justify-content-end">
                                     <?php if ($u['role'] !== 'superadmin'): ?>
-                                        <a href="<?= site_url('admin/users/edit/' . $u['id']) ?>"
+                                        <a href="<?= admin_url('users/edit/' . $u['id']) ?>"
                                             class="btn btn-sm btn-outline-primary" title="Edit">
                                             <i class="bi bi-pencil"></i>
                                         </a>
-                                        <form method="post" action="<?= site_url('admin/users/toggle/' . $u['id']) ?>" class="d-inline"
+                                        <form method="post" action="<?= admin_url('users/toggle/' . $u['id']) ?>" class="d-inline"
                                             data-confirm="<?= $u['is_active'] ? 'Nonaktifkan' : 'Aktifkan' ?> pengguna ini?" data-confirm-ok="Lanjutkan" data-confirm-class="btn-warning" data-confirm-type="warning">
                                             <?= csrf_field() ?>
                                             <button type="submit" class="btn btn-sm <?= $u['is_active'] ? 'btn-outline-warning' : 'btn-outline-success' ?>"
@@ -142,7 +142,7 @@
                                             </button>
                                         </form>
                                         <?php if ((int)$u['id'] !== (int)session('admin_id')): ?>
-                                            <form method="post" action="<?= site_url('admin/users/delete/' . $u['id']) ?>" class="d-inline"
+                                            <form method="post" action="<?= admin_url('users/delete/' . $u['id']) ?>" class="d-inline"
                                                 data-confirm="Hapus pengguna &quot;<?= esc($u['nama']) ?>&quot;? Tindakan ini tidak dapat dibatalkan." data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                                                 <?= csrf_field() ?>
                                                 <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus">

@@ -50,7 +50,7 @@ class MenuController extends BaseController
             'lokasi'    => $this->request->getPost('lokasi'),
         ]);
 
-        return redirect()->to(base_url('admin/menu'))->with('success', 'Menu berhasil ditambahkan.');
+        return redirect()->to(admin_url('menu'))->with('success', 'Menu berhasil ditambahkan.');
     }
 
     public function update(int $id)
@@ -69,7 +69,7 @@ class MenuController extends BaseController
             'is_active' => (int) ($this->request->getPost('is_active') === '1'),
         ]);
 
-        return redirect()->to(base_url('admin/menu'))->with('success', 'Menu berhasil diperbarui.');
+        return redirect()->to(admin_url('menu'))->with('success', 'Menu berhasil diperbarui.');
     }
 
     public function delete(int $id)
@@ -79,7 +79,7 @@ class MenuController extends BaseController
         }
 
         $this->model->delete($id);
-        return redirect()->to(base_url('admin/menu'))->with('success', 'Menu berhasil dihapus.');
+        return redirect()->to(admin_url('menu'))->with('success', 'Menu berhasil dihapus.');
     }
 
     public function updateUrutan()

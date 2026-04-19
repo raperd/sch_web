@@ -3,7 +3,7 @@
 <?= $this->section('content') ?>
 
 <div class="d-flex align-items-center gap-2 mb-4">
-    <a href="<?= base_url('admin/galeri') ?>" class="btn btn-sm btn-outline-secondary">
+    <a href="<?= admin_url('galeri') ?>" class="btn btn-sm btn-outline-secondary">
         <i class="bi bi-arrow-left"></i>
     </a>
     <div>
@@ -31,7 +31,7 @@
     </div>
 <?php endif; ?>
 
-<form method="post" action="<?= base_url('admin/galeri/store') ?>" enctype="multipart/form-data">
+<form method="post" action="<?= admin_url('galeri/store') ?>" enctype="multipart/form-data">
     <?= csrf_field() ?>
 
     <div class="row g-4">
@@ -147,7 +147,7 @@
                 <button type="submit" class="btn btn-primary btn-lg fw-semibold">
                     <i class="bi bi-cloud-upload me-1"></i>Upload Foto
                 </button>
-                <a href="<?= base_url('admin/galeri') ?>" class="btn btn-outline-secondary">Batal</a>
+                <a href="<?= admin_url('galeri') ?>" class="btn btn-outline-secondary">Batal</a>
             </div>
         </div>
     </div>

@@ -2,7 +2,7 @@
 <?= $this->section('content') ?>
 
 <div class="mb-4">
-    <a href="<?= base_url('admin/akademik/program') ?>" class="text-decoration-none text-muted small">
+    <a href="<?= admin_url('akademik/program') ?>" class="text-decoration-none text-muted small">
         <i class="bi bi-arrow-left me-1"></i>Kembali ke Program Unggulan
     </a>
     <h4 class="fw-bold mt-1 mb-0"><?= esc($title) ?></h4>
@@ -21,8 +21,8 @@
 <?php
 $isEdit  = !empty($program);
 $action  = $isEdit
-    ? base_url('admin/akademik/program/' . $program['id'] . '/update')
-    : base_url('admin/akademik/program/store');
+    ? admin_url('akademik/program/' . $program['id'] . '/update')
+    : admin_url('akademik/program/store');
 $val     = fn(string $k, $default = '') => old($k, $isEdit ? ($program[$k] ?? $default) : $default);
 $colors  = ['primary','secondary','success','danger','warning','info','dark'];
 $icons   = [
@@ -110,7 +110,7 @@ $icons   = [
                         <button type="submit" class="btn btn-primary fw-semibold px-4">
                             <i class="bi bi-save me-1"></i><?= $isEdit ? 'Perbarui' : 'Simpan' ?>
                         </button>
-                        <a href="<?= base_url('admin/akademik/program') ?>" class="btn btn-outline-secondary">Batal</a>
+                        <a href="<?= admin_url('akademik/program') ?>" class="btn btn-outline-secondary">Batal</a>
                     </div>
                 </form>
             </div>

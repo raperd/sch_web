@@ -2,7 +2,7 @@
 
 <?= $this->section('content') ?>
 <div class="d-flex align-items-center gap-3 mb-4">
-    <a href="<?= base_url('admin/quick-links') ?>" class="btn btn-sm btn-outline-secondary">
+    <a href="<?= admin_url('quick-links') ?>" class="btn btn-sm btn-outline-secondary">
         <i class="bi bi-arrow-left"></i>
     </a>
     <div>
@@ -28,8 +28,8 @@
             <div class="card-body p-4">
                 <form method="post"
                     action="<?= $link
-                        ? base_url('admin/quick-links/update/' . $link['id'])
-                        : base_url('admin/quick-links/store') ?>">
+                        ? admin_url('quick-links/update/' . $link['id'])
+                        : admin_url('quick-links/store') ?>">
                     <?= csrf_field() ?>
 
                     <!-- Label -->
@@ -127,7 +127,7 @@
                         <button type="submit" class="btn btn-primary px-4">
                             <i class="bi bi-save me-1"></i><?= $link ? 'Simpan Perubahan' : 'Tambah Link' ?>
                         </button>
-                        <a href="<?= base_url('admin/quick-links') ?>" class="btn btn-outline-secondary">Batal</a>
+                        <a href="<?= admin_url('quick-links') ?>" class="btn btn-outline-secondary">Batal</a>
                     </div>
                 </form>
             </div>

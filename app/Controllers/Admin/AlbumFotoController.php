@@ -56,7 +56,7 @@ class AlbumFotoController extends BaseController
             'is_published'     => (int) ($this->request->getPost('is_published') === '1'),
         ]);
 
-        return redirect()->to(base_url('admin/album-foto'))->with('success', 'Album berhasil ditambahkan.');
+        return redirect()->to(admin_url('album-foto'))->with('success', 'Album berhasil ditambahkan.');
     }
 
     public function edit(int $id): string
@@ -103,7 +103,7 @@ class AlbumFotoController extends BaseController
             'is_published'     => (int) ($this->request->getPost('is_published') === '1'),
         ]);
 
-        return redirect()->to(base_url('admin/album-foto'))->with('success', 'Album berhasil diperbarui.');
+        return redirect()->to(admin_url('album-foto'))->with('success', 'Album berhasil diperbarui.');
     }
 
     public function delete(int $id)
@@ -119,7 +119,7 @@ class AlbumFotoController extends BaseController
             }
         }
         $this->model->delete($id);
-        return redirect()->to(base_url('admin/album-foto'))->with('success', 'Album berhasil dihapus.');
+        return redirect()->to(admin_url('album-foto'))->with('success', 'Album berhasil dihapus.');
     }
 
     // -----------------------------------------------------------------

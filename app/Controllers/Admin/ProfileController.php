@@ -23,7 +23,7 @@ class ProfileController extends BaseController
         $user   = $this->model->find($userId);
 
         if (! $user) {
-            return redirect()->to(base_url('admin/dashboard'))->with('error', 'Sesi tidak valid.');
+            return redirect()->to(admin_url('dashboard'))->with('error', 'Sesi tidak valid.');
         }
 
         return view('admin/profile/index', [
@@ -42,7 +42,7 @@ class ProfileController extends BaseController
         $user   = $this->model->find($userId);
 
         if (! $user) {
-            return redirect()->to(base_url('admin/login'));
+            return redirect()->to(admin_url('login'));
         }
 
         $rules = [
@@ -78,7 +78,7 @@ class ProfileController extends BaseController
             'password' => $this->request->getPost('password_baru'),
         ]);
 
-        return redirect()->to(base_url('admin/profile'))->with('success', 'Password berhasil diubah. Silakan login kembali jika diperlukan.');
+        return redirect()->to(admin_url('profile'))->with('success', 'Password berhasil diubah. Silakan login kembali jika diperlukan.');
     }
 
     /**
@@ -89,7 +89,7 @@ class ProfileController extends BaseController
         $userId = (int) session('admin_id');
         $user   = $this->model->find($userId);
         if (! $user) {
-            return redirect()->to(base_url('admin/login'));
+            return redirect()->to(admin_url('login'));
         }
 
         $avatar = $this->_saveCroppedAvatar($userId);
@@ -107,7 +107,7 @@ class ProfileController extends BaseController
         $this->model->update($userId, ['avatar' => $avatar]);
         session()->set('admin_avatar', $avatar);
 
-        return redirect()->to(base_url('admin/profile'))->with('success', 'Foto profil berhasil diperbarui.');
+        return redirect()->to(admin_url('profile'))->with('success', 'Foto profil berhasil diperbarui.');
     }
 
     /**
@@ -118,7 +118,7 @@ class ProfileController extends BaseController
         $userId = (int) session('admin_id');
         $user   = $this->model->find($userId);
         if (! $user) {
-            return redirect()->to(base_url('admin/login'));
+            return redirect()->to(admin_url('login'));
         }
 
         if (! empty($user['avatar'])) {
@@ -129,7 +129,7 @@ class ProfileController extends BaseController
         $this->model->update($userId, ['avatar' => null]);
         session()->set('admin_avatar', null);
 
-        return redirect()->to(base_url('admin/profile'))->with('success', 'Foto profil dihapus.');
+        return redirect()->to(admin_url('profile'))->with('success', 'Foto profil dihapus.');
     }
 
     private function _saveCroppedAvatar(int $userId): ?string
@@ -162,7 +162,7 @@ class ProfileController extends BaseController
         $user   = $this->model->find($userId);
 
         if (! $user) {
-            return redirect()->to(base_url('admin/login'));
+            return redirect()->to(admin_url('login'));
         }
 
         $rules = [
@@ -182,6 +182,6 @@ class ProfileController extends BaseController
         // Update session nama
         session()->set('admin_nama', $this->request->getPost('nama'));
 
-        return redirect()->to(base_url('admin/profile'))->with('success', 'Informasi profil berhasil diperbarui.');
+        return redirect()->to(admin_url('profile'))->with('success', 'Informasi profil berhasil diperbarui.');
     }
 }

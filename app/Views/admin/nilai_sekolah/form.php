@@ -2,7 +2,7 @@
 
 <?= $this->section('content') ?>
 <div class="mb-4">
-    <a href="<?= base_url('admin/nilai-sekolah') ?>" class="btn btn-sm btn-outline-secondary mb-3">
+    <a href="<?= admin_url('nilai-sekolah') ?>" class="btn btn-sm btn-outline-secondary mb-3">
         <i class="bi bi-arrow-left me-1"></i>Kembali
     </a>
     <h4 class="fw-bold mb-0"><?= esc($title) ?></h4>
@@ -21,7 +21,7 @@
             </div>
         <?php endif; ?>
 
-        <form method="post" action="<?= base_url('admin/nilai-sekolah/' . ($nilai ? 'update/'.$nilai['id'] : 'store')) ?>">
+        <form method="post" action="<?= admin_url('nilai-sekolah/' . ($nilai ? 'update/'.$nilai['id'] : 'store')) ?>">
             <?= csrf_field() ?>
 
             <div class="row mb-3">

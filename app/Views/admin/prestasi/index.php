@@ -6,7 +6,7 @@
         <h4 class="fw-bold mb-0">Manajemen Prestasi</h4>
         <p class="text-muted small mb-0">Kelola pencapaian akademik dan non-akademik sekolah</p>
     </div>
-    <a href="<?= base_url('admin/prestasi/create') ?>" class="btn btn-primary">
+    <a href="<?= admin_url('prestasi/create') ?>" class="btn btn-primary">
         <i class="bi bi-plus-lg me-1"></i>Tambah Prestasi
     </a>
 </div>
@@ -89,7 +89,7 @@
                 <button type="submit" class="btn btn-primary btn-sm px-3">
                     <i class="bi bi-search me-1"></i>Filter
                 </button>
-                <a href="<?= base_url('admin/prestasi') ?>" class="btn btn-outline-secondary btn-sm">Reset</a>
+                <a href="<?= admin_url('prestasi') ?>" class="btn btn-outline-secondary btn-sm">Reset</a>
             </div>
         </form>
     </div>
@@ -152,11 +152,11 @@ $tingkatLabel = [
                     </div>
                 </div>
                 <div class="card-footer bg-white border-top p-2 d-flex gap-2 justify-content-end">
-                    <a href="<?= base_url('admin/prestasi/edit/' . $p['id']) ?>"
+                    <a href="<?= admin_url('prestasi/edit/' . $p['id']) ?>"
                         class="btn btn-sm btn-outline-primary flex-grow-1">
                         <i class="bi bi-pencil me-1"></i>Edit
                     </a>
-                    <form method="post" action="<?= base_url('admin/prestasi/delete/' . $p['id']) ?>"
+                    <form method="post" action="<?= admin_url('prestasi/delete/' . $p['id']) ?>"
                         data-confirm="Hapus prestasi ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                         <?= csrf_field() ?>
                         <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
@@ -238,11 +238,11 @@ $tingkatLabel = [
                             </td>
                             <td>
                                 <div class="d-flex gap-1">
-                                    <a href="<?= base_url('admin/prestasi/edit/' . $p['id']) ?>"
+                                    <a href="<?= admin_url('prestasi/edit/' . $p['id']) ?>"
                                         class="btn btn-sm btn-outline-primary" title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <form method="post" action="<?= base_url('admin/prestasi/delete/' . $p['id']) ?>"
+                                    <form method="post" action="<?= admin_url('prestasi/delete/' . $p['id']) ?>"
                                         data-confirm="Hapus prestasi ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                                         <?= csrf_field() ?>
                                         <button class="btn btn-sm btn-outline-danger" title="Hapus">

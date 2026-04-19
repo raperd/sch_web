@@ -7,7 +7,7 @@
         <h4 class="fw-bold mb-0">Manajemen Galeri</h4>
         <p class="text-muted small mb-0">Kelola foto dan media sekolah</p>
     </div>
-    <a href="<?= base_url('admin/galeri/upload') ?>" class="btn btn-primary btn-lg">
+    <a href="<?= admin_url('galeri/upload') ?>" class="btn btn-primary btn-lg">
         <i class="bi bi-cloud-upload me-1"></i>Upload
     </a>
 </div>
@@ -31,7 +31,7 @@
 <!-- Filter -->
 <div class="card border-0 shadow-sm mb-4">
     <div class="card-body p-3">
-        <form method="get" action="<?= base_url('admin/galeri') ?>" class="row g-2 align-items-end">
+        <form method="get" action="<?= admin_url('galeri') ?>" class="row g-2 align-items-end">
             <div class="col-sm-5 col-md-6">
                 <label class="form-label form-label-sm">Cari</label>
                 <div class="input-group input-group-sm">
@@ -52,7 +52,7 @@
             </div>
             <div class="col-sm-4 col-md-3 d-flex gap-2">
                 <button type="submit" class="btn btn-primary btn-sm flex-grow-1">Filter</button>
-                <a href="<?= base_url('admin/galeri') ?>" class="btn btn-outline-secondary btn-sm">Reset</a>
+                <a href="<?= admin_url('galeri') ?>" class="btn btn-outline-secondary btn-sm">Reset</a>
             </div>
         </form>
     </div>
@@ -95,11 +95,11 @@
                         <small class="text-muted"><?= esc($item['kategori_nama'] ?? '—') ?></small>
                     </div>
                     <div class="card-footer bg-white border-top-0 p-2 d-flex gap-1">
-                        <a href="<?= base_url('admin/galeri/edit/' . $item['id']) ?>"
+                        <a href="<?= admin_url('galeri/edit/' . $item['id']) ?>"
                             class="btn btn-sm btn-outline-primary flex-grow-1">
                             <i class="bi bi-pencil"></i>
                         </a>
-                        <form method="post" action="<?= base_url('admin/galeri/delete/' . $item['id']) ?>"
+                        <form method="post" action="<?= admin_url('galeri/delete/' . $item['id']) ?>"
                             class="d-inline" data-confirm="Hapus foto ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                             <?= csrf_field() ?>
                             <button type="submit" class="btn btn-sm btn-outline-danger">
@@ -121,7 +121,7 @@
         <div class="card-body text-center py-5 text-muted">
             <i class="bi bi-images display-5 d-block mb-2 opacity-25"></i>
             Belum ada foto di galeri.
-            <a href="<?= base_url('admin/galeri/upload') ?>">Upload sekarang</a>
+            <a href="<?= admin_url('galeri/upload') ?>">Upload sekarang</a>
         </div>
     </div>
 <?php endif; ?>

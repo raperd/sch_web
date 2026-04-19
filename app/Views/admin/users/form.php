@@ -2,7 +2,7 @@
 <?= $this->section('content') ?>
 
 <div class="d-flex align-items-center gap-2 mb-4">
-    <a href="<?= base_url('admin/users') ?>" class="btn btn-sm btn-outline-secondary">
+    <a href="<?= admin_url('users') ?>" class="btn btn-sm btn-outline-secondary">
         <i class="bi bi-arrow-left"></i>
     </a>
     <div>
@@ -31,7 +31,7 @@
 <?php endif; ?>
 
 <form method="post"
-    action="<?= $user ? base_url('admin/users/update/' . $user['id']) : base_url('admin/users/store') ?>">
+    action="<?= $user ? admin_url('users/update/' . $user['id']) : admin_url('users/store') ?>">
     <?= csrf_field() ?>
 
     <div class="row g-4">
@@ -88,7 +88,7 @@
                     </div>
                 </div>
                 <div class="card-footer bg-white border-top d-flex gap-2 justify-content-end">
-                    <a href="<?= base_url('admin/users') ?>" class="btn btn-outline-secondary">Batal</a>
+                    <a href="<?= admin_url('users') ?>" class="btn btn-outline-secondary">Batal</a>
                     <button type="submit" class="btn btn-primary fw-semibold">
                         <i class="bi bi-save me-1"></i><?= $user ? 'Simpan Perubahan' : 'Tambah Pengguna' ?>
                     </button>

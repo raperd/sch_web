@@ -63,7 +63,7 @@ class AkademikController extends BaseController
         ]);
 
         session()->setFlashdata('success', 'Program unggulan berhasil ditambahkan.');
-        return redirect()->to('/admin/akademik/program');
+        return redirect()->to(admin_url('akademik/program'));
     }
 
     public function programEdit(int $id): string
@@ -100,7 +100,7 @@ class AkademikController extends BaseController
         ]);
 
         session()->setFlashdata('success', 'Program unggulan berhasil diperbarui.');
-        return redirect()->to('/admin/akademik/program');
+        return redirect()->to(admin_url('akademik/program'));
     }
 
     public function programDelete(int $id): \CodeIgniter\HTTP\RedirectResponse
@@ -108,7 +108,7 @@ class AkademikController extends BaseController
         $this->programModel->find($id) ?? throw new PageNotFoundException('Program tidak ditemukan');
         $this->programModel->delete($id);
         session()->setFlashdata('success', 'Program unggulan dihapus.');
-        return redirect()->to('/admin/akademik/program');
+        return redirect()->to(admin_url('akademik/program'));
     }
 
     // =========================================================
@@ -152,7 +152,7 @@ class AkademikController extends BaseController
         ]);
 
         session()->setFlashdata('success', 'Blok kurikulum berhasil ditambahkan.');
-        return redirect()->to('/admin/akademik/kurikulum');
+        return redirect()->to(admin_url('akademik/kurikulum'));
     }
 
     public function kurikulumEdit(int $id): string
@@ -185,7 +185,7 @@ class AkademikController extends BaseController
         ]);
 
         session()->setFlashdata('success', 'Blok kurikulum berhasil diperbarui.');
-        return redirect()->to('/admin/akademik/kurikulum');
+        return redirect()->to(admin_url('akademik/kurikulum'));
     }
 
     public function kurikulumDelete(int $id): \CodeIgniter\HTTP\RedirectResponse
@@ -193,6 +193,6 @@ class AkademikController extends BaseController
         $this->kurikulumModel->find($id) ?? throw new PageNotFoundException('Blok tidak ditemukan');
         $this->kurikulumModel->delete($id);
         session()->setFlashdata('success', 'Blok kurikulum dihapus.');
-        return redirect()->to('/admin/akademik/kurikulum');
+        return redirect()->to(admin_url('akademik/kurikulum'));
     }
 }

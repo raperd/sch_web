@@ -145,6 +145,18 @@ if (! function_exists('html_purify')) {
     }
 }
 
+if (! function_exists('admin_url')) {
+    /**
+     * Buat URL ke halaman admin menggunakan prefix dari .env (ADMIN_PREFIX).
+     * Contoh: admin_url('guru/create') → https://site.sch.id/klwshub/guru/create
+     */
+    function admin_url(string $path = ''): string
+    {
+        $prefix = env('ADMIN_PREFIX', 'klwshub');
+        return base_url($prefix . ($path !== '' ? '/' . ltrim($path, '/') : ''));
+    }
+}
+
 if (! function_exists('active_menu')) {
     /**
      * Kembalikan class 'active' jika URL cocok dengan current page.

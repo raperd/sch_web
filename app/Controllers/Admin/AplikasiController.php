@@ -51,7 +51,7 @@ class AplikasiController extends BaseController
             'is_active' => $this->request->getPost('is_active') === '1' ? 1 : 0,
         ]);
 
-        return redirect()->to(base_url('admin/aplikasi'))->with('success', 'Link berhasil ditambahkan.');
+        return redirect()->to(admin_url('aplikasi'))->with('success', 'Link berhasil ditambahkan.');
     }
 
     public function edit(int $id): string
@@ -96,7 +96,7 @@ class AplikasiController extends BaseController
             'is_active' => $this->request->getPost('is_active') === '1' ? 1 : 0,
         ]);
 
-        return redirect()->to(base_url('admin/aplikasi'))->with('success', 'Link berhasil diperbarui.');
+        return redirect()->to(admin_url('aplikasi'))->with('success', 'Link berhasil diperbarui.');
     }
 
     public function toggleActive(int $id)
@@ -108,7 +108,7 @@ class AplikasiController extends BaseController
 
         $this->model->update($id, ['is_active' => $app['is_active'] == 1 ? 0 : 1]);
 
-        return redirect()->to(base_url('admin/aplikasi'))->with('success', 'Status link berhasil diubah.');
+        return redirect()->to(admin_url('aplikasi'))->with('success', 'Status link berhasil diubah.');
     }
 
     private function _saveCroppedIcon(): ?string
@@ -164,6 +164,6 @@ class AplikasiController extends BaseController
         }
         
         $this->model->delete($id);
-        return redirect()->to(base_url('admin/aplikasi'))->with('success', 'Link berhasil dihapus.');
+        return redirect()->to(admin_url('aplikasi'))->with('success', 'Link berhasil dihapus.');
     }
 }

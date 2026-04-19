@@ -83,7 +83,7 @@ class KategoriArtikelController extends BaseController
             'urutan'     => (int) ($this->request->getPost('urutan') ?: 0),
         ]);
 
-        return redirect()->to(base_url('admin/kategori-artikel'))->with('success', 'Kategori berhasil ditambahkan.');
+        return redirect()->to(admin_url('kategori-artikel'))->with('success', 'Kategori berhasil ditambahkan.');
     }
 
     public function edit(int $id): string
@@ -142,7 +142,7 @@ class KategoriArtikelController extends BaseController
             'urutan'    => (int) ($this->request->getPost('urutan') ?: 0),
         ]);
 
-        return redirect()->to(base_url('admin/kategori-artikel'))->with('success', 'Kategori berhasil diperbarui.');
+        return redirect()->to(admin_url('kategori-artikel'))->with('success', 'Kategori berhasil diperbarui.');
     }
 
     public function delete(int $id)
@@ -161,6 +161,6 @@ class KategoriArtikelController extends BaseController
 
         $this->model->delete($id);
 
-        return redirect()->to(base_url('admin/kategori-artikel'))->with('success', 'Kategori berhasil dihapus.');
+        return redirect()->to(admin_url('kategori-artikel'))->with('success', 'Kategori berhasil dihapus.');
     }
 }

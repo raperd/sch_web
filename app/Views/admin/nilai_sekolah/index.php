@@ -6,7 +6,7 @@
         <h4 class="fw-bold mb-0">Nilai Sekolah</h4>
         <small class="text-muted">Kelola nilai-nilai unggulan yang tampil di halaman Profil Visi & Misi</small>
     </div>
-    <a href="<?= base_url('admin/nilai-sekolah/create') ?>" class="btn btn-primary">
+    <a href="<?= admin_url('nilai-sekolah/create') ?>" class="btn btn-primary">
         <i class="bi bi-plus-lg me-1"></i>Tambah Nilai
     </a>
 </div>
@@ -44,10 +44,10 @@
                             <td class="fw-semibold"><?= esc($n['nama']) ?></td>
                             <td class="text-muted small"><?= esc($n['deskripsi']) ?></td>
                             <td class="text-end pe-3">
-                                <a href="<?= base_url('admin/nilai-sekolah/edit/' . $n['id']) ?>" class="btn btn-sm btn-outline-primary me-1">
+                                <a href="<?= admin_url('nilai-sekolah/edit/' . $n['id']) ?>" class="btn btn-sm btn-outline-primary me-1">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <form method="post" action="<?= base_url('admin/nilai-sekolah/delete/' . $n['id']) ?>" class="d-inline" data-confirm="Hapus nilai sekolah ini?">
+                                <form method="post" action="<?= admin_url('nilai-sekolah/delete/' . $n['id']) ?>" class="d-inline" data-confirm="Hapus nilai sekolah ini?">
                                     <?= csrf_field() ?>
                                     <button type="submit" class="btn btn-sm btn-outline-danger">
                                         <i class="bi bi-trash"></i>
@@ -62,7 +62,7 @@
         <?php else: ?>
             <div class="text-center py-5 text-muted">
                 <i class="bi bi-award display-3 mb-3 d-block"></i>
-                <p>Belum ada nilai sekolah. <a href="<?= base_url('admin/nilai-sekolah/create') ?>">Tambah sekarang</a></p>
+                <p>Belum ada nilai sekolah. <a href="<?= admin_url('nilai-sekolah/create') ?>">Tambah sekarang</a></p>
             </div>
         <?php endif; ?>
     </div>

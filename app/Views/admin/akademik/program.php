@@ -7,10 +7,10 @@
         <p class="text-muted small mb-0">Kartu program yang tampil di halaman <strong>/akademik</strong></p>
     </div>
     <div class="d-flex gap-2">
-        <a href="<?= base_url('admin/akademik/kurikulum') ?>" class="btn btn-outline-secondary">
+        <a href="<?= admin_url('akademik/kurikulum') ?>" class="btn btn-outline-secondary">
             <i class="bi bi-journal-text me-1"></i>Kurikulum
         </a>
-        <a href="<?= base_url('admin/akademik/program/create') ?>" class="btn btn-primary">
+        <a href="<?= admin_url('akademik/program/create') ?>" class="btn btn-primary">
             <i class="bi bi-plus-lg me-1"></i>Tambah Program
         </a>
     </div>
@@ -28,7 +28,7 @@
     <?php if (empty($programs)): ?>
         <div class="text-center py-5 text-muted">
             <i class="bi bi-inbox fs-2 d-block mb-2"></i>
-            Belum ada program. <a href="<?= base_url('admin/akademik/program/create') ?>">Tambah sekarang</a>
+            Belum ada program. <a href="<?= admin_url('akademik/program/create') ?>">Tambah sekarang</a>
         </div>
     <?php else: ?>
         <?php foreach ($programs as $p): ?>
@@ -52,11 +52,11 @@
                     </div>
                 </div>
                 <div class="card-footer bg-white border-top p-2 d-flex gap-2 justify-content-end">
-                    <a href="<?= base_url('admin/akademik/program/' . $p['id'] . '/edit') ?>"
+                    <a href="<?= admin_url('akademik/program/' . $p['id'] . '/edit') ?>"
                         class="btn btn-sm btn-outline-primary flex-grow-1">
                         <i class="bi bi-pencil me-1"></i>Edit
                     </a>
-                    <form method="post" action="<?= base_url('admin/akademik/program/' . $p['id'] . '/delete') ?>"
+                    <form method="post" action="<?= admin_url('akademik/program/' . $p['id'] . '/delete') ?>"
                         data-confirm="Hapus program ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                         <?= csrf_field() ?>
                         <button type="submit" class="btn btn-sm btn-outline-danger">
@@ -89,7 +89,7 @@
                     <tr>
                         <td colspan="6" class="text-center text-muted py-5">
                             <i class="bi bi-inbox fs-2 d-block mb-2"></i>
-                            Belum ada program. <a href="<?= base_url('admin/akademik/program/create') ?>">Tambah sekarang</a>
+                            Belum ada program. <a href="<?= admin_url('akademik/program/create') ?>">Tambah sekarang</a>
                         </td>
                     </tr>
                 <?php else: ?>
@@ -118,11 +118,11 @@
                                 <?php endif; ?>
                             </td>
                             <td>
-                                <a href="<?= base_url('admin/akademik/program/' . $p['id'] . '/edit') ?>"
+                                <a href="<?= admin_url('akademik/program/' . $p['id'] . '/edit') ?>"
                                    class="btn btn-sm btn-outline-primary me-1" title="Edit">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <form method="post" action="<?= base_url('admin/akademik/program/' . $p['id'] . '/delete') ?>"
+                                <form method="post" action="<?= admin_url('akademik/program/' . $p['id'] . '/delete') ?>"
                                       class="d-inline"
                                       data-confirm="Hapus program ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                                     <?= csrf_field() ?>

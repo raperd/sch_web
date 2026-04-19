@@ -83,7 +83,7 @@
                             <?= ucfirst($user['role']) ?>
                         </span>
                         <?php if (!empty($user['avatar'])): ?>
-                        <form method="post" action="<?= base_url('admin/profile/delete-avatar') ?>" class="d-inline ms-1"
+                        <form method="post" action="<?= admin_url('profile/delete-avatar') ?>" class="d-inline ms-1"
                             data-confirm="Hapus foto profil?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                             <?= csrf_field() ?>
                             <button type="submit" class="btn btn-sm btn-link text-danger p-0" title="Hapus foto">
@@ -97,7 +97,7 @@
                 <!-- Hidden file input for avatar crop -->
                 <input type="file" id="avatarFileInput" accept="image/jpeg,image/png,image/webp" class="d-none">
 
-                <form action="<?= base_url('admin/profile/update-info') ?>" method="POST">
+                <form action="<?= admin_url('profile/update-info') ?>" method="POST">
                     <?= csrf_field() ?>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Nama Lengkap <span class="text-danger">*</span></label>
@@ -131,7 +131,7 @@
             <div class="card-body">
                 <p class="text-muted small mb-4">Password baru minimal 8 karakter. Gunakan kombinasi huruf, angka, dan simbol untuk keamanan lebih baik.</p>
 
-                <form action="<?= base_url('admin/profile/change-password') ?>" method="POST" id="changePassForm">
+                <form action="<?= admin_url('profile/change-password') ?>" method="POST" id="changePassForm">
                     <?= csrf_field() ?>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Password Lama <span class="text-danger">*</span></label>
@@ -227,7 +227,7 @@
 </div>
 
 <!-- Form tersembunyi untuk upload avatar -->
-<form id="avatarUploadForm" method="post" action="<?= base_url('admin/profile/update-avatar') ?>">
+<form id="avatarUploadForm" method="post" action="<?= admin_url('profile/update-avatar') ?>">
     <?= csrf_field() ?>
     <input type="hidden" name="avatar_cropped" id="avatarCroppedInput">
 </form>

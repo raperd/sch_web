@@ -7,7 +7,7 @@
         <h4 class="fw-bold mb-0">Manajemen Artikel</h4>
         <p class="text-muted small mb-0">Kelola semua artikel dan berita sekolah</p>
     </div>
-    <a href="<?= base_url('admin/artikel/create') ?>" class="btn btn-primary btn-lg">
+    <a href="<?= admin_url('artikel/create') ?>" class="btn btn-primary btn-lg">
         <i class="bi bi-plus-circle me-1"></i>Tulis Artikel
     </a>
 </div>
@@ -37,7 +37,7 @@
 <!-- Filter & Search -->
 <div class="card border-0 shadow-sm mb-4">
     <div class="card-body p-3">
-        <form method="get" action="<?= base_url('admin/artikel') ?>" class="row g-2 align-items-end">
+        <form method="get" action="<?= admin_url('artikel') ?>" class="row g-2 align-items-end">
             <div class="col-sm-5 col-md-6">
                 <label class="form-label form-label-sm">Cari Artikel</label>
                 <div class="input-group input-group-sm">
@@ -56,7 +56,7 @@
             </div>
             <div class="col-sm-4 col-md-3 d-flex gap-2">
                 <button type="submit" class="btn btn-primary btn-sm flex-grow-1">Filter</button>
-                <a href="<?= base_url('admin/artikel') ?>" class="btn btn-outline-secondary btn-sm">Reset</a>
+                <a href="<?= admin_url('artikel') ?>" class="btn btn-outline-secondary btn-sm">Reset</a>
             </div>
         </form>
     </div>
@@ -103,7 +103,7 @@
                     </small>
                 </div>
                 <div class="card-footer bg-white border-top p-2 d-flex gap-2">
-                    <form method="post" action="<?= base_url('admin/artikel/toggle-status/' . $a['id']) ?>" class="flex-grow-1">
+                    <form method="post" action="<?= admin_url('artikel/toggle-status/' . $a['id']) ?>" class="flex-grow-1">
                         <?= csrf_field() ?>
                         <button type="submit" class="btn btn-sm text-bg-<?= $sCls ?> border-0 w-100">
                             <?= $sLbl ?>
@@ -113,11 +113,11 @@
                         class="btn btn-sm btn-outline-secondary" title="Lihat">
                         <i class="bi bi-eye"></i>
                     </a>
-                    <a href="<?= base_url('admin/artikel/edit/' . $a['id']) ?>"
+                    <a href="<?= admin_url('artikel/edit/' . $a['id']) ?>"
                         class="btn btn-sm btn-outline-primary" title="Edit">
                         <i class="bi bi-pencil"></i>
                     </a>
-                    <form method="post" action="<?= base_url('admin/artikel/delete/' . $a['id']) ?>"
+                    <form method="post" action="<?= admin_url('artikel/delete/' . $a['id']) ?>"
                         data-confirm="Hapus artikel ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                         <?= csrf_field() ?>
                         <button type="submit" class="btn btn-sm btn-outline-danger">
@@ -130,7 +130,7 @@
     <?php else: ?>
         <div class="text-center py-5 text-muted">
             <i class="bi bi-newspaper display-5 d-block mb-2 opacity-25"></i>
-            Belum ada artikel. <a href="<?= base_url('admin/artikel/create') ?>">Tulis sekarang</a>
+            Belum ada artikel. <a href="<?= admin_url('artikel/create') ?>">Tulis sekarang</a>
         </div>
     <?php endif; ?>
     <?php if (isset($pager)): ?>
@@ -188,7 +188,7 @@
                                 <?= !empty($a['published_at']) ? format_tanggal($a['published_at'], 'short') : format_tanggal($a['created_at'], 'short') ?>
                             </td>
                             <td class="text-center">
-                                <form method="post" action="<?= base_url('admin/artikel/toggle-status/' . $a['id']) ?>" class="d-inline">
+                                <form method="post" action="<?= admin_url('artikel/toggle-status/' . $a['id']) ?>" class="d-inline">
                                     <?= csrf_field() ?>
                                     <?php
                                     $statusConfig = [
@@ -205,7 +205,7 @@
                                 </form>
                             </td>
                             <td class="text-center">
-                                <form method="post" action="<?= base_url('admin/artikel/toggle-featured/' . $a['id']) ?>" class="d-inline">
+                                <form method="post" action="<?= admin_url('artikel/toggle-featured/' . $a['id']) ?>" class="d-inline">
                                     <?= csrf_field() ?>
                                     <button type="submit" class="btn btn-sm btn-link p-0 <?= $a['is_featured'] ? 'text-warning' : 'text-muted' ?>"
                                         title="Toggle pilihan">
@@ -219,11 +219,11 @@
                                         class="btn btn-sm btn-outline-secondary" title="Lihat di publik">
                                         <i class="bi bi-eye"></i>
                                     </a>
-                                    <a href="<?= base_url('admin/artikel/edit/' . $a['id']) ?>"
+                                    <a href="<?= admin_url('artikel/edit/' . $a['id']) ?>"
                                         class="btn btn-sm btn-outline-primary" title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <form method="post" action="<?= base_url('admin/artikel/delete/' . $a['id']) ?>" class="d-inline"
+                                    <form method="post" action="<?= admin_url('artikel/delete/' . $a['id']) ?>" class="d-inline"
                                         data-confirm="Hapus artikel ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                                         <?= csrf_field() ?>
                                         <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus">
@@ -239,7 +239,7 @@
                         <td colspan="7" class="text-center py-5 text-muted">
                             <i class="bi bi-newspaper display-5 d-block mb-2 opacity-25"></i>
                             Belum ada artikel.
-                            <a href="<?= base_url('admin/artikel/create') ?>">Tulis sekarang</a>
+                            <a href="<?= admin_url('artikel/create') ?>">Tulis sekarang</a>
                         </td>
                     </tr>
                 <?php endif; ?>

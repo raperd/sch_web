@@ -86,6 +86,6 @@ class PengaturanController extends BaseController
             $this->model->setByKey($key, $newName);
         }
 
-        return redirect()->to(base_url('admin/pengaturan'))->with('success', 'Pengaturan berhasil disimpan.');
+        return redirect()->to(admin_url('pengaturan'))->with('success', 'Pengaturan berhasil disimpan.');
     }
 }

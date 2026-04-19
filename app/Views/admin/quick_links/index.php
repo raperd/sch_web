@@ -6,7 +6,7 @@
         <h4 class="fw-bold mb-0">Quick Links</h4>
         <small class="text-muted">Kelola tombol pintasan yang tampil di beranda</small>
     </div>
-    <a href="<?= base_url('admin/quick-links/create') ?>" class="btn btn-primary">
+    <a href="<?= admin_url('quick-links/create') ?>" class="btn btn-primary">
         <i class="bi bi-plus-lg me-1"></i>Tambah Link
     </a>
 </div>
@@ -63,7 +63,7 @@
                             <code class="text-primary small"><?= esc($ql['url']) ?></code>
                         </div>
                         <div class="ms-auto">
-                            <form method="post" action="<?= base_url('admin/quick-links/toggle/' . $ql['id']) ?>">
+                            <form method="post" action="<?= admin_url('quick-links/toggle/' . $ql['id']) ?>">
                                 <?= csrf_field() ?>
                                 <button type="submit" class="btn btn-sm border-0 p-0" title="Toggle aktif">
                                     <i class="bi <?= $ql['is_active'] ? 'bi-toggle-on text-success' : 'bi-toggle-off text-secondary' ?>" style="font-size:1.6rem;"></i>
@@ -79,11 +79,11 @@
                     </div>
                 </div>
                 <div class="card-footer bg-white border-top p-2 d-flex gap-2 justify-content-end">
-                    <a href="<?= base_url('admin/quick-links/edit/' . $ql['id']) ?>"
+                    <a href="<?= admin_url('quick-links/edit/' . $ql['id']) ?>"
                         class="btn btn-sm btn-outline-primary flex-grow-1">
                         <i class="bi bi-pencil me-1"></i>Edit
                     </a>
-                    <form method="post" action="<?= base_url('admin/quick-links/delete/' . $ql['id']) ?>"
+                    <form method="post" action="<?= admin_url('quick-links/delete/' . $ql['id']) ?>"
                         class="d-inline" data-confirm="Hapus quick link ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                         <?= csrf_field() ?>
                         <button type="submit" class="btn btn-sm btn-outline-danger">
@@ -96,7 +96,7 @@
     <?php else: ?>
         <div class="text-center py-5 text-muted">
             <i class="bi bi-link-45deg display-3 mb-3 d-block"></i>
-            <p>Belum ada quick link. <a href="<?= base_url('admin/quick-links/create') ?>">Tambah sekarang</a></p>
+            <p>Belum ada quick link. <a href="<?= admin_url('quick-links/create') ?>">Tambah sekarang</a></p>
         </div>
     <?php endif; ?>
 </div>
@@ -144,7 +144,7 @@
                                 </span>
                             </td>
                             <td class="text-center">
-                                <form method="post" action="<?= base_url('admin/quick-links/toggle/' . $ql['id']) ?>">
+                                <form method="post" action="<?= admin_url('quick-links/toggle/' . $ql['id']) ?>">
                                     <?= csrf_field() ?>
                                     <button type="submit" class="btn btn-sm border-0 p-0" title="Klik untuk toggle">
                                         <i class="bi <?= $ql['is_active'] ? 'bi-toggle-on text-success' : 'bi-toggle-off text-secondary' ?>" style="font-size:1.5rem;"></i>
@@ -152,11 +152,11 @@
                                 </form>
                             </td>
                             <td class="text-end pe-3">
-                                <a href="<?= base_url('admin/quick-links/edit/' . $ql['id']) ?>"
+                                <a href="<?= admin_url('quick-links/edit/' . $ql['id']) ?>"
                                     class="btn btn-sm btn-outline-primary me-1">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <form method="post" action="<?= base_url('admin/quick-links/delete/' . $ql['id']) ?>"
+                                <form method="post" action="<?= admin_url('quick-links/delete/' . $ql['id']) ?>"
                                     class="d-inline" data-confirm="Hapus quick link ini?" data-confirm-ok="Ya, Hapus" data-confirm-class="btn-danger" data-confirm-type="danger">
                                     <?= csrf_field() ?>
                                     <button type="submit" class="btn btn-sm btn-outline-danger">
@@ -172,7 +172,7 @@
         <?php else: ?>
             <div class="text-center py-5 text-muted">
                 <i class="bi bi-link-45deg display-3 mb-3 d-block"></i>
-                <p>Belum ada quick link. <a href="<?= base_url('admin/quick-links/create') ?>">Tambah sekarang</a></p>
+                <p>Belum ada quick link. <a href="<?= admin_url('quick-links/create') ?>">Tambah sekarang</a></p>
             </div>
         <?php endif; ?>
     </div>

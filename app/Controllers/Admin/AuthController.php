@@ -10,7 +10,7 @@ class AuthController extends BaseController
     public function login(): string
     {
         if (session()->get('admin_logged_in')) {
-            return redirect()->to('/admin/dashboard');
+            return redirect()->to(admin_url('dashboard'));
         }
 
         return view('admin/auth/login', [
@@ -36,7 +36,7 @@ class AuthController extends BaseController
         $user = $model->findByUsername($username);
 
         if (! $user || ! password_verify($password, $user['password'])) {
-            return redirect()->to('/admin/login')->withInput()->with('error', 'Username atau password salah.');
+            return redirect()->to(admin_url('login'))->withInput()->with('error', 'Username atau password salah.');
         }
 
         // Set session
@@ -51,13 +51,13 @@ class AuthController extends BaseController
 
         $model->updateLastLogin($user['id']);
 
-        return redirect()->to('/admin/dashboard')->with('success', 'Selamat datang, ' . $user['nama'] . '!');
+        return redirect()->to(admin_url('dashboard'))->with('success', 'Selamat datang, ' . $user['nama'] . '!');
     }
 
     public function logout(): \CodeIgniter\HTTP\RedirectResponse
     {
         session()->destroy();
 
-        return redirect()->to('/admin/login')->with('success', 'Anda telah berhasil logout.');
+        return redirect()->to(admin_url('login'))->with('success', 'Anda telah berhasil logout.');
     }
 }

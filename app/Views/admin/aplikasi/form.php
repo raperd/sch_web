@@ -2,7 +2,7 @@
 
 <?= $this->section('content') ?>
 <div class="mb-4">
-    <a href="<?= base_url('admin/aplikasi') ?>" class="btn btn-sm btn-outline-secondary mb-3">
+    <a href="<?= admin_url('aplikasi') ?>" class="btn btn-sm btn-outline-secondary mb-3">
         <i class="bi bi-arrow-left me-1"></i>Kembali
     </a>
     <h4 class="fw-bold mb-0"><?= esc($title) ?></h4>
@@ -21,7 +21,7 @@
             </div>
         <?php endif; ?>
 
-        <?php $actionUrl = $app ? base_url('admin/aplikasi/update/'.$app['id']) : base_url('admin/aplikasi/store'); ?>
+        <?php $actionUrl = $app ? admin_url('aplikasi/update/'.$app['id']) : admin_url('aplikasi/store'); ?>
         <form method="post" action="<?= $actionUrl ?>" enctype="multipart/form-data">
             <?= csrf_field() ?>
 

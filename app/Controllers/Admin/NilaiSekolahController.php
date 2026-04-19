@@ -49,7 +49,7 @@ class NilaiSekolahController extends BaseController
             'urutan'    => (int) ($this->request->getPost('urutan') ?: 0),
         ]);
 
-        return redirect()->to(base_url('admin/nilai-sekolah'))->with('success', 'Nilai sekolah berhasil ditambahkan.');
+        return redirect()->to(admin_url('nilai-sekolah'))->with('success', 'Nilai sekolah berhasil ditambahkan.');
     }
 
     public function edit(int $id): string
@@ -83,7 +83,7 @@ class NilaiSekolahController extends BaseController
             'urutan'    => (int) ($this->request->getPost('urutan') ?: 0),
         ]);
 
-        return redirect()->to(base_url('admin/nilai-sekolah'))->with('success', 'Nilai sekolah berhasil diperbarui.');
+        return redirect()->to(admin_url('nilai-sekolah'))->with('success', 'Nilai sekolah berhasil diperbarui.');
     }
 
     public function delete(int $id)
@@ -91,6 +91,6 @@ class NilaiSekolahController extends BaseController
         $nilai = $this->model->find($id);
         if (! $nilai) return redirect()->back()->with('error', 'Data tidak ditemukan.');
         $this->model->delete($id);
-        return redirect()->to(base_url('admin/nilai-sekolah'))->with('success', 'Nilai sekolah berhasil dihapus.');
+        return redirect()->to(admin_url('nilai-sekolah'))->with('success', 'Nilai sekolah berhasil dihapus.');
     }
 }

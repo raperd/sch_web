@@ -178,7 +178,7 @@ class ArtikelController extends BaseController
             'published_at'=> $publishedAt,
         ]);
 
-        return redirect()->to(base_url('admin/artikel'))->with('success', 'Artikel berhasil disimpan.');
+        return redirect()->to(admin_url('artikel'))->with('success', 'Artikel berhasil disimpan.');
     }
 
     public function edit(int $id): string
@@ -190,7 +190,7 @@ class ArtikelController extends BaseController
 
         // Kontributor can only edit their own articles
         if (session('admin_role') === 'kontributor' && (int)$artikel['user_id'] !== (int)session('admin_id')) {
-            return redirect()->to(base_url('admin/artikel'))->with('error', 'Anda tidak memiliki izin untuk mengedit artikel ini.');
+            return redirect()->to(admin_url('artikel'))->with('error', 'Anda tidak memiliki izin untuk mengedit artikel ini.');
         }
 
         return view('admin/artikel/edit', [
@@ -209,7 +209,7 @@ class ArtikelController extends BaseController
 
         // Kontributor can only update their own articles
         if (session('admin_role') === 'kontributor' && (int)$artikel['user_id'] !== (int)session('admin_id')) {
-            return redirect()->to(base_url('admin/artikel'))->with('error', 'Anda tidak memiliki izin untuk mengubah artikel ini.');
+            return redirect()->to(admin_url('artikel'))->with('error', 'Anda tidak memiliki izin untuk mengubah artikel ini.');
         }
 
         $rules = [
@@ -267,7 +267,7 @@ class ArtikelController extends BaseController
             'published_at'=> $publishedAt,
         ]);
 
-        return redirect()->to(base_url('admin/artikel'))->with('success', 'Artikel berhasil diperbarui.');
+        return redirect()->to(admin_url('artikel'))->with('success', 'Artikel berhasil diperbarui.');
     }
 
     public function delete(int $id)
@@ -279,7 +279,7 @@ class ArtikelController extends BaseController
 
         // Kontributor can only delete their own articles
         if (session('admin_role') === 'kontributor' && (int)$artikel['user_id'] !== (int)session('admin_id')) {
-            return redirect()->to(base_url('admin/artikel'))->with('error', 'Anda tidak memiliki izin untuk menghapus artikel ini.');
+            return redirect()->to(admin_url('artikel'))->with('error', 'Anda tidak memiliki izin untuk menghapus artikel ini.');
         }
 
         if (! empty($artikel['thumbnail'])) {
@@ -287,7 +287,7 @@ class ArtikelController extends BaseController
         }
 
         $this->model->delete($id);
-        return redirect()->to(base_url('admin/artikel'))->with('success', 'Artikel berhasil dihapus.');
+        return redirect()->to(admin_url('artikel'))->with('success', 'Artikel berhasil dihapus.');
     }
 
     public function toggleStatus(int $id)

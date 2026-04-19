@@ -15,7 +15,7 @@
 <?= $this->section('content') ?>
 
 <div class="d-flex align-items-center gap-2 mb-4">
-    <a href="<?= base_url('admin/artikel') ?>" class="btn btn-sm btn-outline-secondary">
+    <a href="<?= admin_url('artikel') ?>" class="btn btn-sm btn-outline-secondary">
         <i class="bi bi-arrow-left"></i>
     </a>
     <div>
@@ -36,7 +36,7 @@
     </div>
 <?php endif; ?>
 
-<form method="post" action="<?= base_url('admin/artikel/update/' . $artikel['id']) ?>" enctype="multipart/form-data" id="artikelForm">
+<form method="post" action="<?= admin_url('artikel/update/' . $artikel['id']) ?>" enctype="multipart/form-data" id="artikelForm">
     <?= csrf_field() ?>
 
     <div class="row g-4">
@@ -236,7 +236,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 <script>
 // ===================== QUILL IMAGE UPLOAD TO SERVER =====================
-const UPLOAD_URL = '<?= base_url('admin/artikel/upload-image') ?>';
+const UPLOAD_URL = '<?= admin_url('artikel/upload-image') ?>';
 const CSRF_TOKEN = '<?= csrf_token() ?>';
 const CSRF_HASH  = '<?= csrf_hash() ?>';
 

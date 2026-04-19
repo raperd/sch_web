@@ -59,7 +59,7 @@ class PpdbController extends BaseController
             'is_active'  => (int) ($this->request->getPost('is_active') === '1'),
         ]);
 
-        return redirect()->to(base_url('admin/ppdb'))->with('success', 'Konten PPDB berhasil disimpan.');
+        return redirect()->to(admin_url('ppdb'))->with('success', 'Konten PPDB berhasil disimpan.');
     }
 
     public function edit(int $id): string
@@ -100,7 +100,7 @@ class PpdbController extends BaseController
             'is_active'  => (int) ($this->request->getPost('is_active') === '1'),
         ]);
 
-        return redirect()->to(base_url('admin/ppdb'))->with('success', 'Konten PPDB berhasil diperbarui.');
+        return redirect()->to(admin_url('ppdb'))->with('success', 'Konten PPDB berhasil diperbarui.');
     }
 
     public function delete(int $id)
@@ -110,6 +110,6 @@ class PpdbController extends BaseController
         }
 
         $this->model->delete($id);
-        return redirect()->to(base_url('admin/ppdb'))->with('success', 'Konten PPDB berhasil dihapus.');
+        return redirect()->to(admin_url('ppdb'))->with('success', 'Konten PPDB berhasil dihapus.');
     }
 }
