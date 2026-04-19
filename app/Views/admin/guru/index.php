@@ -129,7 +129,7 @@ $tipeLabel = ['guru' => 'Guru', 'staf' => 'Staf', 'tendik' => 'Tendik'];
     <?php endif; ?>
     <?php if (isset($pager)): ?>
         <div class="d-flex justify-content-center py-3">
-            <?= $pager->links('guru', 'default_full') ?>
+            <?= $pager->links('guru', 'bs5_full') ?>
         </div>
     <?php endif; ?>
 </div>
@@ -230,7 +230,7 @@ $tipeLabel = ['guru' => 'Guru', 'staf' => 'Staf', 'tendik' => 'Tendik'];
     </div>
     <?php if (isset($pager)): ?>
         <div class="card-footer bg-white border-top-0 d-flex justify-content-center py-3">
-            <?= $pager->links('guru', 'default_full') ?>
+            <?= $pager->links('guru', 'bs5_full') ?>
         </div>
     <?php endif; ?>
 </div>

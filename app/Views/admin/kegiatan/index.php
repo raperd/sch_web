@@ -129,7 +129,7 @@
     <?php endif; ?>
     <?php if (isset($pager)): ?>
         <div class="d-flex justify-content-center py-3">
-            <?= $pager->links('kegiatan', 'default_full') ?>
+            <?= $pager->links('kegiatan', 'bs5_full') ?>
         </div>
     <?php endif; ?>
 </div>
@@ -227,7 +227,7 @@
     </div>
     <?php if (isset($pager)): ?>
         <div class="card-footer bg-white border-top-0 d-flex justify-content-center py-3">
-            <?= $pager->links('kegiatan', 'default_full') ?>
+            <?= $pager->links('kegiatan', 'bs5_full') ?>
         </div>
     <?php endif; ?>
 </div>

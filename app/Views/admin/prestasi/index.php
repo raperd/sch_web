@@ -167,7 +167,7 @@ $tingkatLabel = [
     <?php endif; ?>
     <?php if ($pager): ?>
         <div class="d-flex justify-content-center py-3">
-            <?= $pager->links('prestasi', 'default_full') ?>
+            <?= $pager->links('prestasi', 'bs5_full') ?>
         </div>
     <?php endif; ?>
 </div>
@@ -259,7 +259,7 @@ $tingkatLabel = [
     </div>
     <?php if ($pager): ?>
         <div class="card-footer border-0 bg-transparent">
-            <?= $pager->links('prestasi', 'default_full') ?>
+            <?= $pager->links('prestasi', 'bs5_full') ?>
         </div>
     <?php endif; ?>
 </div>

@@ -113,7 +113,7 @@
     </div>
     <?php if (isset($pager)): ?>
         <div class="d-flex justify-content-center">
-            <?= $pager->links('galeri', 'default_full') ?>
+            <?= $pager->links('galeri', 'bs5_full') ?>
         </div>
     <?php endif; ?>
 <?php else: ?>
