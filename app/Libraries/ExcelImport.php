@@ -97,7 +97,7 @@ class ExcelImport
         // ── Baris 1: Header ──────────────────────────────────────────
         foreach ($headers as $i => $header) {
             $col = $i + 1;
-            $sheet->setCellValueByColumnAndRow($col, 1, $header);
+            $sheet->setCellValue([$col, 1], $header);
         }
 
         $lastCol = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colCount);
@@ -114,7 +114,7 @@ class ExcelImport
         $exampleRow = $example[0] ?? [];
         foreach ($headers as $i => $header) {
             $val = $exampleRow[$i] ?? '';
-            $sheet->setCellValueByColumnAndRow($i + 1, 2, $val);
+            $sheet->setCellValue([$i + 1, 2], $val);
         }
 
         $sheet->getStyle("A2:{$lastCol}2")->applyFromArray([
@@ -150,7 +150,8 @@ class ExcelImport
 
         // ── Auto width kolom ──────────────────────────────────────────
         foreach (range(1, $colCount) as $col) {
-            $sheet->getColumnDimensionByColumn($col)->setAutoSize(true);
+            $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col);
+            $sheet->getColumnDimension($colLetter)->setAutoSize(true);
         }
 
         $spreadsheet->setActiveSheetIndex(0);
