@@ -162,6 +162,101 @@ class KepalaSekolahController extends BaseController
         return redirect()->to(admin_url('kepala-sekolah'))->with('success', 'Data berhasil dihapus.');
     }
 
+    // ─── Import Excel ────────────────────────────────────────────────
+
+    public function importForm(): string
+    {
+        return view('admin/import/form', [
+            'title'        => 'Import Kepala Sekolah',
+            'module_name'  => 'Kepala Sekolah',
+            'back_url'     => admin_url('kepala-sekolah'),
+            'import_url'   => admin_url('kepala-sekolah/import'),
+            'template_url' => admin_url('kepala-sekolah/import-template'),
+            'columns_info' => [
+                ['name' => 'nama',            'required' => true,  'info' => 'Nama lengkap (tanpa gelar)'],
+                ['name' => 'gelar_depan',      'required' => false, 'info' => 'Gelar depan, contoh: Drs.'],
+                ['name' => 'gelar_belakang',   'required' => false, 'info' => 'Gelar belakang, contoh: M.Pd.'],
+                ['name' => 'periode_mulai',    'required' => true,  'info' => 'Tahun mulai menjabat (4 digit)'],
+                ['name' => 'periode_selesai',  'required' => false, 'info' => 'Tahun selesai (kosongkan jika masih menjabat)'],
+                ['name' => 'keterangan',       'required' => false, 'info' => 'Catatan tambahan'],
+                ['name' => 'urutan',           'required' => false, 'info' => 'Angka urutan tampil (default: 0)'],
+            ],
+        ]);
+    }
+
+    public function downloadTemplate()
+    {
+        $importer = new \App\Libraries\ExcelImport();
+        $importer->streamTemplate(
+            'template_kepala_sekolah',
+            ['nama', 'gelar_depan', 'gelar_belakang', 'periode_mulai', 'periode_selesai', 'keterangan', 'urutan'],
+            [['Nama Kepala Sekolah', 'Drs.', 'M.Pd.', '2020', '2024', 'Kepala sekolah periode reformasi', '1']],
+            [
+                'nama'           => 'Wajib. Nama lengkap tanpa gelar. Maks. 150 karakter.',
+                'gelar_depan'    => 'Opsional. Gelar akademik/pangkat di depan nama. Contoh: Drs., Dr.',
+                'gelar_belakang' => 'Opsional. Gelar di belakang nama. Contoh: M.Pd., S.Pd.',
+                'periode_mulai'  => 'Wajib. Tahun mulai menjabat, 4 digit. Contoh: 2020.',
+                'periode_selesai'=> 'Opsional. Tahun selesai menjabat. Kosongkan jika masih menjabat.',
+                'keterangan'     => 'Opsional. Catatan atau keterangan tambahan.',
+                'urutan'         => 'Opsional. Angka urutan tampil. Default: 0.',
+            ]
+        );
+    }
+
+    public function import()
+    {
+        $file = $this->request->getFile('import_file');
+
+        if (! $file || ! $file->isValid()) {
+            return redirect()->back()->with('error', 'File tidak valid.');
+        }
+        if ($file->getSize() > 5 * 1024 * 1024) {
+            return redirect()->back()->with('error', 'Ukuran file melebihi 5 MB.');
+        }
+
+        $importer = new \App\Libraries\ExcelImport();
+        $rows     = $importer->readRows($file->getTempName());
+
+        $success    = 0;
+        $errors     = [];
+        $nextUrutan = ($this->model->selectMax('urutan')->first()['urutan'] ?? 0) + 1;
+
+        foreach ($rows as $entry) {
+            $rowNum = $entry['row'];
+            $d      = $entry['data'];
+
+            if (empty($d['nama'])) {
+                $errors[] = "Baris {$rowNum}: kolom 'nama' wajib diisi.";
+                continue;
+            }
+            if (empty($d['periode_mulai']) || ! preg_match('/^\d{4}$/', $d['periode_mulai'])) {
+                $errors[] = "Baris {$rowNum}: 'periode_mulai' harus 4 digit angka.";
+                continue;
+            }
+            $periodeSelesai = (isset($d['periode_selesai']) && preg_match('/^\d{4}$/', $d['periode_selesai']))
+                ? (int) $d['periode_selesai']
+                : null;
+
+            $this->model->insert([
+                'nama'            => $d['nama'],
+                'gelar_depan'     => $d['gelar_depan']    ?? null ?: null,
+                'gelar_belakang'  => $d['gelar_belakang'] ?? null ?: null,
+                'periode_mulai'   => (int) $d['periode_mulai'],
+                'periode_selesai' => $periodeSelesai,
+                'keterangan'      => $d['keterangan']     ?? null ?: null,
+                'urutan'          => isset($d['urutan']) && $d['urutan'] !== '' ? (int) $d['urutan'] : $nextUrutan++,
+            ]);
+            $success++;
+        }
+
+        if ($errors) {
+            session()->setFlashdata('import_errors', $errors);
+        }
+
+        return redirect()->to(admin_url('kepala-sekolah'))
+            ->with('success', "{$success} data kepala sekolah berhasil diimpor." . ($errors ? ' ' . count($errors) . ' baris gagal.' : ''));
+    }
+
     private function _saveCroppedFoto(string $b64): ?string
     {
         [, $data] = explode(',', $b64, 2);

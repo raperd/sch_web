@@ -73,6 +73,9 @@ $routes->group($adminPfx, ['filter' => 'admin_auth'], static function (RouteColl
     $routes->get('kepala-sekolah/edit/(:num)', 'Admin\KepalaSekolahController::edit/$1');
     $routes->post('kepala-sekolah/update/(:num)', 'Admin\KepalaSekolahController::update/$1');
     $routes->post('kepala-sekolah/delete/(:num)', 'Admin\KepalaSekolahController::delete/$1');
+    $routes->get('kepala-sekolah/import-form',     'Admin\KepalaSekolahController::importForm');
+    $routes->get('kepala-sekolah/import-template', 'Admin\KepalaSekolahController::downloadTemplate');
+    $routes->post('kepala-sekolah/import',         'Admin\KepalaSekolahController::import');
 
     // -----------------------------------------------------------------
     // Guru & Staf
@@ -85,6 +88,9 @@ $routes->group($adminPfx, ['filter' => 'admin_auth'], static function (RouteColl
     $routes->post('guru/delete/(:num)', 'Admin\GuruController::delete/$1');
     $routes->post('guru/toggle/(:num)', 'Admin\GuruController::toggleActive/$1');
     $routes->post('guru/urutan', 'Admin\GuruController::updateUrutan');
+    $routes->get('guru/import-form',     'Admin\GuruController::importForm');
+    $routes->get('guru/import-template', 'Admin\GuruController::downloadTemplate');
+    $routes->post('guru/import',         'Admin\GuruController::import');
 
     // -----------------------------------------------------------------
     // Galeri
@@ -195,6 +201,9 @@ $routes->group($adminPfx, ['filter' => 'admin_auth'], static function (RouteColl
     $routes->get('ekskul/edit/(:num)', 'Admin\EkstrakurikulerController::edit/$1');
     $routes->post('ekskul/update/(:num)', 'Admin\EkstrakurikulerController::update/$1');
     $routes->post('ekskul/delete/(:num)', 'Admin\EkstrakurikulerController::delete/$1');
+    $routes->get('ekskul/import-form',     'Admin\EkstrakurikulerController::importForm');
+    $routes->get('ekskul/import-template', 'Admin\EkstrakurikulerController::downloadTemplate');
+    $routes->post('ekskul/import',         'Admin\EkstrakurikulerController::import');
 
     // -----------------------------------------------------------------
     // Prestasi
@@ -205,6 +214,9 @@ $routes->group($adminPfx, ['filter' => 'admin_auth'], static function (RouteColl
     $routes->get('prestasi/edit/(:num)', 'Admin\PrestasiController::edit/$1');
     $routes->post('prestasi/update/(:num)', 'Admin\PrestasiController::update/$1');
     $routes->post('prestasi/delete/(:num)', 'Admin\PrestasiController::delete/$1');
+    $routes->get('prestasi/import-form',     'Admin\PrestasiController::importForm');
+    $routes->get('prestasi/import-template', 'Admin\PrestasiController::downloadTemplate');
+    $routes->post('prestasi/import',         'Admin\PrestasiController::import');
 
     // -----------------------------------------------------------------
     // Fasilitas

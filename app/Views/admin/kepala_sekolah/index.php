@@ -6,9 +6,14 @@
         <h4 class="fw-bold mb-0">Kepala Sekolah</h4>
         <small class="text-muted">Data kepala sekolah dari masa ke masa</small>
     </div>
-    <a href="<?= admin_url('kepala-sekolah/create') ?>" class="btn btn-primary">
-        <i class="bi bi-plus-lg me-1"></i>Tambah Data
-    </a>
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="<?= admin_url('kepala-sekolah/import-form') ?>" class="btn btn-outline-success">
+            <i class="bi bi-file-earmark-excel me-1"></i>Import Excel
+        </a>
+        <a href="<?= admin_url('kepala-sekolah/create') ?>" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i>Tambah Data
+        </a>
+    </div>
 </div>
 
 <?php if (session()->getFlashdata('success')): ?>

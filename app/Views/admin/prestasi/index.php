@@ -6,9 +6,14 @@
         <h4 class="fw-bold mb-0">Manajemen Prestasi</h4>
         <p class="text-muted small mb-0">Kelola pencapaian akademik dan non-akademik sekolah</p>
     </div>
-    <a href="<?= admin_url('prestasi/create') ?>" class="btn btn-primary">
-        <i class="bi bi-plus-lg me-1"></i>Tambah Prestasi
-    </a>
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="<?= admin_url('prestasi/import-form') ?>" class="btn btn-outline-success">
+            <i class="bi bi-file-earmark-excel me-1"></i>Import Excel
+        </a>
+        <a href="<?= admin_url('prestasi/create') ?>" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i>Tambah Prestasi
+        </a>
+    </div>
 </div>
 
 <?php if (session()->getFlashdata('success')): ?>

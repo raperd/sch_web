@@ -7,9 +7,14 @@
         <h4 class="fw-bold mb-0">Manajemen Guru & Staf</h4>
         <p class="text-muted small mb-0">Kelola data tenaga pendidik dan kependidikan</p>
     </div>
-    <a href="<?= admin_url('guru/create') ?>" class="btn btn-primary btn-lg">
-        <i class="bi bi-plus-circle me-1"></i>Tambah
-    </a>
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="<?= admin_url('guru/import-form') ?>" class="btn btn-outline-success">
+            <i class="bi bi-file-earmark-excel me-1"></i>Import Excel
+        </a>
+        <a href="<?= admin_url('guru/create') ?>" class="btn btn-primary btn-lg">
+            <i class="bi bi-plus-circle me-1"></i>Tambah
+        </a>
+    </div>
 </div>
 
 <!-- Stat Cards -->

@@ -215,4 +215,121 @@ class GuruController extends BaseController
 
         return $this->response->setJSON(['success' => true]);
     }
+
+    // ─── Import Excel ────────────────────────────────────────────────
+
+    public function importForm(): string
+    {
+        return view('admin/import/form', [
+            'title'        => 'Import Guru & Staf',
+            'module_name'  => 'Guru & Staf',
+            'back_url'     => admin_url('guru'),
+            'import_url'   => admin_url('guru/import'),
+            'template_url' => admin_url('guru/import-template'),
+            'columns_info' => [
+                ['name' => 'nama',           'required' => true,  'info' => 'Nama lengkap'],
+                ['name' => 'jabatan',        'required' => true,  'info' => 'Jabatan, contoh: Guru Matematika'],
+                ['name' => 'tipe',           'required' => true,  'info' => 'guru / staf / tendik'],
+                ['name' => 'nip',            'required' => false, 'info' => 'Nomor Induk Pegawai'],
+                ['name' => 'mata_pelajaran', 'required' => false, 'info' => 'Mata pelajaran yang diampu'],
+                ['name' => 'pendidikan',     'required' => false, 'info' => 'Pendidikan terakhir, contoh: S1 Matematika'],
+                ['name' => 'email_publik',   'required' => false, 'info' => 'Email yang bisa dilihat publik'],
+                ['name' => 'tahun_masuk',    'required' => false, 'info' => 'Tahun bergabung (4 digit)'],
+                ['name' => 'tahun_keluar',   'required' => false, 'info' => 'Tahun berhenti (kosong = masih aktif)'],
+                ['name' => 'status_keluar',  'required' => false, 'info' => 'purna_tugas atau mutasi'],
+                ['name' => 'is_active',      'required' => false, 'info' => '1 = aktif, 0 = nonaktif (default: 1)'],
+                ['name' => 'urutan',         'required' => false, 'info' => 'Angka urutan tampil (default: 0)'],
+            ],
+        ]);
+    }
+
+    public function downloadTemplate()
+    {
+        $importer = new \App\Libraries\ExcelImport();
+        $importer->streamTemplate(
+            'template_guru_staf',
+            ['nama', 'jabatan', 'tipe', 'nip', 'mata_pelajaran', 'pendidikan', 'email_publik', 'tahun_masuk', 'tahun_keluar', 'status_keluar', 'is_active', 'urutan'],
+            [['Budi Santoso', 'Guru Matematika', 'guru', '198501012010011001', 'Matematika', 'S1 Matematika UGM', 'budi@example.com', '2010', '', '', '1', '1']],
+            [
+                'nama'           => 'Wajib. Nama lengkap. Maks. 100 karakter.',
+                'jabatan'        => 'Wajib. Jabatan di sekolah. Maks. 100 karakter.',
+                'tipe'           => 'Wajib. Pilihan: guru, staf, tendik.',
+                'nip'            => 'Opsional. Nomor Induk Pegawai.',
+                'mata_pelajaran' => 'Opsional. Mata pelajaran yang diampu (untuk tipe guru).',
+                'pendidikan'     => 'Opsional. Riwayat pendidikan terakhir.',
+                'email_publik'   => 'Opsional. Alamat email publik.',
+                'tahun_masuk'    => 'Opsional. Tahun bergabung, 4 digit.',
+                'tahun_keluar'   => 'Opsional. Tahun berhenti. Kosongkan jika masih aktif.',
+                'status_keluar'  => 'Opsional. purna_tugas atau mutasi.',
+                'is_active'      => 'Opsional. 1 = aktif, 0 = nonaktif. Default: 1.',
+                'urutan'         => 'Opsional. Angka urutan tampil. Default: 0.',
+            ]
+        );
+    }
+
+    public function import()
+    {
+        $file = $this->request->getFile('import_file');
+
+        if (! $file || ! $file->isValid()) {
+            return redirect()->back()->with('error', 'File tidak valid.');
+        }
+        if ($file->getSize() > 5 * 1024 * 1024) {
+            return redirect()->back()->with('error', 'Ukuran file melebihi 5 MB.');
+        }
+
+        $validTipe         = ['guru', 'staf', 'tendik'];
+        $validStatusKeluar = ['purna_tugas', 'mutasi'];
+
+        $importer   = new \App\Libraries\ExcelImport();
+        $rows       = $importer->readRows($file->getTempName());
+
+        $success    = 0;
+        $errors     = [];
+        $nextUrutan = ($this->model->selectMax('urutan')->first()['urutan'] ?? 0) + 1;
+
+        foreach ($rows as $entry) {
+            $rowNum = $entry['row'];
+            $d      = $entry['data'];
+
+            if (empty($d['nama'])) {
+                $errors[] = "Baris {$rowNum}: kolom 'nama' wajib diisi.";
+                continue;
+            }
+            if (empty($d['jabatan'])) {
+                $errors[] = "Baris {$rowNum}: kolom 'jabatan' wajib diisi.";
+                continue;
+            }
+            if (! in_array($d['tipe'] ?? '', $validTipe)) {
+                $errors[] = "Baris {$rowNum}: 'tipe' harus guru, staf, atau tendik (diterima: '{$d['tipe']}').";
+                continue;
+            }
+
+            $statusKeluar = isset($d['status_keluar']) && in_array($d['status_keluar'], $validStatusKeluar)
+                ? $d['status_keluar'] : null;
+
+            $this->model->insert([
+                'nama'           => $d['nama'],
+                'jabatan'        => $d['jabatan'],
+                'tipe'           => $d['tipe'],
+                'nip'            => $d['nip']            ?? null ?: null,
+                'mata_pelajaran' => $d['mata_pelajaran'] ?? null ?: null,
+                'pendidikan'     => $d['pendidikan']     ?? null ?: null,
+                'email_publik'   => $d['email_publik']   ?? null ?: null,
+                'tahun_masuk'    => isset($d['tahun_masuk'])  && preg_match('/^\d{4}$/', $d['tahun_masuk'])  ? (int) $d['tahun_masuk']  : null,
+                'tahun_keluar'   => isset($d['tahun_keluar']) && preg_match('/^\d{4}$/', $d['tahun_keluar']) ? (int) $d['tahun_keluar'] : null,
+                'status_keluar'  => $statusKeluar,
+                'is_active'      => isset($d['is_active']) && $d['is_active'] !== '' ? (int) $d['is_active'] : 1,
+                'urutan'         => isset($d['urutan'])    && $d['urutan']    !== '' ? (int) $d['urutan']    : $nextUrutan++,
+            ]);
+            $success++;
+        }
+
+        if ($errors) {
+            session()->setFlashdata('import_errors', $errors);
+        }
+
+        return redirect()->to(admin_url('guru'))
+            ->with('success', "{$success} data guru/staf berhasil diimpor." . ($errors ? ' ' . count($errors) . ' baris gagal.' : ''));
+    }
 }

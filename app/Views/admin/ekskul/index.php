@@ -6,9 +6,14 @@
         <h4 class="fw-bold mb-0">Ekstrakurikuler</h4>
         <p class="text-muted small mb-0">Kelola kegiatan pengembangan diri siswa</p>
     </div>
-    <a href="<?= admin_url('ekskul/create') ?>" class="btn btn-primary btn-lg">
-        <i class="bi bi-plus-circle me-1"></i>Tambah
-    </a>
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="<?= admin_url('ekskul/import-form') ?>" class="btn btn-outline-success">
+            <i class="bi bi-file-earmark-excel me-1"></i>Import Excel
+        </a>
+        <a href="<?= admin_url('ekskul/create') ?>" class="btn btn-primary btn-lg">
+            <i class="bi bi-plus-circle me-1"></i>Tambah
+        </a>
+    </div>
 </div>
 
 <div class="row g-3 mb-4">
