@@ -23,15 +23,40 @@ if (! function_exists('setting')) {
 if (! function_exists('slug_generate')) {
     /**
      * Buat slug URL-safe dari string.
-     * Mendukung karakter Latin dan Unicode (bahasa Indonesia).
+     * Mendukung karakter Latin, diakritik, dan huruf umum bahasa Indonesia.
+     * Tidak memerlukan ekstensi iconv — hanya butuh mbstring (selalu aktif di CI4).
      */
     function slug_generate(string $string): string
     {
-        // Transliterasi karakter khusus
-        $string = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $string);
-        $string = strtolower($string);
-        $string = preg_replace('/[^a-z0-9\s-]/', '', $string);
-        $string = preg_replace('/[\s-]+/', '-', $string);
+        // Tabel transliterasi karakter diakritik → ASCII
+        static $map = [
+            'à'=>'a','á'=>'a','â'=>'a','ã'=>'a','ä'=>'a','å'=>'a','æ'=>'ae',
+            'ç'=>'c','è'=>'e','é'=>'e','ê'=>'e','ë'=>'e',
+            'ì'=>'i','í'=>'i','î'=>'i','ï'=>'i',
+            'ð'=>'d','ñ'=>'n',
+            'ò'=>'o','ó'=>'o','ô'=>'o','õ'=>'o','ö'=>'o','ø'=>'o',
+            'ù'=>'u','ú'=>'u','û'=>'u','ü'=>'u',
+            'ý'=>'y','þ'=>'th','ß'=>'ss','ÿ'=>'y',
+            'À'=>'a','Á'=>'a','Â'=>'a','Ã'=>'a','Ä'=>'a','Å'=>'a','Æ'=>'ae',
+            'Ç'=>'c','È'=>'e','É'=>'e','Ê'=>'e','Ë'=>'e',
+            'Ì'=>'i','Í'=>'i','Î'=>'i','Ï'=>'i',
+            'Ð'=>'d','Ñ'=>'n',
+            'Ò'=>'o','Ó'=>'o','Ô'=>'o','Õ'=>'o','Ö'=>'o','Ø'=>'o',
+            'Ù'=>'u','Ú'=>'u','Û'=>'u','Ü'=>'u',
+            'Ý'=>'y','Þ'=>'th','Ÿ'=>'y',
+        ];
+
+        // 1. Transliterasi diakritik
+        $string = strtr($string, $map);
+
+        // 2. Lowercase dengan mbstring (aman untuk multibyte)
+        $string = mb_strtolower($string, 'UTF-8');
+
+        // 3. Hapus semua karakter bukan a-z 0-9 spasi/tanda hubung
+        $string = preg_replace('/[^a-z0-9\s\-]/u', '', $string);
+
+        // 4. Collapse spasi & tanda hubung berulang
+        $string = preg_replace('/[\s\-]+/', '-', $string);
 
         return trim($string, '-');
     }
