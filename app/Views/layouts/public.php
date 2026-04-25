@@ -3,8 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="<?= esc($meta_desc ?? setting('site_tagline') ?? '') ?>">
-    <title><?= esc(isset($title) ? $title . ' — ' : '') ?><?= esc(setting('site_name') ?? 'Website Sekolah') ?></title>
+    <?php
+    $__siteName  = setting('site_name')    ?? 'Website Sekolah';
+    $__tagline   = setting('site_tagline') ?? '';
+    $__logoPath  = setting('logo_path');
+    $__logoUrl   = $__logoPath
+        ? base_url('uploads/pengaturan/' . $__logoPath)
+        : base_url('assets/images/logo-sekolah.png');
+
+    $__ogTitle   = $og_title  ?? (isset($title) ? $title . ' — ' . $__siteName : $__siteName);
+    $__ogDesc    = $og_desc   ?? ($meta_desc ?? $__tagline);
+    $__ogImage   = $og_image  ?? $__logoUrl;
+    $__ogType    = $og_type   ?? 'website';
+    $__ogUrl     = current_url();
+    ?>
+    <meta name="description" content="<?= esc($__ogDesc) ?>">
+    <title><?= esc(isset($title) ? $title . ' — ' : '') ?><?= esc($__siteName) ?></title>
+
+    <!-- OpenGraph / Facebook -->
+    <meta property="og:site_name"   content="<?= esc($__siteName) ?>">
+    <meta property="og:type"        content="<?= esc($__ogType) ?>">
+    <meta property="og:url"         content="<?= esc($__ogUrl) ?>">
+    <meta property="og:title"       content="<?= esc($__ogTitle) ?>">
+    <meta property="og:description" content="<?= esc($__ogDesc) ?>">
+    <meta property="og:image"       content="<?= esc($__ogImage) ?>">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:locale"      content="id_ID">
+    <?php if ($__ogType === 'article'): ?>
+    <meta property="article:published_time" content="<?= esc($og_article_time ?? '') ?>">
+    <?php endif; ?>
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card"        content="<?= ($og_image ?? null) ? 'summary_large_image' : 'summary' ?>">
+    <meta name="twitter:title"       content="<?= esc($__ogTitle) ?>">
+    <meta name="twitter:description" content="<?= esc($__ogDesc) ?>">
+    <meta name="twitter:image"       content="<?= esc($__ogImage) ?>">
     <?php $faviconPath = setting('favicon_path'); ?>
     <link rel="icon" type="image/x-icon" href="<?= $faviconPath ? base_url('uploads/pengaturan/' . esc($faviconPath)) : base_url('assets/images/logo-sekolah.png') ?>">
 
