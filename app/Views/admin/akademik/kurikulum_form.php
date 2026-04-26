@@ -42,7 +42,7 @@ $val    = fn(string $k, $d = '') => old($k, $isEdit ? ($blok[$k] ?? $d) : $d);
 
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Konten</label>
-                        <div id="kontenEditor" style="height:260px;"><?= $val('konten') ?></div>
+                        <div id="kontenEditor"><?= $val('konten') ?></div>
                         <input type="hidden" name="konten" id="kontenInput">
                         <div class="form-text">Tulis isi accordion ini — bisa daftar mapel, deskripsi kurikulum, dll.</div>
                     </div>
@@ -77,27 +77,67 @@ $val    = fn(string $k, $d = '') => old($k, $isEdit ? ($blok[$k] ?? $d) : $d);
 
 <?= $this->section('styles') ?>
 <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/quill-table-better@1/dist/quill-table-better.min.css" rel="stylesheet">
+<style>
+    /* Beri ruang lebih untuk toolbar tabel */
+    .ql-toolbar.ql-snow { flex-wrap: wrap; }
+    /* Perbesar area editor sedikit supaya tabel tidak sempit */
+    #kontenEditor { height: 320px; }
+</style>
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/quill-table-better@1/dist/quill-table-better.min.js"></script>
 <script>
-const quill = new Quill('#kontenEditor', {
-    theme: 'snow',
-    modules: { toolbar: [
-        ['bold','italic','underline'],
-        [{ list: 'ordered' }, { list: 'bullet' }],
-        ['link'],
-        ['clean'],
-    ]},
-});
+(function () {
+    // Daftarkan modul tabel ke Quill
+    Quill.register({ 'modules/table-better': QuillTableBetter }, true);
 
-document.getElementById('submitBtn').addEventListener('click', function (e) {
-    document.getElementById('kontenInput').value = quill.root.innerHTML;
-});
-document.querySelector('form').addEventListener('submit', function () {
-    document.getElementById('kontenInput').value = quill.root.innerHTML;
-});
+    // Simpan HTML awal (untuk mode edit) sebelum Quill mengambil alih container
+    const initialHtml = document.getElementById('kontenEditor').innerHTML.trim();
+    document.getElementById('kontenEditor').innerHTML = '';
+
+    const quill = new Quill('#kontenEditor', {
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                ['bold', 'italic', 'underline'],
+                [{ list: 'ordered' }, { list: 'bullet' }],
+                ['link'],
+                ['table-better'],
+                ['clean'],
+            ],
+            'table-better': {
+                operationMenu: {
+                    items: {
+                        insertColumnLeft:  { text: 'Sisipkan Kolom Kiri' },
+                        insertColumnRight: { text: 'Sisipkan Kolom Kanan' },
+                        insertRowAbove:    { text: 'Sisipkan Baris Atas' },
+                        insertRowBelow:    { text: 'Sisipkan Baris Bawah' },
+                        mergeCells:        { text: 'Gabung Sel' },
+                        unmergeCells:      { text: 'Pisahkan Sel' },
+                        deleteColumn:      { text: 'Hapus Kolom' },
+                        deleteRow:         { text: 'Hapus Baris' },
+                        deleteTable:       { text: 'Hapus Tabel' },
+                    },
+                },
+            },
+        },
+    });
+
+    // Muat konten awal (jika edit) via dangerouslyPasteHTML supaya tag tabel dikenali
+    if (initialHtml) {
+        quill.clipboard.dangerouslyPasteHTML(0, initialHtml);
+    }
+
+    // Sync konten ke hidden input sebelum form dikirim
+    function syncContent() {
+        document.getElementById('kontenInput').value = quill.root.innerHTML;
+    }
+    document.getElementById('submitBtn').addEventListener('click', syncContent);
+    document.querySelector('form').addEventListener('submit', syncContent);
+})();
 </script>
 <?= $this->endSection() ?>
 
